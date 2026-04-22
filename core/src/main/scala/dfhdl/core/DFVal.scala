@@ -593,18 +593,6 @@ object DFVal extends DFValLP:
   object PortByNameSelect:
     def apply(dfType: ir.DFType, designInst: ir.DFDesignBlock, namePath: String)(using DFC): ir.DFVal.PortByNameSelect = ???
 
-  // object Iterator:
-  //   def apply[P](range: DFRange[P])(using dfc: DFC): DFValTP[DFInt32, P] =
-  //     val member: ir.DFVal.Iterator =
-  //       ir.DFVal.Iterator(
-  //         range.asIR.refTW[ir.DFVal.Iterator],
-  //         dfc.owner.ref,
-  //         dfc.getMeta,
-  //         dfc.tags
-  //       )
-  //     member.addMember.asValTP[DFInt32, P]
-  // end Iterator
-
   trait TC[T <: DFTypeAny, R] extends TCCommon[T, R, DFValAny]:
     type OutP
     type Out = DFValTP[T, OutP]
