@@ -5,17 +5,11 @@ import dfhdl.internals.*
 
 trait DFMember[+T <: ir.DFMember] extends Any:
   val irValue: T | DFError
-  override def toString: String = irValue.toString
 
 type DFMemberAny = DFMember[ir.DFMember]
 object DFMember:
   extension [T <: ir.DFMember](member: DFMember[T])
-    inline def asIR: T = member.irValue.runtimeChecked match
-      case memberIR: T @unchecked                   => memberIR
-      case err: DFError.REG_DIN[?] if err.firstTime =>
-        err.firstTime = false
-        throw err
-      case err: DFError => throw DFError.Derived(err)
+    inline def asIR: T = ???
 end DFMember
 
 extension [M <: ir.DFMember](member: M)
