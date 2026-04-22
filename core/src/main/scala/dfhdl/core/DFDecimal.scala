@@ -17,32 +17,22 @@ object DFDecimal:
       width: IntParam[W],
       fractionWidth: Inlined[F],
       nativeType: N
-  )(using dfc: DFC, check: Width.CheckNUB[S, W]): DFDecimal[S, W, F, N] = trydf:
-    width.toScalaIntOpt.foreach(check(signed, _))
-    ir.DFDecimal(signed, width.ref, fractionWidth, nativeType).asFE[DFDecimal[S, W, F, N]]
+  )(using dfc: DFC, check: Width.CheckNUB[S, W]): DFDecimal[S, W, F, N] = ???
   protected[core] def forced[S <: Boolean, W <: IntP, F <: Int, N <: NativeType](
       signed: Boolean,
       width: Int,
       fractionWidth: Int,
       nativeType: NativeType
-  )(using DFC): DFDecimal[S, W, F, N] =
-    val check = summon[Width.Check[Boolean, Int]]
-    check(signed, width)
-    ir.DFDecimal(signed, ir.IntParamRef(width), fractionWidth, nativeType)
-      .asFE[DFDecimal[S, W, F, N]]
+  )(using DFC): DFDecimal[S, W, F, N] = ???
 
   given DFInt32 = DFInt32
   given [S <: Boolean, W <: IntP & Singleton, F <: Int, N <: NativeType](using
-      ValueOf[S],
-      ValueOf[W],
-      ValueOf[F],
-      ValueOf[N]
-  )(using DFCG, Width.CheckNUB[S, W]): DFDecimal[S, W, F, N] = trydf:
-    DFDecimal(valueOf[S], IntParam[W](valueOf[W]), valueOf[F], valueOf[N])
+      ValueOf[S], ValueOf[W], ValueOf[F], ValueOf[N]
+  )(using DFCG, Width.CheckNUB[S, W]): DFDecimal[S, W, F, N] = ???
   object Extensions:
     extension [S <: Boolean, W <: IntP, F <: Int, N <: NativeType](dfType: DFDecimal[S, W, F, N])
-      def signed: Inlined[S] = Inlined.forced[S](dfType.asIR.signed)
-      def nativeType: N = dfType.asIR.nativeType.asInstanceOf[N]
+      def signed: Inlined[S] = ???
+      def nativeType: N = ???
 
   protected[core] object Constraints:
     object Width
