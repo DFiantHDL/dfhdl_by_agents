@@ -12,7 +12,7 @@ import dfhdl.compiler.ir.MemberGetSet
 import scala.annotation.tailrec
 
 import scala.reflect.ClassTag
-into final class DFVal[+T <: DFTypeAny, +M <: ModifierAny](val irValue: ir.DFVal | DFError)
+into final class DFVal[+T <: DFTypeAny, +M <: ModifierAny](val irValue: ir.DFVal)
 end DFVal
 
 type DFValAny = DFVal[DFTypeAny, ModifierAny]
@@ -31,7 +31,7 @@ type JUSTVAL[T] = DFValOf[DFTypeAny]
 
 
 object DFVal:
-  inline def apply[T <: DFTypeAny, M <: ModifierAny, IR <: ir.DFVal | DFError](
+  inline def apply[T <: DFTypeAny, M <: ModifierAny, IR <: ir.DFVal](
       irValue: IR
   ): DFVal[T, M] = new DFVal[T, M](irValue)
 

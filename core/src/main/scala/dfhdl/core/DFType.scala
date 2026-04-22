@@ -9,7 +9,7 @@ sealed trait Args2[T1, T2] extends Args
 sealed trait Args3[T1, T2, T3] extends Args
 sealed trait Args4[T1, T2, T3, T4] extends Args
 
-final class DFType[+T <: ir.DFType, +A <: Args](val value: T | DFError) extends AnyVal
+final class DFType[+T <: ir.DFType, +A <: Args](val value: T) extends AnyVal
 type DFTypeAny = DFType[ir.DFType, Args]
 
 object DFType:
