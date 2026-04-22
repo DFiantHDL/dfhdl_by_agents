@@ -804,18 +804,9 @@ object DFUInt:
           ubCheck: `UB > R`.CheckNUB[UB, R]
       ): UBArg[UB, R] with
         type OutP = CONST
-        def apply(ub: IntParam[UB], arg: R)(using DFC): Out =
-          unsignedCheck(arg < 0)
-          ub.toScalaIntOpt.foreach(ubCheck(_, arg))
-          DFConstInt32(arg)
-      end fromInt
+        def apply(ub: IntParam[UB], arg: R)(using DFC): Out = ???
       given fromR[
-          UB <: IntP,
-          R,
-          S <: Boolean,
-          W <: IntP,
-          N <: NativeType,
-          P
+          UB <: IntP, R, S <: Boolean, W <: IntP, N <: NativeType, P
       ](using
           ic: DFXInt.Val.Candidate.Aux[R, S, W, N, P]
       )(using
@@ -823,35 +814,7 @@ object DFUInt:
           widthCheck: `UBW == RW`.CheckNUB[IntP.CLog2[UB], W]
       ): UBArg[UB, R] with
         type OutP = P
-        def apply(ub: IntParam[UB], arg: R)(using DFC): Out =
-          import dfc.getSet
-          val argVal = ic(arg)
-          val argValIR = argVal.asIR
-          // if the argument is a constant, we can check its value and width
-          val fixedArgValIR = argValIR.getConstData[Option[BigInt]].toOption match
-            case Some(Some(arg: BigInt)) if arg.isValidInt =>
-              unsignedCheck(arg < 0)
-              ub.toScalaIntOpt.foreach(ub => summon[`UB > R`.CheckNUB[UB, Int]](ub, arg.toInt))
-              argValIR
-            case _ =>
-              import DFXInt.Val.Ops.resize
-              // skip checks if the argument is an Int32.
-              // TODO: in the future, it's worth considering adding assertions
-              if (argValIR.dfType != ir.DFInt32)
-                unsignedCheck(argVal.dfType.signed)
-                if (argValIR.hasTagOf[ir.ResizeTag])
-                  argVal.resize(ub.clog2).asIR
-                else
-                  (ub.toScalaIntOpt, argVal.widthIntOpt) match
-                    case (Some(ubInt), Some(argWidth)) =>
-                      widthCheck(clog2(ubInt), argWidth)
-                      argValIR
-                    case _ =>
-                  argValIR
-              else argValIR
-          DFVal.Alias.AsIs(DFInt32, fixedArgValIR.asValTP[DFUInt[Int], P])
-        end apply
-      end fromR
+        def apply(ub: IntParam[UB], arg: R)(using DFC): Out = ???
     end UBArg
     object Ops:
       extension [W <: IntP, P](lhs: DFValTP[DFUInt[W], P])
