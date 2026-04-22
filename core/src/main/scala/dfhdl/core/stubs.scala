@@ -5,7 +5,6 @@ import ir.DFVal.Func.Op as FuncOp
 object ir:
   trait DFType
   trait DFBoolOrBit
-  trait DFVal
   object DFVal:
     object Func:
       sealed trait Op
