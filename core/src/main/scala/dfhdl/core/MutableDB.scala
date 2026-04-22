@@ -89,12 +89,7 @@ final class MutableDB():
     def getReachableDFType(dfType: DFType, cf: => DFType): DFType = ???
   end DesignContext
 
-  val injectedCtx = mutable.Set.empty[DesignContext]
-  def injectGlobals(sourceCtx: DesignContext): Unit =
-    // preventing meta-programming global injection to avoid duplicates
-    if (!inMetaProgramming && !injectedCtx.contains(sourceCtx))
-      injectedCtx += sourceCtx
-      DesignContext.global.inject(sourceCtx)
+  def injectGlobals(sourceCtx: DesignContext): Unit = ???
 
   object OwnershipContext:
     def enter(owner: DFOwner): Unit = ???
@@ -127,9 +122,8 @@ final class MutableDB():
   end ResourceOwnershipContext
 
   object GlobalTagContext:
-    private[MutableDB] var tags: DFTags = DFTags.empty
-    def set[CT <: DFTag: ClassTag](tag: CT): Unit = tags = tags.tag(tag)
-    def get[CT <: DFTag: ClassTag]: Option[CT] = tags.getTagOf[CT]
+    def set[CT <: DFTag: ClassTag](tag: CT): Unit = ???
+    def get[CT <: DFTag: ClassTag]: Option[CT] = ???
   end GlobalTagContext
 
   def addMember[M <: DFMember](member: M): M = ???
