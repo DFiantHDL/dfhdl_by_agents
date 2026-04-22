@@ -429,23 +429,7 @@ object DFVal extends DFValLP:
 
     def fromValueMacro[T <: DFTypeAny, V](
         value: Expr[V]
-    )(using Quotes, Type[T], Type[V]): Expr[InitValue[T]] =
-      import quotes.reflect.*
-      val (argExpr, enableExpr) = value match
-        case '{ Conditional.Ops.@@[t]($x)($y) } => (x, y)
-        case _                                  => (value, '{ true })
-      argExpr.asTerm.getNonConstTerm match
-        case Some(term) => term.compiletimeErrorPosExpr("Init value must be a constant.")
-        case None       =>
-          val exactInfo = argExpr.exactInfo
-          '{
-            val tc = compiletime.summonInline[DFVal.TC[T, exactInfo.Underlying]]
-            new InitValue[T]:
-              def enable: Boolean = $enableExpr
-              def apply(dfType: T)(using dfc: DFC): DFConstOf[T] =
-                tc(dfType, ${ exactInfo.exactExpr })(using dfc).asConstOf[T]
-          }
-    end fromValueMacro
+    )(using Quotes, Type[T], Type[V]): Expr[InitValue[T]] = ???
   end InitValue
 
   @metaContextForward(0)
@@ -459,73 +443,7 @@ object DFVal extends DFValLP:
 
     def fromValueMacro[T <: NonEmptyTuple, V](
         value: Expr[V]
-    )(using Quotes, Type[T], Type[V]): Expr[InitTupleValues[T]] =
-      import quotes.reflect.*
-      val (argExpr, enableExpr) = value match
-        case '{ Conditional.Ops.@@[t]($x)($y) } => (x, y)
-        case _                                  => (value, '{ true })
-      val term = argExpr.asTerm.underlyingArgument
-      term.getNonConstTerm match
-        case Some(term) => term.compiletimeErrorPosExpr("Init value must be a constant.")
-        case _          =>
-          val tTpe = TypeRepr.of[T]
-          extension (lhs: TypeRepr)
-            def tupleSigMatch(
-                rhs: TypeRepr,
-                tupleAndNonTupleMatch: Boolean
-            ): Boolean =
-              import quotes.reflect.*
-              (lhs.asType, rhs.asType) match
-                case ('[DFTuple[t]], '[Any]) =>
-                  TypeRepr.of[t].tupleSigMatch(rhs, tupleAndNonTupleMatch)
-                case ('[Tuple], '[Tuple]) =>
-                  val lArgs = lhs.getTupleArgs
-                  val rArgs = rhs.getTupleArgs
-                  if (lArgs.length != rArgs.length) false
-                  else
-                    (lArgs lazyZip rArgs).forall((l, r) => l.tupleSigMatch(r, true))
-                case ('[Tuple], '[Any]) => tupleAndNonTupleMatch
-                case ('[Any], '[Tuple]) => tupleAndNonTupleMatch
-                case _                  => true
-            end tupleSigMatch
-          end extension
-
-          val vTpe = term.tpe
-          val multiElements = vTpe.asTypeOf[Any] match
-            case '[NonEmptyTuple] =>
-              vTpe.getTupleArgs.forall(va => tTpe.tupleSigMatch(va, false))
-            case _ => false
-          // In the case we have a multiple elements in the tuple value that match the signature
-          // of the DFHDL type, then each element is considered as a candidate
-          if (multiElements)
-            val Apply(_, vArgsTerm) = term.runtimeChecked
-            def inits(dfType: Expr[DFTuple[T]], dfc: Expr[DFC]): List[Expr[DFConstOf[DFTuple[T]]]] =
-              vArgsTerm.map { a =>
-                val aExactInfo = a.exactInfo
-                '{
-                  val tc = compiletime.summonInline[DFVal.TC[DFTuple[T], aExactInfo.Underlying]]
-                  tc($dfType, ${ aExactInfo.exactExpr })(using $dfc).asConstOf[DFTuple[T]]
-                }
-              }
-            '{
-              new InitTupleValues[T]:
-                def enable: Boolean = $enableExpr
-                def apply(dfType: DFTuple[T])(using dfc: DFC): List[DFConstOf[DFTuple[T]]] =
-                  List(${ Expr.ofList(inits('dfType, 'dfc)) }*)
-            }
-          // otherwise the entire tuple is considered as a candidate.
-          else
-            val vExactInfo = term.exactInfo
-            '{
-              val tc = compiletime.summonInline[DFVal.TC[DFTuple[T], vExactInfo.Underlying]]
-              new InitTupleValues[T]:
-                def enable: Boolean = $enableExpr
-                def apply(dfType: DFTuple[T])(using dfc: DFC): List[DFConstOf[DFTuple[T]]] =
-                  List(tc(dfType, ${ vExactInfo.exactExpr })(using dfc).asConstOf[DFTuple[T]])
-            }
-          end if
-      end match
-    end fromValueMacro
+    )(using Quotes, Type[T], Type[V]): Expr[InitTupleValues[T]] = ???
   end InitTupleValues
 
   extension [T <: DFTypeAny, A, C, I, P, R](dfVal: DFVal[T, Modifier[A, C, I, P]])
