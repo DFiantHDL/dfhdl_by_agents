@@ -29,49 +29,16 @@ object DFBoolOrBit:
       given fromBoolean[R <: Boolean]: Candidate[R] with
         type OutT = DFBool
         type OutP = CONST
-        def apply(arg: R)(using DFC): Out =
-          DFVal.Const(DFBool, Some(arg), named = true)
+        def apply(arg: R)(using DFC): Out = ???
       given fromBit[R <: BitNum]: Candidate[R] with
         type OutT = DFBit
         type OutP = CONST
-        def apply(arg: R)(using DFC): Out =
-          DFVal.Const(DFBit, Some(arg > 0), named = true)
+        def apply(arg: R)(using DFC): Out = ???
       given fromDFBoolOrBitVal[T <: DFBoolOrBit, P, R <: DFValTP[T, P]]: Candidate[R] with
         type OutT = T
         type OutP = P
-        def apply(arg: R)(using DFC): Out = arg
-      given fromIf[
-          C <: DFValOf[DFBoolOrBit],
-          T,
-          F,
-          TT <: DFBoolOrBit,
-          TP,
-          FP,
-          R <: IfWrapper[C, T, F]
-      ](using
-          tTC: Candidate[T] { type OutT = TT; type OutP = TP },
-          fTC: DFVal.TC[TT, F] { type OutP = FP }
-      ): Candidate[R] with
-        type OutT = TT
-        type OutP = TP | FP
-        def apply(value: R)(using DFC): Out = value.unwrap
-      end fromIf
+        def apply(arg: R)(using DFC): Out = ???
     end Candidate
-
-    private def b2b[T <: DFBoolOrBit, RP](
-        dfType: T,
-        dfValArg: DFValTP[DFBoolOrBit, RP]
-    )(using DFC): DFValTP[T, RP] =
-      import Ops.{bit, bool}
-      val dfValOut = (dfType, dfValArg.dfType) match
-        case (DFBit, DFBool) => dfValArg.asValOf[DFBool].bit
-        case (DFBool, DFBit) => dfValArg.asValOf[DFBit].bool
-        case _               => dfValArg
-      dfValOut.asValTP[T, RP]
-    private def b2b[T <: DFBoolOrBit, R](dfType: T, arg: R)(using
-        ic: Candidate[R],
-        dfc: DFC
-    ): DFValTP[T, ic.OutP] = b2b(dfType, ic(arg))
 
     object TC:
       import DFVal.TC
@@ -79,28 +46,17 @@ object DFBoolOrBit:
           ic: IC { type OutP = RP }
       ): TC[T, R] with
         type OutP = RP
-        def conv(dfType: T, arg: R)(using DFC): Out = b2b(dfType, arg)
+        def conv(dfType: T, arg: R)(using DFC): Out = ???
     end TC
 
     object Compare:
       import DFVal.Compare
       given DFBoolOrBitCompare[
-          T <: DFBoolOrBit,
-          R,
-          RP,
-          IC <: Candidate[R],
-          Op <: FuncOp.===.type | FuncOp.=!=.type,
-          C <: Boolean
-      ](
-          using
-          ic: IC { type OutP = RP },
-          op: ValueOf[Op],
-          castling: ValueOf[C]
-      ): Compare[T, R, Op, C] with
+          T <: DFBoolOrBit, R, RP, IC <: Candidate[R],
+          Op <: FuncOp.===.type | FuncOp.=!=.type, C <: Boolean
+      ](using ic: IC { type OutP = RP }): Compare[T, R, Op, C] with
         type OutP = RP
-        def conv(dfType: T, arg: R)(using DFC): Out =
-          b2b(dfType, arg)
-      end DFBoolOrBitCompare
+        def conv(dfType: T, arg: R)(using DFC): Out = ???
     end Compare
 
     object Ops:
