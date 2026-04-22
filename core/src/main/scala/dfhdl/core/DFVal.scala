@@ -55,41 +55,12 @@ infix type X[T <: DFType.Supported, M] = DFVector[DFType.Of[T], Tuple1[M]]
 type JUSTVAL[T <: DFType.Supported] = <>[T, VAL]
 
 extension [V <: ir.DFVal](dfVal: V)
-  inline def asVal[T <: DFTypeAny, M <: ModifierAny]: DFVal[T, M] =
-    DFVal[T, M, V](dfVal)
-  inline def asValOf[T <: DFTypeAny]: DFValOf[T] =
-    DFVal[T, ModifierAny, V](dfVal)
-  inline def asValTP[T <: DFTypeAny, P]: DFValTP[T, P] =
-    DFVal[T, Modifier[Any, Any, Any, P], V](dfVal)
-  inline def asValAny: DFValAny =
-    DFVal[DFTypeAny, ModifierAny, V](dfVal)
-  inline def asVarOf[T <: DFTypeAny]: DFVarOf[T] =
-    DFVal[T, Modifier.Mutable, V](dfVal)
-  inline def asVarAny: DFVarAny =
-    DFVal[DFTypeAny, Modifier.Mutable, V](dfVal)
-  inline def asDclAny: DFDclAny =
-    DFVal[DFTypeAny, Modifier.Dcl, V](dfVal)
-  inline def asConstAny: DFConstOf[DFTypeAny] =
-    DFVal[DFTypeAny, Modifier.CONST, V](dfVal)
-  inline def asConstOf[T <: DFTypeAny]: DFConstOf[T] =
-    DFVal[T, Modifier.CONST, V](dfVal)
+  inline def asValOf[T <: DFTypeAny]: DFValOf[T] = ???
 end extension
 
 extension (dfVal: DFValAny)
-  inline def asVal[T <: DFTypeAny, M <: ModifierAny]: DFVal[T, M] =
-    dfVal.asInstanceOf[DFVal[T, M]]
-  inline def asValOf[T <: DFTypeAny]: DFValOf[T] =
-    dfVal.asInstanceOf[DFVal[T, ModifierAny]]
-  inline def asValTP[T <: DFTypeAny, P]: DFValTP[T, P] =
-    dfVal.asInstanceOf[DFVal[T, Modifier[Any, Any, Any, P]]]
-  inline def asVarOf[T <: DFTypeAny]: DFVarOf[T] =
-    dfVal.asInstanceOf[DFVal[T, Modifier.Mutable]]
-  inline def asVarAny: DFVarAny =
-    dfVal.asInstanceOf[DFVal[DFTypeAny, Modifier.Mutable]]
-  inline def asDclAny: DFDclAny =
-    dfVal.asInstanceOf[DFVal[DFTypeAny, Modifier.Dcl]]
-  inline def asConstOf[T <: DFTypeAny]: DFConstOf[T] =
-    dfVal.asInstanceOf[DFVal[T, Modifier.CONST]]
+  inline def asValOf[T <: DFTypeAny]: DFValOf[T] = ???
+  inline def asValTP[T <: DFTypeAny, P]: DFValTP[T, P] = ???
 end extension
 
 def DFValConversionMacro[T <: DFTypeAny, P, R](
