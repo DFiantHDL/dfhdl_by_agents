@@ -5,7 +5,6 @@ import scala.quoted.*
 into final class DFVal[+T <: DFTypeAny, +M <: ModifierAny](val irValue: ir.DFVal)
 
 type DFValAny = DFVal[DFTypeAny, ModifierAny]
-type DFValOf[+T <: DFTypeAny] = DFVal[T, ModifierAny]
 type DFConstOf[+T <: DFTypeAny] = DFVal[T, Modifier.CONST]
 type DFValTP[+T <: DFTypeAny, +P] = DFVal[T, Modifier[P]]
 
