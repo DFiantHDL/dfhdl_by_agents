@@ -117,10 +117,6 @@ object DFBits:
       )(using check: `LW == RW`.CheckNUB[LW, ic.OutW]): TC[DFBits[LW], V] with
         type OutP = RP
         def conv(dfType: DFBits[LW], value: V)(using dfc: DFC): Out = ???
-      given DFBitsFromSEV[LW <: IntP, T <: BitOrBool, V <: SameElementsVector[T]]: TC[DFBits[LW], V]
-      with
-        type OutP = CONST
-        def conv(dfType: DFBits[LW], value: V)(using DFC): Out = ???
     end TC
 
     object TCConv:
@@ -141,15 +137,6 @@ object DFBits:
       ): Compare[DFBits[LW], R, Op, C] with
         type OutP = RP
         def conv(dfType: DFBits[LW], arg: R)(using DFC): Out = ???
-      given DFBitsCompareSEV[
-          LW <: IntP,
-          Op <: FuncOp.===.type | FuncOp.=!=.type,
-          C <: Boolean,
-          T <: BitOrBool,
-          V <: SameElementsVector[T]
-      ](using ValueOf[Op], ValueOf[C]): Compare[DFBits[LW], V, Op, C] with
-        type OutP = CONST
-        def conv(dfType: DFBits[LW], arg: V)(using DFC): Out = ???
     end Compare
 
     object TupleOps:

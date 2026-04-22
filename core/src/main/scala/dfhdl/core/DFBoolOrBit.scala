@@ -160,7 +160,7 @@ object DFBoolOrBit:
                   DFVal.Func(dfType, FuncOp.sel, List(lhs, tc(dfType, onTrue), onFalseDFVal))
                     .asValOf[ft]
           else
-            BoolSelWrapper[P, OT, OF](lhs, onTrue, onFalse)
+            ???
         end sel
       end extension
     end Ops
