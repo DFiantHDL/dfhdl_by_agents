@@ -118,15 +118,7 @@ object DFBoolOrBit:
           icL: Candidate.Aux[L, LT, LP],
           icR: Candidate.Aux[R, RT, RP],
           op: ValueOf[Op]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[LT, LP | RP]] =
-        new ExactOp2[Op, DFC, DFValAny, L, R]:
-          type Out = DFValTP[LT, LP | RP]
-          def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-            val lhsVal = icL(lhs)
-            val rhsVal = b2b(lhsVal.dfType, icR(rhs))
-            DFVal.Func(lhsVal.dfType, op.value, List(lhsVal, rhsVal))
-          }
-      end evLogicOpDFBoolOrBit
+      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[LT, LP | RP]] = ???
       given evLogicOpDFBoolOrBit2[
           Op <: FuncOp.|.type | FuncOp.&.type,
           L <: Candidate.Types,
@@ -134,11 +126,7 @@ object DFBoolOrBit:
           O <: DFValAny
       ](using
           ic: ExactOp2Aux[Op, DFC, DFValAny, L, R, O]
-      ): ExactOp2Aux[BoolOnlyOp[Op], DFC, DFValAny, L, R, O] =
-        new ExactOp2[BoolOnlyOp[Op], DFC, DFValAny, L, R]:
-          type Out = O
-          def apply(lhs: L, rhs: R)(using DFC): Out = ic(lhs, rhs)
-      end evLogicOpDFBoolOrBit2
+      ): ExactOp2Aux[BoolOnlyOp[Op], DFC, DFValAny, L, R, O] = ???
 
       extension [P](lhs: DFValTP[DFBoolOrBit, P])
         def toScalaBoolean(using DFC, DFVal.ConstCheck[P]): Boolean =
@@ -148,55 +136,35 @@ object DFBoolOrBit:
         def toBits[W <: IntP](width: IntParam[W])(using
             DFCG,
             Constraints.Width.CheckNUB[false, W]
-        ): DFValTP[DFBits[W], P] = trydf {
-          DFVal.Alias.AsIs(DFBits(width), lhs)
-        }
+        ): DFValTP[DFBits[W], P] = ???
         def toUInt[W <: IntP](width: IntParam[W])(using
             DFCG,
             Constraints.Width.CheckNUB[false, W]
-        ): DFValTP[DFUInt[W], P] = trydf {
-          DFVal.Alias.AsIs(DFUInt(width), lhs)
-        }
+        ): DFValTP[DFUInt[W], P] = ???
         def toSInt[W <: IntP](width: IntParam[W])(using
             DFCG,
             Constraints.Width.CheckNUB[true, W]
-        ): DFValTP[DFSInt[W], P] = trydf {
-          DFVal.Alias.AsIs(DFSInt(width), lhs)
-        }
+        ): DFValTP[DFSInt[W], P] = ???
       end extension
       extension [P](lhs: DFValTP[DFBit, P])
-        def rising(using DFC): DFValOf[DFBool] = trydf {
-          DFVal.Func(DFBool, FuncOp.rising, List(lhs))
-        }
-        def falling(using DFC): DFValOf[DFBool] = trydf {
-          DFVal.Func(DFBool, FuncOp.falling, List(lhs))
-        }
-        def bool(using DFCG): DFValTP[DFBool, P] = trydf {
-          DFVal.Alias.AsIs(DFBool, lhs)
-        }
+        def rising(using DFC): DFValOf[DFBool] = ???
+        def falling(using DFC): DFValOf[DFBool] = ???
+        def bool(using DFCG): DFValTP[DFBool, P] = ???
         @targetName("notOfDFBit")
-        def unary_!(using DFCG): DFValTP[DFBit, P] = trydf {
-          DFVal.Func(DFBit, FuncOp.unary_!, List(lhs))
-        }
+        def unary_!(using DFCG): DFValTP[DFBit, P] = ???
         @targetName("not2OfDFBit")
         inline def unary_~(using DFCG) = lhs.unary_!
       end extension
       extension [P](lhs: DFValTP[DFBool, P])
-        def bit(using DFCG): DFValTP[DFBit, P] = trydf {
-          DFVal.Alias.AsIs(DFBit, lhs)
-        }
+        def bit(using DFCG): DFValTP[DFBit, P] = ???
         @targetName("notOfDFBool")
-        def unary_!(using DFCG): DFValTP[DFBool, P] = trydf {
-          DFVal.Func(DFBool, FuncOp.unary_!, List(lhs))
-        }
+        def unary_!(using DFCG): DFValTP[DFBool, P] = ???
         @targetName("not2OfDFBool")
         inline def unary_~(using DFCG) = lhs.unary_!
 
       extension [T <: DFBoolOrBit, P](lhs: DFValTP[T, P])
         @targetName("notOfDFBoolOrBit")
-        private[core] def not(using DFC): DFValTP[T, P] = trydf {
-          DFVal.Func(lhs.dfType, FuncOp.unary_!, List(lhs))
-        }
+        private[core] def not(using DFC): DFValTP[T, P] = ???
         transparent inline def sel[OT, OF](inline onTrue: OT, inline onFalse: OF)(using
             dfc: DFCG
         ): Any =
