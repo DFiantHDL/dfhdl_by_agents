@@ -1195,24 +1195,7 @@ object DFXInt:
       ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[
         DFXInt[LS || RS, IntP.+[IntP.Max[LW, RW], 1], BitAccurate],
         LP | RP
-      ]] = new ExactOp2[CarryOp[Op], DFC, DFValAny, L, R]:
-        type Out = DFValTP[DFXInt[LS || RS, IntP.+[IntP.Max[LW, RW], 1], BitAccurate], LP | RP]
-        def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-          val dfcAnon = dfc.anonymize
-          val lhsVal = icL(lhs)(using dfcAnon)
-          val rhsVal = icR(rhs)(using dfcAnon)
-          val resultSigned = lhsVal.dfType.signed || rhsVal.dfType.signed
-          import IntParam.{+, max}
-          val commonWidth = lhsVal.widthIntParam.max(rhsVal.widthIntParam)
-          val width = commonWidth + 1
-          val dfType = DFXInt(resultSigned, width, BitAccurate)
-          // Resize both operands to common width, converting to signed if needed
-          val commonType = DFXInt(resultSigned, commonWidth, BitAccurate)
-          val lhsFix = lhsVal.toDFXIntOf(commonType)(using dfcAnon)
-          val rhsFix = rhsVal.toDFXIntOf(commonType)(using dfcAnon)
-          DFVal.Func(dfType, op.value, List(lhsFix, rhsFix))
-            .asInstanceOf[Out]
-        }(using dfc, CTName(op.value.toString + "^"))
+      ]] = ???
       end evOpCarryAddSubDFXInt
 
       given evOpCarryMulDFXInt[
@@ -1233,28 +1216,7 @@ object DFXInt:
       ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[
         DFXInt[LS || RS, IntP.+[LW, RW], BitAccurate],
         LP | RP
-      ]] = new ExactOp2[CarryOp[Op], DFC, DFValAny, L, R]:
-        type Out = DFValTP[DFXInt[LS || RS, IntP.+[LW, RW], BitAccurate], LP | RP]
-        def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-          val dfcAnon = dfc.anonymize
-          val lhsVal = icL(lhs)(using dfcAnon)
-          val rhsVal = icR(rhs)(using dfcAnon)
-          val resultSigned = lhsVal.dfType.signed || rhsVal.dfType.signed
-          import IntParam.+
-          val width = lhsVal.widthIntParam + rhsVal.widthIntParam
-          val dfType = DFXInt(resultSigned, width, BitAccurate)
-          // Convert unsigned operand to signed if needed
-          val lhsFix =
-            if (resultSigned && !lhsVal.dfType.signed)
-              lhsVal.toDFXIntOf(DFXInt(true, lhsVal.widthIntParam + 1, BitAccurate))(using dfcAnon)
-            else lhsVal
-          val rhsFix =
-            if (resultSigned && !rhsVal.dfType.signed)
-              rhsVal.toDFXIntOf(DFXInt(true, rhsVal.widthIntParam + 1, BitAccurate))(using dfcAnon)
-            else rhsVal
-          DFVal.Func(dfType, FuncOp.`*`, List(lhsFix, rhsFix))
-            .asInstanceOf[Out]
-        }(using dfc, CTName("*^"))
+      ]] = ???
       end evOpCarryMulDFXInt
 
       // TODO: this takes the RHS's width as the result type width. This is how VHDL behaves.
