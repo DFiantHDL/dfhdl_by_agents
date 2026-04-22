@@ -59,13 +59,7 @@ object DFBoolOrBit:
       extension [T <: DFBoolOrBit, P](lhs: DFValTP[T, P])
         transparent inline def sel[OT, OF](inline onTrue: OT, inline onFalse: OF)(using
             dfc: DFCG
-        ): Any =
-          inline onTrue match
-            case onTrueDFVal: DFValTP[tt, tp] =>
-              val tc = compiletime.summonInline[DFVal.TC[tt, OF]]
-              val dfType = onTrueDFVal.dfType
-              tc(dfType, onFalse).asValTP[tt, P | tp]
-        end sel
+        ): Any = ???
       end extension
     end Ops
   end Val
