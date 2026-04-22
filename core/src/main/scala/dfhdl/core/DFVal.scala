@@ -780,212 +780,31 @@ object DFVal extends DFValLP:
           aliasType: AT,
           relVal: DFVal[VT, M],
           forceNewAlias: Boolean = false
-      )(using dfc: DFC): DFVal[AT, M] =
-        import dfc.getSet
-        val aliasTypeIR = aliasType.asIR
-        relVal.asIR match
-          // skipping alias simplification if in meta-programming and the related value is
-          // not defined in the current (meta) design context.
-          case _
-              if dfc.inMetaProgramming &&
-                !dfc.mutableDB.DesignContext.current.hasMember(relVal.asIR) =>
-            forced(aliasTypeIR, relVal.anonymizeInDFCPosition.asIR).asVal[AT, M]
-          // anonymous constant are replaced by a different constant
-          // after its data value was converted according to the alias.
-          // the target alias type must have a known width (constants must have a known width)
-          case const: ir.DFVal.Const
-              if (const.isAnonymous || relVal.inDFCPosition) && aliasTypeIR.getRefs.isEmpty &&
-                !forceNewAlias =>
-            val updatedData = ir.dataConversion(aliasTypeIR, const.dfType)(
-              const.data.asInstanceOf[const.dfType.Data]
-            )
-            dfc.mutableDB.setMember(
-              const,
-              _.copy(
-                dfType = aliasTypeIR.dropUnreachableRefs,
-                data = updatedData,
-                meta = dfc.getMeta
-              )
-            ).asVal[AT, M]
-          // remove redundant intermediate casting when the final result needs to be `.bits` anyways
-          // as long as the alias is anonymous and has the same width as the related value,
-          // to avoid modifying the semantics of named values that can be referenced in multiple places.
-          case asIs @ ir.DFVal.Alias.AsIs(relValRef = ir.DFRef(relValIR))
-              if aliasTypeIR.isInstanceOf[ir.DFBits] && asIs.isAnonymous &&
-                dfc.isAnonymous && !forceNewAlias && asIs.tags.isEmpty &&
-                relValIR.asValAny.widthIntParam =~ asIs.asValAny.widthIntParam =>
-            asIs.relValRef.get.asVal[AT, M]
-          // remove redundant intermediate casting converting from BoolOrBit to Bits/UInt/SInt + resize
-          case asIs @ ir.DFVal.Alias.AsIs(
-                dfType = ir.DFBits(_) | ir.DFUInt(_) | ir.DFSInt(_),
-                relValRef = ir.DFRef(ir.DFBoolOrBit.Val(deepRelVal))
-              ) if asIs.isAnonymous && !forceNewAlias =>
-            dfc.mutableDB.setMember(
-              asIs,
-              _.copy(
-                dfType = aliasTypeIR.dropUnreachableRefs,
-                meta = dfc.getMeta
-              )
-            ).asVal[AT, M]
-          // named constants or other non-constant values are referenced
-          // in a new alias construct
-          case _ =>
-            forced(aliasTypeIR, relVal.anonymizeInDFCPosition.asIR).asVal[AT, M]
-        end match
-      end apply
-      def forced(aliasType: ir.DFType, relVal: ir.DFVal)(using DFC): ir.DFVal =
-        val alias: ir.DFVal.Alias.AsIs =
-          ir.DFVal.Alias.AsIs(
-            aliasType.dropUnreachableRefs,
-            relVal.refTW[ir.DFVal.Alias.AsIs],
-            dfc.ownerOrEmptyRef,
-            dfc.getMeta,
-            dfc.tags
-          )
-        alias.addMember
-      def ident[T <: DFTypeAny, M <: ModifierAny](relVal: DFVal[T, M])(using
-          dfc: DFC
-      ): DFVal[T, M] =
-        apply(relVal.dfType, relVal, forceNewAlias = true)(using dfc.tag(ir.IdentTag))
-      def bind[T <: DFTypeAny, M <: ModifierAny](relVal: DFVal[T, M], bindName: String)(using
-          dfc: DFC
-      ): DFVal[T, M] =
-        import ir.DFConditional.DFCaseBlock.Pattern
-        ident(relVal)(using dfc.setName(bindName).tag(ir.BindTag))
-    end AsIs
+      )(using dfc: DFC): DFVal[AT, M] = ???
+      def ident[T <: DFTypeAny](relVal: DFVal[T, ?])(using DFC): Unit = ???
+      def forced(aliasType: ir.DFType, relVal: ir.DFVal, forceNewAlias: Boolean = false)(using DFC): ir.DFVal = ???
     object History:
-      def apply[T <: DFTypeAny](
-          relVal: DFValOf[T],
-          step: Int,
-          op: HistoryOp,
-          initOption: Option[DFConstOf[T]]
-      )(using DFC): DFValOf[T] =
-        val alias: ir.DFVal.Alias.History =
-          ir.DFVal.Alias.History(
-            relVal.dfType.asIR.dropUnreachableRefs,
-            relVal.asIR.refTW[ir.DFVal.Alias.History],
-            step,
-            op,
-            initOption.map(_.asIR.refTW[ir.DFVal.Alias.History]),
-            dfc.owner.ref,
-            dfc.getMeta,
-            dfc.tags
-          )
-        alias.addMember.asValOf[T]
-      end apply
-    end History
+      def apply[T <: DFTypeAny, M <: ModifierAny](relVal: DFVal[T, M], step: Int, op: Any, initOption: Option[DFConstOf[T]])(using DFC): DFVal[T, M] = ???
     object ApplyRange:
       import IntP.{-, +}
       def apply[W <: IntP, M <: ModifierAny, H <: IntP, L <: IntP](
-          relVal: DFVal[DFBits[W], M],
-          idxHigh: IntParam[H],
-          idxLow: IntParam[L]
-      )(using DFC): DFVal[DFBits[H - L + 1], M] =
-        forced(relVal.asIR, idxHigh, idxLow).asVal[DFBits[H - L + 1], M]
+          relVal: DFVal[DFBits[W], M], idxHigh: IntParam[H], idxLow: IntParam[L]
+      )(using DFC): DFVal[DFBits[H - L + 1], M] = ???
       def applyDFXInt[S <: Boolean, W <: IntP, M <: ModifierAny, H <: IntP, L <: IntP](
-          relVal: DFVal[DFXInt[S, W, NativeType.BitAccurate], M],
-          idxHigh: IntParam[H],
-          idxLow: IntParam[L]
-      )(using DFC): DFVal[DFXInt[S, H - L + 1, NativeType.BitAccurate], M] =
-        forced(relVal.asIR, idxHigh, idxLow).asVal[DFXInt[S, H - L + 1, NativeType.BitAccurate], M]
+          relVal: DFVal[DFXInt[S, W, NativeType.BitAccurate], M], idxHigh: IntParam[H], idxLow: IntParam[L]
+      )(using DFC): DFVal[DFXInt[S, H - L + 1, NativeType.BitAccurate], M] = ???
       def applyVector[T <: DFTypeAny, M <: ModifierAny, H <: IntP, L <: IntP](
-          relVal: DFVal[DFVector[T, Tuple1[?]], M],
-          idxHigh: IntParam[H],
-          idxLow: IntParam[L]
-      )(using DFC): DFVal[DFVector[T, Tuple1[H - L + 1]], M] =
-        forced(relVal.asIR, idxHigh, idxLow).asVal[DFVector[T, Tuple1[H - L + 1]], M]
-      def forced[H <: IntP, L <: IntP](
-          relVal: ir.DFVal,
-          idxHigh: IntParam[H],
-          idxLow: IntParam[L]
-      )(using DFC): ir.DFVal =
-        val selLength = idxHigh - idxLow + 1
-        val dfType = relVal.dfType.runtimeChecked match
-          case ir.DFBits(_)                     => ir.DFBits(selLength.ref)
-          case ir.DFUInt(_)                     => ir.DFUInt(selLength.ref)
-          case ir.DFSInt(_)                     => ir.DFSInt(selLength.ref)
-          case ir.DFVector(cellType = cellType) =>
-            ir.DFVector(cellType, List(selLength.ref))
-        relVal match
-          // anonymous constant are replace by a different constant
-          // after its data value was converted according to the alias
-          case const: ir.DFVal.Const if const.isAnonymous =>
-            val updatedData = ir.selRangeData(
-              dfType,
-              const.data,
-              idxHigh.toScalaIntOpt.get,
-              idxLow.toScalaIntOpt.get
-            )(using dfc.getSet)
-            Const.forced(dfType.asFE, updatedData).asIR
-          // named constants or other non-constant values are referenced
-          // in a new alias construct
-          case _ =>
-            val alias: ir.DFVal.Alias.ApplyRange =
-              ir.DFVal.Alias.ApplyRange(
-                dfType,
-                relVal.refTW[ir.DFVal.Alias.ApplyRange],
-                idxHigh.ref,
-                idxLow.ref,
-                dfc.ownerOrEmptyRef,
-                dfc.getMeta,
-                dfc.tags
-              )
-            alias.addMember
-        end match
-      end forced
-    end ApplyRange
+          relVal: DFVal[DFVector[T, Tuple1[?]], M], idxHigh: IntParam[H], idxLow: IntParam[L]
+      )(using DFC): DFVal[DFVector[T, Tuple1[H - L + 1]], M] = ???
+      def forced[H <: IntP, L <: IntP](relVal: ir.DFVal, idxHigh: IntParam[H], idxLow: IntParam[L])(using DFC): ir.DFVal = ???
     object ApplyIdx:
-      def apply[
-          T <: DFTypeAny,
-          W <: IntP,
-          M <: ModifierAny
-      ](
-          dfType: T,
-          relVal: DFVal[DFTypeAny, M],
-          relIdx: DFValOf[DFInt32]
-      )(using DFC): DFVal[T, M] =
-        val alias: ir.DFVal.Alias.ApplyIdx =
-          ir.DFVal.Alias.ApplyIdx(
-            dfType.asIR.dropUnreachableRefs,
-            relVal.asIR.refTW[ir.DFVal.Alias.ApplyIdx],
-            relIdx.asIR.refTW[ir.DFVal.Alias.ApplyIdx],
-            dfc.ownerOrEmptyRef,
-            dfc.getMeta,
-            dfc.tags
-          )
-        alias.addMember.asVal[T, M]
-      end apply
-    end ApplyIdx
+      def apply[T <: DFTypeAny, W <: IntP, M <: ModifierAny](
+          dfType: T, relVal: DFVal[DFTypeAny, M], relIdx: DFValOf[DFInt32]
+      )(using DFC): DFVal[T, M] = ???
     object SelectField:
       def apply[T <: DFTypeAny, M <: ModifierAny](
-          relVal: DFVal[DFTypeAny, M],
-          fieldName: String
-      )(using dfc: DFC): DFVal[T, M] =
-        val relValIR = relVal.asIR
-        val dfStructType = relValIR.dfType.asInstanceOf[ir.DFStruct]
-        relValIR match
-          // in case the referenced value is anonymous and concatenates fields
-          // of values, then we just directly reference the relevant
-          // value.
-          case ir.DFVal.Func(_, FuncOp.++, args, _, meta, _) if meta.isAnonymous =>
-            import dfc.getSet
-            args(dfStructType.fieldIndex(fieldName)).get.asVal[T, M]
-          // for all other case create a selector
-          case _ =>
-            val dfTypeIR = dfStructType.fieldMap(fieldName).dropUnreachableRefs
-            val alias: ir.DFVal.Alias.SelectField =
-              ir.DFVal.Alias.SelectField(
-                dfTypeIR,
-                relValIR.refTW[ir.DFVal.Alias.SelectField],
-                fieldName,
-                dfc.owner.ref,
-                dfc.getMeta,
-                dfc.tags
-              )
-            alias.addMember.asVal[T, M]
-        end match
-      end apply
-    end SelectField
+          relVal: DFVal[DFTypeAny, M], fieldName: String
+      )(using dfc: DFC): DFVal[T, M] = ???
   end Alias
 
   object PortByNameSelect:
