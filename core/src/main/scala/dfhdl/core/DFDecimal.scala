@@ -847,13 +847,7 @@ object DFXInt:
           lsigned: OptionalGiven[ValueOf[LS]]
       ): DFVal.TCConv[DFXInt[LS, Int, BitAccurate], R] with
         type OutP = RP
-        def apply(value: R)(using dfc: DFC): Out =
-          import DFUInt.Val.Ops.signed
-          val rhs = ic(value)
-          checkS(lsigned.get.value, rhs.dfType.signed)
-          if (lsigned.get.value != rhs.dfType.signed.value)
-            rhs.asValOf[DFUInt[Int]].signed.asValTP[DFXInt[LS, Int, BitAccurate], RP]
-          else rhs.asValTP[DFXInt[LS, Int, BitAccurate], RP]
+        def apply(value: R)(using dfc: DFC): Out = ???
     end TCConv
 
     object Compare:
@@ -874,17 +868,7 @@ object DFXInt:
           nativeCheck: NativeCheck[LN, ic.OutN]
       ): Compare[DFXInt[LS, LW, LN], R, Op, C] with
         type OutP = RP
-        def conv(dfType: DFXInt[LS, LW, LN], arg: R)(using dfc: DFC): Out =
-          given dfcAnon: DFC = dfc.anonymize
-          val dfValArg = ic(arg)
-          dfValArg.getActualSignedWidthOpt match
-            case Some(rhsSigned, rhsWidthOpt) =>
-              (dfType.widthIntOpt, rhsWidthOpt) match
-                case (Some(dfTypeW), Some(rhsW)) => check(dfType.signed, dfTypeW, rhsSigned, rhsW)
-                case _                           =>
-            case None =>
-          DFXInt.Val.Ops.toDFXIntOf(dfValArg)(dfType).asValTP[DFXInt[LS, LW, LN], RP]
-        end conv
+        def conv(dfType: DFXInt[LS, LW, LN], arg: R)(using dfc: DFC): Out = ???
       end DFXIntCompare
     end Compare
 
