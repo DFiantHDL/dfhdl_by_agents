@@ -1682,22 +1682,11 @@ object DFUInt:
     end UBArg
     object Ops:
       extension [W <: IntP, P](lhs: DFValTP[DFUInt[W], P])
-        def signed(using DFCG): DFValTP[DFSInt[IntP.+[W, 1]], P] = trydf {
-          DFVal.Alias.AsIs(DFSInt(lhs.widthIntParam + 1), lhs)
-        }
-        @targetName("negateDFUInt")
-        def unary_-(using DFCG): DFValTP[DFSInt[IntP.+[W, 1]], P] = trydf {
-          import DFSInt.Val.Ops.unary_- as negate
-          lhs.signed.negate
-        }
-        @targetName("toIntDFUInt")
-        def toInt(using
-            dfc: DFCG,
-            check: `W <= 31`.CheckNUB[W]
-        ): DFValTP[DFInt32, P] = trydf {
-          lhs.widthIntOpt.foreach(check(_))
-          DFVal.Alias.AsIs(DFInt32, lhs.signed)
-        }
+        def signed(using DFCG): DFValTP[DFSInt[IntP.+[W, 1]], P] = ???
+        @scala.annotation.targetName("negateDFUInt")
+        def unary_-(using DFCG): DFValTP[DFSInt[IntP.+[W, 1]], P] = ???
+        @scala.annotation.targetName("toIntDFUInt")
+        def toInt(using dfc: DFCG, check: `W <= 31`.CheckNUB[W]): DFValTP[DFInt32, P] = ???
       end extension
     end Ops
   end Val
@@ -1729,33 +1718,16 @@ object DFSInt:
   object Val:
     object Ops:
       extension [W <: IntP, P](lhs: DFValTP[DFSInt[W], P])
-        @targetName("negateDFSInt")
-        def unary_-(using DFCG): DFValTP[DFSInt[W], P] = trydf {
-          DFVal.Func(lhs.dfType, FuncOp.unary_-, List(lhs))
-        }
-        def signbit(using dfc: DFCG): DFValTP[DFBit, P] =
-          val idx = locally {
-            given DFCG = dfc.anonymize
-            (lhs.widthIntParam - 1).toDFConst
-          }
-          DFVal.Alias.ApplyIdx(DFBit, lhs, idx).asValTP[DFBit, P]
-        def unsigned(using DFCG): DFValTP[DFUInt[IntP.-[W, 1]], P] = trydf {
-          DFVal.Alias.AsIs(DFUInt(lhs.widthIntParam - 1), lhs)
-        }
+        @scala.annotation.targetName("negateDFSInt")
+        def unary_-(using DFCG): DFValTP[DFSInt[W], P] = ???
+        def signbit(using dfc: DFCG): DFValTP[DFBit, P] = ???
+        def unsigned(using DFCG): DFValTP[DFUInt[IntP.-[W, 1]], P] = ???
       extension [P](lhs: DFValTP[DFInt32, P])
-        @targetName("negateDFInt32")
-        def unary_-(using DFCG): DFValTP[DFInt32, P] = trydf {
-          DFVal.Func(lhs.dfType, FuncOp.unary_-, List(lhs))
-        }
+        @scala.annotation.targetName("negateDFInt32")
+        def unary_-(using DFCG): DFValTP[DFInt32, P] = ???
       extension [W <: IntP, P](lhs: DFValTP[DFSInt[W], P])
-        @targetName("toIntDFSInt")
-        def toInt(using
-            dfc: DFCG,
-            check: `W <= 32`.CheckNUB[W]
-        ): DFValTP[DFInt32, P] = trydf {
-          lhs.widthIntOpt.foreach(check(_))
-          DFVal.Alias.AsIs(DFInt32, lhs)
-        }
+        @scala.annotation.targetName("toIntDFSInt")
+        def toInt(using dfc: DFCG, check: `W <= 32`.CheckNUB[W]): DFValTP[DFInt32, P] = ???
     end Ops
   end Val
 end DFSInt
