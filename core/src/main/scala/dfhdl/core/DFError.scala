@@ -15,39 +15,11 @@ object DFError:
   class Basic(
       val opName: String,
       val iae: IllegalArgumentException
-  )(using dfc: DFC)
-      extends DFError(iae.getMessage):
-    import dfc.getSet
-    val ownerOptionCurrent = dfc.ownerOption.map(_.asIR)
-    val dfcName = dfc.name
-    lazy val designName = ownerOptionCurrent match
-      case Some(owner) => owner.getThisOrOwnerDesign.getFullName
-      case None        => ""
-    lazy val fullName =
-      if (dfc.isAnonymous) designName
-      else if (designName.nonEmpty) s"$designName.${dfcName}"
-      else dfcName
-    val position = dfc.position
-    override def toString: String =
-      s"""|DFiant HDL elaboration error!
-          |Position:  ${position}
-          |Hierarchy: ${fullName}
-          |Operation: `${opName}`
-          |Message:   ${dfMsg}""".stripMargin
-  end Basic
-  object FakeEnum extends DFError("This value of enum is no meant to be accessed.")
+  )(using dfc: DFC) extends DFError(iae.getMessage)
+  object FakeEnum extends DFError("")
   final class Derived(from: DFError) extends DFError(from.dfMsg)
   final class REG_DIN[T <: DFTypeAny](val dfVar: DFVarOf[T])(using dfc: DFC)
-      extends Basic(
-        "Read access",
-        new IllegalArgumentException(
-          """|Cannot read from DIN of a register.
-             |If you are committing a partial assignment through range or field selection, make sure you apply `.din` after the selection. E.g.:
-             |* Instead of `x.din(5, 0)` write `x(5, 0).din`.
-             |* Instead of `pixel.din.x` write `pixel.x.din`.
-          """.stripMargin
-        )
-      ):
+      extends Basic("Read access", new IllegalArgumentException("")):
     var firstTime: Boolean = true
 
   extension (dfErr: DFError)
@@ -61,34 +33,16 @@ end DFError
 class DFWarning(
     val opName: String,
     val dfMsg: String
-)(using dfc: DFC)
-    extends LogEvent derives CanEqual:
-  import dfc.getSet
-  val designName = dfc.ownerOption match
-    case Some(owner) => owner.asIR.getThisOrOwnerDesign.getFullName
-    case None        => ""
-  val fullName =
-    if (dfc.isAnonymous) designName
-    else if (designName.nonEmpty) s"$designName.${dfc.name}"
-    else dfc.name
-  val position = dfc.position
-  override def toString: String =
-    s"""|DFiant HDL elaboration warning!
-        |Position:  ${position}
-        |Hierarchy: ${fullName}
-        |Operation: `${opName}`
-        |Message:   ${dfMsg}""".stripMargin
-end DFWarning
+)(using dfc: DFC) extends LogEvent derives CanEqual
 
 class Logger:
-  private[Logger] var events: List[LogEvent] = Nil
-  def logEvent(event: LogEvent): Unit = events = event :: events
-  def injectEvents(fromLogger: Logger): Unit = events = fromLogger.events ++ events
-  def injectEvents(newEvents: List[LogEvent]): Unit = events = events ++ newEvents
-  def getErrors: List[DFError] = events.reverse.collect { case e: DFError => e }
-  def getWarnings: List[DFWarning] = events.reverse.collect { case w: DFWarning => w }
-  def getEvents: List[LogEvent] = events.reverse
-  def clearEvents(): Unit = events = Nil
+  def logEvent(event: LogEvent): Unit = ???
+  def injectEvents(fromLogger: Logger): Unit = ???
+  def injectEvents(newEvents: List[LogEvent]): Unit = ???
+  def getErrors: List[DFError] = ???
+  def getWarnings: List[DFWarning] = ???
+  def getEvents: List[LogEvent] = ???
+  def clearEvents(): Unit = ???
 
 def trydfSpecific[T](
     block: => T
