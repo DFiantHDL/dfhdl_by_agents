@@ -100,63 +100,38 @@ object DFEnum:
   end apply
 
   inline given [E <: DFEncoding]: DFEnum[E] = ${ dfTypeMacro[E] }
-  def dfTypeMacro[E <: DFEncoding](using Quotes, Type[E]): Expr[DFEnum[E]] =
-    import quotes.reflect.*
-    val companionSym = TypeRepr.of[E].typeSymbol.companionModule
-    val companionIdent = Ref(companionSym).asExprOf[Object]
-    '{ DFEnum[E]($companionIdent) }
+  def dfTypeMacro[E <: DFEncoding](using Quotes, Type[E]): Expr[DFEnum[E]] = ???
 
   object Val:
     object TC:
       import DFVal.TC
       given DFEnumFromEntry[E <: DFEncoding, RE <: E]: TC[DFEnum[E], RE] with
         type OutP = CONST
-        def conv(dfType: DFEnum[E], value: RE)(using DFC): Out =
-          DFVal.Const(dfType, Some(value.bigIntValue), named = true)
+        def conv(dfType: DFEnum[E], value: RE)(using DFC): Out = ???
     object Compare:
       import DFVal.Compare
       given DFEnumCompareEntry[
-          E <: DFEncoding,
-          RE <: E,
-          Op <: FuncOp.===.type | FuncOp.=!=.type,
-          C <: Boolean
+          E <: DFEncoding, RE <: E,
+          Op <: FuncOp.===.type | FuncOp.=!=.type, C <: Boolean
       ]: Compare[DFEnum[E], RE, Op, C] with
         type OutP = CONST
-        def conv(dfType: DFEnum[E], arg: RE)(using DFC): Out =
-          DFVal.Const(dfType, Some(arg.bigIntValue))
+        def conv(dfType: DFEnum[E], arg: RE)(using DFC): Out = ???
     object Ops:
       given evOpAsDFEnumBinary[
-          P,
-          L <: DFValTP[DFBoolOrBit, P],
-          Comp <: Object,
-          E <: DFEncoding
+          P, L <: DFValTP[DFBoolOrBit, P], Comp <: Object, E <: DFEncoding
       ](using
           cc: CaseClass.Aux[Comp, DFEncoding, E]
       )(using
           check: E <:< DFEncoding.ExplicitWidth[1],
           dfType: DFEnum[E]
-      ): ExactOp2Aux["as", DFC, DFValAny, L, Comp, DFValTP[DFEnum[E], P]] =
-        new ExactOp2["as", DFC, DFValAny, L, Comp]:
-          type Out = DFValTP[DFEnum[E], P]
-          def apply(lhs: L, encodingComp: Comp)(using DFC): Out = trydf {
-            DFVal.Alias.AsIs(dfType, lhs)
-          }(using dfc, CTName("cast single bit to toggle enum"))
-      end evOpAsDFEnumBinary
+      ): ExactOp2Aux["as", DFC, DFValAny, L, Comp, DFValTP[DFEnum[E], P]] = ???
 
-      // explicitly any ExplicitWidth[1] encoding can be converted to a bool or bit or
-      // toggled, and not just Binary.
       extension [P, E <: DFEncoding.ExplicitWidth[1]](lhs: DFValTP[DFEnum[E], P])
         @targetName("boolOfDFEnumBinary")
-        def bool(using DFCG): DFValTP[DFBool, P] = trydf {
-          DFVal.Alias.AsIs(DFBool, lhs)
-        }
+        def bool(using DFCG): DFValTP[DFBool, P] = ???
         @targetName("bitOfDFEnumBinary")
-        def bit(using DFCG): DFValTP[DFBit, P] = trydf {
-          DFVal.Alias.AsIs(DFBit, lhs)
-        }
-        def toggle(using DFCG): DFValTP[DFEnum[E], P] = trydf {
-          DFVal.Func(lhs.dfType, FuncOp.unary_!, List(lhs))
-        }
+        def bit(using DFCG): DFValTP[DFBit, P] = ???
+        def toggle(using DFCG): DFValTP[DFEnum[E], P] = ???
       end extension
     end Ops
   end Val
