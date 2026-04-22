@@ -733,62 +733,13 @@ object DFVal extends DFValLP:
   trait TC[T <: DFTypeAny, R] extends TCCommon[T, R, DFValAny]:
     type OutP
     type Out = DFValTP[T, OutP]
-    final def apply(dfType: T, value: R)(using DFC): Out = trydf:
-      conv(dfType, value)
+    final def apply(dfType: T, value: R)(using DFC): Out = ???
 
-  // This is a dummy instance for DFIf and DFMatch specialized Exact1 extractions
   object TCDummy extends TC[DFTypeAny, DFValOf[DFTypeAny]]:
     type OutP = NOTCONST
-    def conv(dfType: DFTypeAny, value: DFValOf[DFTypeAny])(using dfc: DFC): DFValOf[DFTypeAny] =
-      ???
+    def conv(dfType: DFTypeAny, value: DFValOf[DFTypeAny])(using dfc: DFC): DFValOf[DFTypeAny] = ???
 
-  trait TCLP:
-    // Reject OPEN with a dedicated message
-    transparent inline given fromOPEN[T <: DFTypeAny]: TC[T, OPEN] =
-      compiletime.error("`OPEN` cannot be used here.")
-    // Accept any bubble value
-    given fromBubble[T <: DFTypeAny, V <: Bubble]: TC[T, V] with
-      type OutP = CONST
-      def conv(dfType: T, value: V)(using DFC): Out = Bubble.constValOf(dfType, named = true)
-    // Accept NOTHING for any DFType, unless not in DF domain, and then we limit it to Bits or Bit type
-    given fromNOTHING[T <: DFTypeAny](using
-        dt: DomainType
-    )(using
-        AssertGiven[
-          dt.type <:< DomainType.DF | T <:< DFBit | T <:< DFType[ir.DFBits, Args],
-          "`NOTHING` can only be assigned to either `Bits` or `Bit` DFHDL values outside of a dataflow (DF) domain."
-        ]
-    ): TC[T, NOTHING] with
-      type OutP = NOTCONST
-      def conv(dfType: T, value: NOTHING)(using DFC): Out = NOTHING(dfType)
-    transparent inline given errorDMZ[T <: DFTypeAny, R](using
-        t: ShowType[T],
-        r: ShowType[R]
-    ): TC[T, R] =
-      Error.call[
-        (
-            "Unsupported value of type `",
-            r.Out,
-            "` for DFHDL receiver type `",
-            t.Out,
-            "`."
-        )
-      ]
-    given sameValType[T <: DFTypeAny, P, V <: DFValTP[T, P]]: TC[T, V] with
-      type OutP = P
-      def conv(dfType: T, value: V)(using dfc: DFC): DFValTP[T, P] =
-        import dfc.getSet
-        given Printer = DefaultPrinter
-        val ret: DFValAny =
-          if (dfType != value.dfType && !dfType.asIR.isSimilarTo(value.dfType.asIR))
-            throw new IllegalArgumentException(
-              s"Unsupported value of type `${value.dfType.codeString}` for DFHDL receiver type `${dfType.codeString}`."
-            )
-          else value
-        ret.asValTP[T, P]
-      end conv
-    end sameValType
-  end TCLP
+  trait TCLP
   object TC extends TCLP:
     type Exact[T <: DFTypeAny] = Exact1[DFTypeAny, T, [t <: DFTypeAny] =>> t, DFC, TC]
     type Aux[T <: DFTypeAny, R, OutP0] = TC[T, R] { type OutP = OutP0 }
@@ -807,16 +758,10 @@ object DFVal extends DFValLP:
   trait TCConv[T <: DFTypeAny, R] extends TC[T, R]:
     type OutP
     type Out = DFValTP[T, OutP]
-    def conv(dfType: T, from: R)(using DFC): Out = apply(from)
+    def conv(dfType: T, from: R)(using DFC): Out = ???
     def apply(from: R)(using DFC): Out
 
-  trait TCConvLP:
-    given fromTC[T <: DFTypeAny, R, RP, TC <: DFVal.TC[T, R]](using
-        tc: TC { type OutP = RP },
-        dfType: T
-    ): TCConv[T, R] with
-      type OutP = RP
-      def apply(from: R)(using DFC): Out = tc(dfType, from)
+  trait TCConvLP
   object TCConv extends TCConvLP:
     export DFBits.Val.TCConv.given
     export DFDecimal.Val.TCConv.given
@@ -826,28 +771,9 @@ object DFVal extends DFValLP:
   trait TC_Or_OPEN_Or_Resource[T <: DFTypeAny, R] extends TC[T, R]:
     def connect(dfVal: DFValOf[T], that: R)(using DFC): Unit
   object TC_Or_OPEN_Or_Resource:
-    type Exact[T <: DFTypeAny] =
-      Exact1[DFTypeAny, T, [t <: DFTypeAny] =>> t, DFC, TC_Or_OPEN_Or_Resource]
-    given fromOPEN[T <: DFTypeAny]: TC_Or_OPEN_Or_Resource[T, OPEN] with
-      type OutP = NOTCONST
-      def conv(dfType: T, from: OPEN)(using DFC): Out = DFVal.OPEN(dfType)
-      def connect(dfVal: DFValOf[T], that: OPEN)(using DFC): Unit =
-        dfVal.connect(conv(dfVal.dfType, that))
-    given fromTC[T <: DFTypeAny, R, RP, TC <: DFVal.TC[T, R]](using
-        tc: TC { type OutP = RP }
-    ): TC_Or_OPEN_Or_Resource[T, R] with
-      type OutP = RP
-      def conv(dfType: T, from: R)(using DFC): Out = tc(dfType, from)
-      def connect(dfVal: DFValOf[T], that: R)(using DFC): Unit =
-        dfVal.connect(conv(dfVal.dfType, that))
-    given fromResource[T <: DFTypeAny, R <: Resource](using
-        cc: Resource.CanConnect[R, DFValOf[T]]
-    ): TC_Or_OPEN_Or_Resource[T, R] with
-      type OutP = NOTCONST
-      def conv(dfType: T, from: R)(using DFC): Out = ???
-      def connect(dfVal: DFValOf[T], that: R)(using DFC): Unit =
-        cc.connect(that, dfVal)
+    type Exact[T <: DFTypeAny] = Exact1[DFTypeAny, T, [t <: DFTypeAny] =>> t, DFC, TC_Or_OPEN_Or_Resource]
   end TC_Or_OPEN_Or_Resource
+
 
   trait Compare[T <: DFTypeAny, V, Op <: FuncOp, C <: Boolean] extends TCCommon[T, V, DFValAny]:
     type OutP
