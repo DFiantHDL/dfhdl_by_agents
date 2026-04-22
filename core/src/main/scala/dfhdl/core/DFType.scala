@@ -27,6 +27,3 @@ object DFType:
     type Aux[T, OT <: DFTypeAny] = TC[T] { type Type = OT }
 end DFType
 
-extension [T <: DFTypeAny, M <: ModifierAny](dfVal: DFVal[T, M])
-  @targetName("dfValDFType")
-  def dfType: T = ???
