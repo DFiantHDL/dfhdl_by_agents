@@ -852,64 +852,11 @@ object DFVal extends DFValLP:
   trait Compare[T <: DFTypeAny, V, Op <: FuncOp, C <: Boolean] extends TCCommon[T, V, DFValAny]:
     type OutP
     type Out = DFValTP[T, OutP]
-    final protected def func[P1, P2](arg1: DFValTP[?, P1], arg2: DFValTP[?, P2])(using
-        DFC,
-        ValueOf[Op],
-        ValueOf[C]
-    ): DFValTP[DFBool, P1 | P2] =
-      val list = if (valueOf[C]) List(arg2, arg1) else List(arg1, arg2)
-      DFVal.Func(DFBool, valueOf[Op], list)
-    def apply[P](dfVal: DFValTP[T, P], arg: V)(using
-        DFC,
-        ValueOf[Op],
-        ValueOf[C]
-    ): DFValTP[DFBool, P | OutP] = trydf:
-      val dfValArg = conv(dfVal.dfType, arg)(using dfc.anonymize)
-      func(dfVal, dfValArg)
+    def apply[P](dfVal: DFValTP[T, P], arg: V)(using DFC, ValueOf[Op], ValueOf[C]): DFValTP[DFBool, P | OutP] = ???
   end Compare
-  trait CompareLP:
-    transparent inline given errorDMZ[
-        T <: DFTypeAny,
-        R,
-        Op <: FuncOp,
-        C <: Boolean
-    ](using
-        t: ShowType[T],
-        r: ShowType[R]
-    ): Compare[T, R, Op, C] =
-      Error.call[
-        (
-            "Cannot compare DFHDL value of type `",
-            t.Out,
-            "` with value of type `",
-            r.Out,
-            "`."
-        )
-      ]
-    given sameValType[
-        T <: DFTypeAny,
-        P,
-        R <: DFValTP[T, P],
-        Op <: FuncOp.===.type | FuncOp.=!=.type,
-        C <: Boolean
-    ](using
-        ValueOf[Op],
-        ValueOf[C]
-    ): Compare[T, R, Op, C] with
-      type OutP = P
-      def conv(dfType: T, arg: R)(using dfc: DFC): Out =
-        import dfc.getSet
-        given Printer = DefaultPrinter
-        require(
-          dfType == arg.dfType,
-          s"Cannot compare DFHDL value type `${dfType.codeString}` with DFHDL value type `${arg.dfType.codeString}`."
-        )
-        arg
-    end sameValType
-  end CompareLP
+  trait CompareLP
   object Compare extends CompareLP:
-    type Aux[T <: DFTypeAny, V, Op <: FuncOp, C <: Boolean, OutP0] =
-      Compare[T, V, Op, C] { type OutP = OutP0 }
+    type Aux[T <: DFTypeAny, V, Op <: FuncOp, C <: Boolean, OutP0] = Compare[T, V, Op, C] { type OutP = OutP0 }
     export DFBoolOrBit.Val.Compare.given
     export DFBits.Val.Compare.given
     export DFDecimal.Val.Compare.given
