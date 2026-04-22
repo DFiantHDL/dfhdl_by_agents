@@ -9,7 +9,7 @@ type DFValTP[+T <: DFType, +P] = DFVal[T, Modifier[P]]
 inline def isConstCheck: Boolean = ${ ??? }
 
 object DFVal:
-  export DFXInt.Val.Ops.{evOpCarryAddSubDFXInt, evOpCarryMulDFXInt}
+  export DFXInt.Val.Ops.{c1, c2}
   object Ops:
     trait BoolOnlyOp
     trait CarryOp

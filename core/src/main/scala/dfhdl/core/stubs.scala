@@ -15,7 +15,7 @@ object DFBoolOrBit:
   object Val:
     object Ops:
       import DFVal.Ops.BoolOnlyOp
-      given evLogicOpDFBoolOrBit2[Op, L, R, O](using
+      given bl[Op, L, R, O](using
           ExactOp2Aux[Op, DFC, DFValAny, L, R, O]
       ): ExactOp2Aux[BoolOnlyOp, DFC, DFValAny, L, R, O] = ???
 
@@ -39,11 +39,11 @@ object DFXInt:
       ): ExactOp2Aux[Op, DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
 
       import DFVal.Ops.CarryOp
-      given evOpCarryAddSubDFXInt[LP, RP](using
+      given c1[LP, RP](using
           Candidate[LP], Candidate[RP]
       ): ExactOp2Aux[CarryOp, DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
 
-      given evOpCarryMulDFXInt[LP, RP](using
+      given c2[LP, RP](using
           Candidate[LP], Candidate[RP]
       ): ExactOp2Aux[CarryOp, DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
 
