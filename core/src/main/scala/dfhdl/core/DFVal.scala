@@ -13,7 +13,6 @@ import scala.annotation.tailrec
 
 import scala.reflect.ClassTag
 into final class DFVal[+T <: DFTypeAny, +M <: ModifierAny](val irValue: ir.DFVal | DFError)
-    extends DFMember[ir.DFVal]
 end DFVal
 
 type DFValAny = DFVal[DFTypeAny, ModifierAny]
