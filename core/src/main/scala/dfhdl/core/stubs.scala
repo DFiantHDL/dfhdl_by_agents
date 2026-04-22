@@ -18,8 +18,8 @@ type ModifierAny = Modifier[Any]
 object Modifier:
   type CONST = Modifier[Any]
 
-final class DFType[+T, +A]
-type DFTypeAny = DFType[Any, Any]
+final class DFType
+type DFTypeAny = DFType
 
 final case class DFC(mutableDB: MutableDB)
 
