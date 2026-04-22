@@ -350,6 +350,7 @@ object DFVal extends DFValLP:
     protected[core] def compareWidths[RW <: IntP, RT <: DFTypeW[RW]](
         rhs: DFValOf[RT]
     )(func: (Int, Int) => Boolean)(using dfc: DFC): Option[Boolean] = ???
+  end extension
 
   trait InitCheck[I]
   given [I](using
