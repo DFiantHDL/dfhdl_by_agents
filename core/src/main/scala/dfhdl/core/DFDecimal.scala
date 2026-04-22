@@ -348,53 +348,7 @@ object DFDecimal:
       private[DFDecimal] def interpolate(
           opExpr: Expr[String],
           explicitWidthOptionExpr: Expr[Option[IntP]]
-      )(dfc: Expr[DFC]): Expr[DFConstAny] =
-        import quotes.reflect.*
-        val explicitWidthTpeOption: Option[TypeRepr] = explicitWidthOptionExpr match
-          case '{ Some($expr) } => Some(expr.asTerm.tpe)
-          case _                => None
-        val signedForced = opExpr.value.get == "sd"
-        val (signedTpe, interpWidthTpe, fractionWidthTpe): (TypeRepr, TypeRepr, TypeRepr) =
-          fullTerm match
-            case Literal(StringConstant(t)) =>
-              fromDecString(t, signedForced) match
-                case Right((signed, width, fractionWidth, value)) =>
-                  if (!signedForced && value < 0)
-                    report.errorAndAbort(
-                      s"Negative value in unsigned `d\"\"` interpolation. Use `sd\"\"` for signed values."
-                    )
-                  explicitWidthTpeOption match
-                    case Some(ConstantType(IntConstant(explicitWidth))) =>
-                      val actualWidth = fromIntDecString(t, signedForced)._2
-                      if (explicitWidth < actualWidth)
-                        report.errorAndAbort(
-                          s"Explicit given width ($explicitWidth) is smaller than the actual width ($actualWidth)."
-                        )
-                    case _ =>
-                  (
-                    ConstantType(BooleanConstant(signed)),
-                    ConstantType(IntConstant(width)),
-                    ConstantType(IntConstant(fractionWidth))
-                  )
-                case Left(msg) =>
-                  report.errorAndAbort(msg)
-            case _ => (TypeRepr.of[Boolean], TypeRepr.of[Int], TypeRepr.of[Int])
-        val widthTpe: TypeRepr = explicitWidthTpeOption.getOrElse(interpWidthTpe)
-        val signedType = signedTpe.asTypeOf[Boolean]
-        val widthType = widthTpe.asTypeOf[IntP]
-        val fractionWidthType = fractionWidthTpe.asTypeOf[Int]
-        val fullExpr = fullTerm.asExprOf[String]
-        '{
-          $fullExpr.interpolate[
-            signedType.Underlying,
-            widthType.Underlying,
-            fractionWidthType.Underlying
-          ](
-            $opExpr,
-            $explicitWidthOptionExpr
-          )(using $dfc)
-        }
-      end interpolate
+      )(dfc: Expr[DFC]): Expr[DFConstAny] = ???
     end extension
   end StrInterp
 
