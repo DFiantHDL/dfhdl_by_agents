@@ -16,10 +16,10 @@ end ir
 
 trait ExactOp2Aux[Op, C, B, L, R, O]
 
-sealed class Modifier[+A, +C, +I, +P]
-type ModifierAny = Modifier[Any, Any, Any, Any]
+sealed class Modifier[+P]
+type ModifierAny = Modifier[Any]
 object Modifier:
-  type CONST = Modifier[Any, Any, Any, Any]
+  type CONST = Modifier[Any]
 
 export DFType.asFE
 
