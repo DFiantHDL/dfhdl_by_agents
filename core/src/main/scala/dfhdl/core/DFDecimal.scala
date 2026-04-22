@@ -448,149 +448,18 @@ object DFDecimal:
       def sd: DecStrCtx = sc
     end extension
 
-    private def uintConst(value: BigInt)(using DFC): DFConstOf[DFUInt[Int]] =
-      if (value < 0) throw new IllegalArgumentException(
-        sn"""|Unexpected negative value found for unsigned decimal string interpolation: $value
-             |To Fix: Use the signed decimal string interpolator `sd` instead."""
-      )
-      DFVal.Const(DFUInt.forced[Int](value.bitsWidth(false)), Some(value), named = true)
-    end uintConst
-    private def sintConst(value: BigInt)(using DFC): DFConstOf[DFSInt[Int]] =
-      DFVal.Const(DFSInt.forced[Int](value.bitsWidth(true)), Some(value), named = true)
-    end sintConst
+    private def uintConst(value: BigInt)(using DFC): DFConstOf[DFUInt[Int]] = ???
+    private def sintConst(value: BigInt)(using DFC): DFConstOf[DFSInt[Int]] = ???
 
     private def applyMacro(
         sc: Expr[DecStrCtx],
         args: Expr[Seq[Any]]
-    )(dfc: Expr[DFC])(using Quotes): Expr[DFConstAny] =
-      import quotes.reflect.*
-      val Varargs(argsExprs) = args.runtimeChecked
-      val parts = sc.parts.map(_.value.get).toList
-      object WidthExpr:
-        def unapply(arg: Expr[Any]): Option[Expr[IntP]] =
-          val tpe = arg.asTerm.tpe
-          tpe.asTypeOf[Any] match
-            case '[IntP] => Some(arg.asExprOf[IntP])
-            case _       =>
-              report.errorAndAbort(
-                s"Expecting a constant DFHDL Int value but found: `${tpe.showType}`",
-                arg.asTerm.pos
-              )
-      object ValueExpr:
-        def unapply(arg: Expr[Any]): Option[Expr[DFConstAny]] =
-          val tpe = arg.asTerm.tpe
-          tpe.asTypeOf[Any] match
-            case '[DFConstInt32] => Some(arg.asExprOf[DFConstInt32])
-            case '[Int]          => Some(ConstIntExpr(arg.asExprOf[Int]))
-            case '[BigInt]       => Some(ConstBigIntExpr(arg.asExprOf[BigInt]))
-            case '[String]       => Some(ConstStringExpr(arg.asExprOf[String]))
-            case _               =>
-              report.errorAndAbort(
-                s"Expecting a constant DFHDL Int value but found: `${tpe.showType}`",
-                arg.asTerm.pos
-              )
-      def ConstIntExpr(valueExpr: Expr[Int]): Expr[DFConstAny] =
-        ConstBigIntExpr('{ BigInt($valueExpr) })
-      def ConstStringExpr(valueExpr: Expr[String]): Expr[DFConstAny] =
-        ConstBigIntExpr('{ BigInt($valueExpr) })
-      def ConstBigIntExpr(valueExpr: Expr[BigInt]): Expr[DFConstAny] =
-        if (sc.funcName == "sd") '{ sintConst($valueExpr)(using $dfc) }
-        else '{ uintConst($valueExpr)(using $dfc) }
-      end ConstBigIntExpr
-      def AsIsExpr(widthExpr: Expr[IntP], valueExpr: Expr[DFConstAny]): Expr[DFConstAny] =
-        val widthType = widthExpr.asTerm.tpe.asTypeOf[IntP]
-        sc.funcName match
-          case "d" =>
-            '{
-              DFVal.Alias.AsIs(
-                DFUInt.forced[widthType.Underlying]($widthExpr)(using $dfc),
-                $valueExpr
-              )(using $dfc)
-            }
-          case "sd" =>
-            '{
-              DFVal.Alias.AsIs(
-                DFSInt.forced[widthType.Underlying]($widthExpr)(using $dfc),
-                $valueExpr
-              )(using $dfc)
-            }
-        end match
-      end AsIsExpr
-      val result = parts match
-        // $value
-        case "" :: "" :: Nil =>
-          val (ValueExpr(valueExpr) :: Nil) = argsExprs.toList.runtimeChecked
-          valueExpr
-        // $width'$value
-        case "" :: "'" :: "" :: Nil =>
-          val (WidthExpr(widthExpr) :: ValueExpr(valueExpr) :: Nil) =
-            argsExprs.toList.runtimeChecked
-          AsIsExpr(widthExpr, valueExpr)
-        // 16'$value
-        case widthNoValuePattern(widthStr) :: "" :: Nil =>
-          val (ValueExpr(valueExpr) :: Nil) = argsExprs.toList.runtimeChecked
-          val widthExpr = Expr(widthStr.toInt)
-          AsIsExpr(widthExpr, valueExpr)
-        // $width'1234
-        case "" :: valueNoWidthPattern(valueStr) :: Nil =>
-          val (WidthExpr(widthExpr) :: Nil) = argsExprs.toList.runtimeChecked
-          Expr(valueStr).asTerm.interpolate(Expr(sc.funcName), '{ Some($widthExpr) })(dfc)
-        // 16'1234
-        case widthValuePattern(widthStr, valueStr) :: Nil =>
-          val widthExpr = Expr(widthStr.toInt)
-          Expr(valueStr).asTerm.interpolate(Expr(sc.funcName), '{ Some($widthExpr) })(dfc)
-        // 1234
-        case numPattern(valueStr) :: Nil =>
-          Expr(valueStr).asTerm.interpolate(Expr(sc.funcName), '{ None })(dfc)
-        case _ =>
-          report.errorAndAbort(
-            s"Unsupported decimal string interpolation pattern"
-          )
-      end result
-      val ctName = '{ CTName(${ Expr(sc.funcName + " decimal string interpolation") }) }
-      val resultType = result.asTerm.tpe.asTypeOf[DFConstAny]
-      '{ trydf[resultType.Underlying]($result)(using $dfc, $ctName) }
-    end applyMacro
+    )(dfc: Expr[DFC])(using Quotes): Expr[DFConstAny] = ???
 
     private def unapplySeqMacro[T <: DFTypeAny](
         sc: Expr[DecStrCtx],
         arg: Expr[DFValOf[T]]
-    )(dfc: Expr[DFC])(using Quotes, Type[T]): Expr[Option[Seq[DFValOf[T]]]] =
-      import quotes.reflect.*
-      val parts = sc.parts
-      val partsStr = parts.map(_.value.get).toList
-      val op = sc.funcName
-      val opExpr = Expr(op)
-      if (parts.length > 1)
-        '{
-          compiletime.error(
-            "Extractors for decimal string interpolation are not allowed."
-          )
-          Some(Seq())
-        }
-      else
-        val dfVal = partsStr.head match
-          case widthValuePattern(widthStr, wordStr) =>
-            Literal(StringConstant(wordStr)).interpolate(
-              opExpr,
-              '{ Some(${ Expr(widthStr.toInt) }) }
-            )(dfc)
-          case _ => parts.head.asTerm.interpolate(opExpr, '{ None })(dfc)
-        val dfValType = dfVal.asTerm.tpe.asTypeOf[DFConstAny]
-        '{
-          val tc = compiletime.summonInline[
-            DFVal.Compare[T, dfValType.Underlying, FuncOp.===.type, false]
-          ]
-          Some(
-            Seq(
-              trydf(
-                tc.conv(${ arg }.dfType, $dfVal)(using $dfc)
-              )(using $dfc, CTName($opExpr))
-            )
-          )
-        }
-      end if
-    end unapplySeqMacro
+    )(dfc: Expr[DFC])(using Quotes, Type[T]): Expr[Option[Seq[DFValOf[T]]]] = ???
   end StrInterpOps
 
   object Val:
