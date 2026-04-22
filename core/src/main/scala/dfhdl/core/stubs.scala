@@ -29,12 +29,12 @@ object DFXInt:
     trait Candidate[P]
 
     object Ops:
-      type CommutativeArithOp = Int
-      type NonCommutativeArithOp = String
-      given evOpCommutativeArithDFXInt[Op <: CommutativeArithOp, LP, RP](using
+      type A = Int
+      type B = String
+      given arith1[Op <: A, LP, RP](using
           Candidate[LP], Candidate[RP]
       ): ExactOp2Aux[Op, DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
-      given evOpNonCommutativeArithDFXInt[Op <: NonCommutativeArithOp, LP, RP](using
+      given arith2[Op <: B, LP, RP](using
           Candidate[LP], Candidate[RP]
       ): ExactOp2Aux[Op, DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
 
