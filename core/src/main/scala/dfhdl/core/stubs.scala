@@ -66,15 +66,9 @@ object DFBoolOrBit:
 
     object Ops:
       import DFVal.Ops.BoolOnlyOp
-      given evLogicOpDFBoolOrBit[Op <: FuncOp, L, LP, R, RP](using
-          icL: Candidate.Aux[L, LP],
-          icR: Candidate.Aux[R, RP],
-          op: ValueOf[Op]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFTypeAny, LP | RP]] = ???
       given evLogicOpDFBoolOrBit2[Op <: FuncOp, L, R, O <: DFValAny](using
           ic: ExactOp2Aux[Op, DFC, DFValAny, L, R, O]
       ): ExactOp2Aux[BoolOnlyOp[Op], DFC, DFValAny, L, R, O] = ???
-
     end Ops
   end Val
 end DFBoolOrBit
