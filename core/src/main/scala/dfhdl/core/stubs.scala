@@ -4,7 +4,6 @@ import ir.DFVal.Func.Op as FuncOp
 import ir.DFDecimal.NativeType
 import NativeType.*
 import scala.quoted.*
-import scala.compiletime.ops.boolean.||
 
 // stubs replacing dfhdl.compiler.ir and dfhdl.internals
 object ir:
@@ -34,7 +33,6 @@ object ir:
     sealed trait NativeType
     object NativeType:
       sealed trait Int32 extends NativeType
-      sealed trait BitAccurate extends NativeType
 end ir
 
 trait Position
@@ -47,10 +45,6 @@ object Modifier:
   type CONST = Modifier[Any, Any, Any, Any]
 
 type IntP = Any
-object IntP:
-  type +[L <: IntP, R <: IntP] = Int
-  type Max[L <: IntP, R <: IntP] = Int
-end IntP
 
 export DFType.asFE
 
