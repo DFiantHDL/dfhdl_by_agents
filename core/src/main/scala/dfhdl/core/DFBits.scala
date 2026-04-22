@@ -9,38 +9,15 @@ import scala.util.boundary, boundary.break
 
 type DFBits[W <: IntP] = DFType[ir.DFBits, Args1[W]]
 object DFBits:
-  def apply[W <: IntP](width: IntParam[W])(using
-      dfc: DFCG, check: Arg.Width.CheckNUB[W]
-  ): DFBits[W] = ???
-  def forced[W <: IntP](width: Int): DFBits[W] = ???
-  def apply[W <: IntP](using dfc: DFCG, dfType: => DFBits[W]): DFBits[W] = ???
-  def until[V <: IntP](sup: IntParam[V])(using
-      dfc: DFCG, check: Arg.LargerThan1.CheckNUB[V]
-  ): DFBits[IntP.CLog2[V]] = ???
-  def to[V <: IntP](max: IntParam[V])(using
-      dfc: DFCG, check: Arg.Positive.CheckNUB[V]
-  ): DFBits[IntP.CLog2[IntP.+[V, 1]]] = ???
-
   given [W <: IntP & Singleton](using
       dfc: DFCG, v: ValueOf[W], check: Arg.Width.CheckNUB[W]
   ): DFBits[W] = ???
 
-  protected object `AW == TW` extends Check2[Int, Int, [AW <: Int, TW <: Int] =>> true, [AW <: Int, TW <: Int] =>> ""]
-  protected object `LW >= RW` extends Check2[Int, Int, [LW <: Int, RW <: Int] =>> true, [LW <: Int, RW <: Int] =>> ""]
-  protected[core] object BitIndex extends Check2[Int, Int, [I <: Int, W <: Int] =>> true, [I <: Int, W <: Int] =>> ""]
-  protected[core] object BitsHiLo extends Check2[Int, Int, [H <: Int, L <: Int] =>> true, [H <: Int, L <: Int] =>> ""]
-  trait CompareCheck[ValW <: IntP, ArgW <: IntP, Castle <: Boolean]:
-    def apply(dfValWidth: Int, argWidth: Int): Unit
+  trait CompareCheck[ValW <: IntP, ArgW <: IntP, Castle <: Boolean]
   object CompareCheck:
-    given [ValW <: IntP, ArgW <: IntP, Castle <: Boolean]: CompareCheck[ValW, ArgW, Castle] with
-      def apply(dfValWidth: Int, argWidth: Int): Unit = ???
+    given [ValW <: IntP, ArgW <: IntP, Castle <: Boolean]: CompareCheck[ValW, ArgW, Castle] with {}
 
-
-
-  object StrInterpOps:
-    extension (sc: StringContext)
-      def h(args: Any*)(using DFC): Any = ???
-      def b(args: Any*)(using DFC): Any = ???
+  object StrInterpOps
 
   object Val:
     trait Candidate[R] extends Exact0.TC[R, DFC]:
