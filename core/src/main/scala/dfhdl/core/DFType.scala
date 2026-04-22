@@ -1,12 +1,9 @@
 package dfhdl.core
 import dfhdl.compiler.ir
-import scala.annotation.targetName
 
 sealed trait Args
 sealed trait NoArgs extends Args
 sealed trait Args1[T1] extends Args
-sealed trait Args2[T1, T2] extends Args
-sealed trait Args3[T1, T2, T3] extends Args
 sealed trait Args4[T1, T2, T3, T4] extends Args
 
 final class DFType[+T <: ir.DFType, +A <: Args](val value: T) extends AnyVal
@@ -17,6 +14,5 @@ object DFType:
   export DFBoolOrBit.given
   export DFBits.given
   export DFDecimal.given
-
 end DFType
 
