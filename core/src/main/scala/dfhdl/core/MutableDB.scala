@@ -348,86 +348,18 @@ final class MutableDB():
 
   object ResourceOwnershipContext:
     import dfhdl.platforms.resources.*
-    import dfhdl.compiler.ir.annotation.HWAnnotation
-    import dfhdl.compiler.ir.constraints.SigConstraint
-    private var topResourceOwners: List[ResourceOwner] = Nil
-    private var stack: List[ResourceOwner] = Nil
-    private val connectedDclResourceMap = mutable.Map.empty[DFVal.Dcl, List[(Range, Resource)]]
-    private val connectedDomainOwnerMap = mutable.Map.empty[DFRefAny, ClkResource]
-    def getConnectedDclResourceMap: Map[DFVal.Dcl, List[(Range, Resource)]] =
-      connectedDclResourceMap.toMap
-    def connectDclResource(dcl: DFVal.Dcl, range: Range, resource: Resource): Unit =
-      connectedDclResourceMap.updateWith(dcl) {
-        case Some(connections) => Some((range, resource) :: connections)
-        case None              => Some(List((range, resource)))
-      }
-    def connectDomainOwner(domainOwner: DFDomainOwner, clkResource: ClkResource): Unit =
-      connectedDomainOwnerMap.updateWith(domainOwner.ownerRef) {
-        case Some(clkResource) =>
-          throw new IllegalArgumentException(
-            s"Domain owner ${domainOwner.getFullName} already has a clock resource ${clkResource.getFullId}"
-          )
-        case None => Some(clkResource)
-      }
-    def replaceDcl(fromPort: DFVal.Dcl, toPort: DFVal.Dcl): Unit =
-      connectedDclResourceMap.get(fromPort) match
-        case Some(connections) =>
-          connectedDclResourceMap -= fromPort
-          connectedDclResourceMap += toPort -> connections
-        case None => // do nothing
-    def getConstrainedDcls(): Map[DFVal.Dcl, DFVal.Dcl] =
-      connectedDclResourceMap.map { case (dcl, connections) =>
-        // assuming constrained dcls have known width
-        val dclWidth = dcl.widthIntOpt.get
-        // separate existing constraints from other annotations
-        val (existingSigConstraints, otherAnnotations) = dcl.meta.annotations.partition {
-          case cs: SigConstraint => true
-          case _                 => false
-        }.asInstanceOf[(List[SigConstraint], List[HWAnnotation])]
-        // collect all constraints from the resources that are connected to this dcl
-        val newSigConstraints = connections.flatMap { case (range, resource) =>
-          if (range.length != dclWidth) resource.allSigConstraints.flatMap { cs =>
-            for (i <- range) yield cs.updateBitIdx(i)
-          }
-          else resource.allSigConstraints
-        }
-        // merge the existing constraints with the new constraints
-        val updatedSigConstraints = (existingSigConstraints ++ newSigConstraints).merge.consolidate(
-          dclWidth
-        )
-        // merge all other annotations
-        val updatedAnnotations = updatedSigConstraints ++ otherAnnotations
-        dcl -> dcl.copy(meta = dcl.meta.copy(annotations = updatedAnnotations))
-      }.toMap
-    end getConstrainedDcls
-    def getConstrainedDomainOwner(domainOwner: DFDomainOwner): DFDomainOwner =
-      connectedDomainOwnerMap.get(domainOwner.ownerRef) match
-        case Some(clkResource) =>
-          // separate existing constraints from other annotations
-          val (existingSigConstraints, otherAnnotations) = domainOwner.meta.annotations.partition {
-            case cs: SigConstraint => true
-            case _                 => false
-          }.asInstanceOf[(List[SigConstraint], List[HWAnnotation])]
-          val newSigConstraints = clkResource.allSigConstraints
-          // merge the existing constraints with the new constraints
-          val updatedSigConstraints = (existingSigConstraints ++ newSigConstraints).merge
-          val updatedMeta = domainOwner.meta.copy(annotations = updatedSigConstraints)
-          val updatedDomainOwner = domainOwner match
-            case design: DFDesignBlock       => design.copy(meta = updatedMeta)
-            case domain: DomainBlock         => domain.copy(meta = updatedMeta)
-            case interface: DFInterfaceOwner => interface.copy(meta = updatedMeta)
-          updatedDomainOwner
-        case None => domainOwner
-    end getConstrainedDomainOwner
-    def getTopResourceOwners: List[ResourceOwner] = topResourceOwners
-    def emptyTopResourceOwners(): Unit = topResourceOwners = Nil
-    def enter(owner: ResourceOwner): Unit =
-      if (stack.isEmpty) topResourceOwners = owner :: topResourceOwners
-      stack = owner :: stack
-    def exit(): Unit =
-      stack = stack.drop(1)
-    def owner: ResourceOwner = stack.head
-    def ownerOpt: Option[ResourceOwner] = stack.headOption
+    def getConnectedDclResourceMap: Map[DFVal.Dcl, List[(Range, Resource)]] = ???
+    def connectDclResource(dcl: DFVal.Dcl, range: Range, resource: Resource): Unit = ???
+    def connectDomainOwner(domainOwner: DFDomainOwner, clkResource: ClkResource): Unit = ???
+    def replaceDcl(fromPort: DFVal.Dcl, toPort: DFVal.Dcl): Unit = ???
+    def getConstrainedDcls(): Map[DFVal.Dcl, DFVal.Dcl] = ???
+    def getConstrainedDomainOwner(domainOwner: DFDomainOwner): DFDomainOwner = ???
+    def getTopResourceOwners: List[ResourceOwner] = ???
+    def emptyTopResourceOwners(): Unit = ???
+    def enter(owner: ResourceOwner): Unit = ???
+    def exit(): Unit = ???
+    def owner: ResourceOwner = ???
+    def ownerOpt: Option[ResourceOwner] = ???
   end ResourceOwnershipContext
 
   object GlobalTagContext:
