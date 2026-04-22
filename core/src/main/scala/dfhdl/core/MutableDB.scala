@@ -38,17 +38,9 @@ private case class MemberEntry(
 )
 
 class DesignContext:
-  val members = mutable.ArrayBuffer.empty[MemberEntry]
-  val memberTable = mutable.Map.empty[DFMember, Int]
-  val refTable = mutable.Map.empty[DFRefAny, DFMember]
-  val originRefTable = mutable.Map.empty[DFRef.TwoWayAny, DFMember]
-  val unreachableNamedValues = mutable.Map.empty[DFVal, DFVal]
-  val unreachableDFTypes = mutable.Map.empty[DFType, DFType]
-  var defInputs = List.empty[DFValAny]
-  val loopIterMap = mutable.Map.empty[Meta, DFValAny]
+  def refTable: mutable.Map[DFRefAny, DFMember] = ???
+  def originRefTable: mutable.Map[DFRef.TwoWayAny, DFMember] = ???
   var isDuplicate = false
-
-  def setOriginRefs(member: DFMember): Unit = ???
   def addMember[M <: DFMember](member: M): M = ???
   def plantMember[M <: DFMember](
       owner: DFOwner | DFMember.Empty,
@@ -60,11 +52,7 @@ class DesignContext:
   def replaceMember[M <: DFMember](originalMember: M, newMember: M): M = ???
   def ignoreMember[M <: DFMember](member: M): M = ???
   def hasMember(member: DFMember): Boolean = ???
-  def getMemberRefs(member: DFMember): Set[DFRefAny] = ???
-  def getLatestMember: DFMember = ???
   def inject(sourceCtx: DesignContext): Unit = ???
-  def getImmutableMemberList: List[DFMember] = ???
-  def getImmutableRefTable: Map[DFRefAny, DFMember] = ???
   def getReachableNamedValue(dfVal: DFVal, cf: => DFVal): DFVal = ???
   def getReachableDFType(dfType: DFType, cf: => DFType): DFType = ???
 end DesignContext
