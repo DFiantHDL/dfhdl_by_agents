@@ -255,29 +255,11 @@ end Width
 
 extension [T <: DFTypeAny, M <: ModifierAny](dfVal: DFVal[T, M])
   @targetName("dfValWidthOpt")
-  def widthIntOpt(using dfc: DFC, w: Width[T]): Option[Int] =
-    import dfc.getSet
-    dfVal.asIR.dfType.widthIntOpt
-  def widthIntParam(using dfc: DFC, w: Width[T]): IntParam[w.Out] =
-    import dfc.getSet
-    dfVal.dfType.widthIntParam
+  def widthIntOpt(using dfc: DFC, w: Width[T]): Option[Int] = ???
+  def widthIntParam(using dfc: DFC, w: Width[T]): IntParam[w.Out] = ???
 
 extension [T](t: T)(using tc: DFType.TC[T])
   @targetName("tWidthOpt")
-  def widthIntOpt(using dfc: DFC, w: Width[tc.Type]): Option[Int] =
-    import dfc.getSet
-    tc(t).asIR.widthIntOpt
-  def widthIntParam(using dfc: DFC, w: Width[tc.Type]): IntParam[w.Out] =
-    import dfc.getSet
-    def intParam(dfTypeIR: ir.DFType): IntParam[Int] = dfTypeIR match
-      case ir.DFBits(width)                        => width.get
-      case ir.DFXInt(_, width, _)                  => width.get
-      case ir.DFVector(cellType, cellDimParamRefs) =>
-        intParam(cellType) * cellDimParamRefs.map(_.get).asInstanceOf[List[IntParam[Int]]].reduce(
-          (l, r) => (l * r).asInstanceOf[IntParam[Int]]
-        )
-      case ir.DFStruct(_, fieldMap) =>
-        fieldMap.values.map(intParam).reduce(_ + _).asInstanceOf[IntParam[Int]]
-      case _ => IntParam.forced[Int](dfTypeIR.widthIntOpt.get)
-    intParam(tc(t).asIR).asInstanceOf[IntParam[w.Out]]
+  def widthIntOpt(using dfc: DFC, w: Width[tc.Type]): Option[Int] = ???
+  def widthIntParam(using dfc: DFC, w: Width[tc.Type]): IntParam[w.Out] = ???
 end extension
