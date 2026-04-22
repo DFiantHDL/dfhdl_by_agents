@@ -101,7 +101,4 @@ object DFXInt:
   end Val
 end DFXInt
 
-type DFInt32 =
-  DFType[ir.DFDecimal, Args4[Boolean, Int, 0, Int32]]
-final val DFInt32 = ir.DFInt32.asFE[DFInt32]
-type DFConstInt32 = DFConstOf[DFInt32]
+type DFConstInt32 = DFConstOf[DFTypeAny]
