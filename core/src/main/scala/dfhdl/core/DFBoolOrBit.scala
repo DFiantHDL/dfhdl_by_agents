@@ -84,40 +84,6 @@ object DFBoolOrBit:
           ic: ExactOp2Aux[Op, DFC, DFValAny, L, R, O]
       ): ExactOp2Aux[BoolOnlyOp[Op], DFC, DFValAny, L, R, O] = ???
 
-      extension [P](lhs: DFValTP[DFBoolOrBit, P])
-        def toScalaBoolean(using DFC, DFVal.ConstCheck[P]): Boolean =
-          lhs.toScalaValue
-        def toScalaBitNum(using DFC, DFVal.ConstCheck[P]): BitNum =
-          if (lhs.toScalaBoolean) 1 else 0
-        def toBits[W <: IntP](width: IntParam[W])(using
-            DFCG,
-            Constraints.Width.CheckNUB[false, W]
-        ): DFValTP[DFBits[W], P] = ???
-        def toUInt[W <: IntP](width: IntParam[W])(using
-            DFCG,
-            Constraints.Width.CheckNUB[false, W]
-        ): DFValTP[DFUInt[W], P] = ???
-        def toSInt[W <: IntP](width: IntParam[W])(using
-            DFCG,
-            Constraints.Width.CheckNUB[true, W]
-        ): DFValTP[DFSInt[W], P] = ???
-      end extension
-      extension [P](lhs: DFValTP[DFBit, P])
-        def rising(using DFC): DFValOf[DFBool] = ???
-        def falling(using DFC): DFValOf[DFBool] = ???
-        def bool(using DFCG): DFValTP[DFBool, P] = ???
-        @targetName("notOfDFBit")
-        def unary_!(using DFCG): DFValTP[DFBit, P] = ???
-        @targetName("not2OfDFBit")
-        inline def unary_~(using DFCG) = lhs.unary_!
-      end extension
-      extension [P](lhs: DFValTP[DFBool, P])
-        def bit(using DFCG): DFValTP[DFBit, P] = ???
-        @targetName("notOfDFBool")
-        def unary_!(using DFCG): DFValTP[DFBool, P] = ???
-        @targetName("not2OfDFBool")
-        inline def unary_~(using DFCG) = lhs.unary_!
-
       extension [T <: DFBoolOrBit, P](lhs: DFValTP[T, P])
         @targetName("notOfDFBoolOrBit")
         private[core] def not(using DFC): DFValTP[T, P] = ???
