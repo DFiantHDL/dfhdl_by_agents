@@ -92,11 +92,6 @@ object DFXInt:
         LP | RP
       ]] = ???
 
-      // TODO: this takes the RHS's width as the result type width. This is how VHDL behaves.
-      // But verilog requires the result type width to be the same as the LHS's width.
-      // The general rule that we apply in evOpArithDFXInt is to take the LHS's width and the RHS is also resized to the LHS's width.
-      // This approach always works, but then requires resizing if we require the actual (smaller) width of the result.
-      // However when compiling to verilog this creates linting warnings.
     end Ops
   end Val
 end DFXInt
