@@ -2,7 +2,7 @@ package dfhdl.core
 
 trait ExactOp2Aux[Op, C, O]
 
-sealed class Modifier[+P]
+trait Modifier[+P]
 type ModifierAny = Modifier[Any]
 object Modifier:
   type CONST = Modifier[Any]
