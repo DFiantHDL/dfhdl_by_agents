@@ -239,43 +239,7 @@ object DFVal extends DFValLP:
     )(using
         dfc: DFC,
         check: InitCheck[I]
-    ): DFVal[DFVector[T, Tuple1[D1]], Modifier[A, C, Modifier.Initialized, P]] = trydf:
-      import dfc.getSet
-      val vectorType = dfVal.dfType
-      import DFVector.{lengthIntOpt, cellType}
-      val length = vectorType.lengthIntOpt.getOrElse {
-        throw new IllegalArgumentException(
-          s"Vector length must be a known integer literal to be initialized from a file."
-        )
-      }
-      val width = vectorType.cellType.widthIntOpt.getOrElse {
-        throw new IllegalArgumentException(
-          s"Vector cell type must have a known width to be initialized from a file."
-        )
-      }
-      val data = ir.InitFileFormat.readInitFile(
-        path, format, length, width, undefinedValue
-      )
-      val initFileConst = vectorType.cellType.asIR match
-        case ir.DFBits(_) => DFVal.Const(vectorType, data)
-        case cellType     =>
-          DFVal.Const(vectorType, data.map(cellType.bitsDataToData))
-
-      dfVal.initForced(List(initFileConst))
-    // TODO: for now, we read the data immediately. In the future, incremental compilation will make
-    // it beneficial to wait for the backend last stages to do so.
-    // infix def initFile(
-    //     path: String,
-    //     format: ir.InitFileFormat = ir.InitFileFormat.Auto
-    // )(using
-    //     DFC,
-    //     InitCheck[I]
-    // ): DFVal[DFVector[DFBits[W], D], Modifier[A, C, Modifier.Initialized, P]] =
-    //   val initFileFunc =
-    //     DFVal.Func(dfVal.dfType, DFVal.Func.Op.InitFile(format, path), List.empty[ir.DFVal])(using
-    //       dfc.anonymize
-    //     ).asConstOf[DFVector[DFBits[W], D]]
-    //   dfVal.initForced(List(initFileFunc))
+    ): DFVal[DFVector[T, Tuple1[D1]], Modifier[A, C, Modifier.Initialized, P]] = ???
   end extension
 
   implicit def BooleanHack(from: DFValOf[DFBoolOrBit])(using DFC): Boolean =
