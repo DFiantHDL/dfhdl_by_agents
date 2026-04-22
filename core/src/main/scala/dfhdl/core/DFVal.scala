@@ -11,7 +11,7 @@ inline def isConstCheck: Boolean = ${ ??? }
 object DFVal:
   export DFXInt.Val.Ops.{evOpCarryAddSubDFXInt, evOpCarryMulDFXInt}
   object Ops:
-    trait BoolOnlyOp[Op]
-    trait CarryOp[Op]
+    trait BoolOnlyOp
+    trait CarryOp
 
 
