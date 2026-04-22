@@ -134,8 +134,7 @@ end DFBoolOrBit
 type DFBool = DFType[ir.DFBool.type, NoArgs]
 final lazy val DFBool = ir.DFBool.asFE[DFBool]
 
-type DFDecimal[S <: Boolean, W <: IntP, F <: Int, N <: NativeType] =
-  DFType[ir.DFDecimal, Args4[S, W, F, N]]
+type DFDecimal[S, W, F, N] = DFType[ir.DFDecimal, Args4[S, W, F, N]]
 object DFDecimal:
   object StrInterpOps:
     extension (inline sc: StringContext)
@@ -153,7 +152,7 @@ object DFDecimal:
   end Val
 end DFDecimal
 
-type DFXInt[S <: Boolean, W <: IntP, N <: NativeType] = DFDecimal[S, W, 0, N]
+type DFXInt[S, W, N] = DFDecimal[S, W, 0, N]
 object DFXInt:
   object Val:
     trait Candidate[R]:
