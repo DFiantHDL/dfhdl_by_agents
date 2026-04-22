@@ -238,7 +238,6 @@ sealed protected trait DFValLP:
       import dfc.getSet
       x.asIR.getConstData[ir.RateNumber].toOption.get
   // lower priority than other evidence because this is more generic
-  export DFXInt.Val.Ops.{evOpCommutativeArithDFXInt, evOpNonCommutativeArithDFXInt}
   export DFOpaque.Val.Ops.{evOpAsDFOpaqueTFE, evOpAsDFOpaqueComp}
   export DFBits.Val.Ops.{evLogicOpDFBits, evConcatOpDFBits}
 end DFValLP
@@ -625,10 +624,6 @@ object DFVal extends DFValLP:
   export DFTuple.Val.Ops.given
   export DFVector.Val.Ops.given
   export DFXInt.Val.Ops.{
-    evOpArithIntDFInt32,
-    evOpApplyDFXInt,
-    evOpApplyRangeDFXInt,
-    evOpShiftOrPowerInt,
     evOpCarryAddSubDFXInt,
     evOpCarryMulDFXInt
   }

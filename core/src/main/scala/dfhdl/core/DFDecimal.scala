@@ -414,52 +414,7 @@ object DFXInt:
     object Ops:
       export DFUInt.Val.Ops.*
       export DFSInt.Val.Ops.*
-      import DFBits.{BitIndex, BitsHiLo}
       import IntP.{-, +}
-      given evOpApplyDFXInt[
-          S <: Boolean,
-          W <: IntP,
-          A,
-          C,
-          I,
-          P,
-          L <: DFVal[DFXInt[S, W, BitAccurate], Modifier[A, C, I, P]],
-          R
-      ](using
-          ub: DFUInt.Val.UBArg[W, R]
-      ): ExactOp2Aux["apply", DFC, DFValAny, L, R, DFValTP[DFBit, P]] =
-        ???
-      end evOpApplyDFXInt
-      given evOpApplyRangeDFXInt[
-          S <: Boolean,
-          W <: IntP,
-          A,
-          C,
-          I,
-          P,
-          L <: DFVal[DFXInt[S, W, BitAccurate], Modifier[A, C, I, P]],
-          HI <: IntP,
-          LO <: IntP
-      ](using
-          checkHigh: BitIndex.CheckNUB[HI, W],
-          checkLow: BitIndex.CheckNUB[LO, W],
-          checkHiLo: BitsHiLo.CheckNUB[HI, LO]
-      ): ExactOp3Aux["apply", DFC, DFValAny, L, HI, LO, DFValTP[
-        DFXInt[S, HI - LO + 1, BitAccurate],
-        P
-      ]] =
-        ???
-      end evOpApplyRangeDFXInt
-      given evOpShiftOrPowerInt[
-          Op <: FuncOp.>>.type | FuncOp.<<.type | FuncOp.**.type,
-          L <: Int,
-          RP,
-          R <: DFValTP[DFInt32, RP]
-      ](using
-          op: ValueOf[Op]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFInt32, RP]] =
-        ???
-      end evOpShiftOrPowerInt
 
       export dfhdl.internals.clog2
       def clog2[P, S <: Boolean, W <: IntP, N <: NativeType](
