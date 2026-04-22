@@ -14,16 +14,14 @@ object DFDecimal:
   given DFInt32 = DFInt32
 
   object StrInterpOps:
-    opaque type DecStrCtx <: StringContext = StringContext
     object DecStrCtx:
-      extension (inline sc: DecStrCtx)
+      extension (inline sc: StringContext)
         transparent inline def apply(inline args: Any*)(using dfc: DFCG): Any =
           ${ applyMacro('sc, 'args)('dfc) }
-
     private def applyMacro(
-        sc: Expr[DecStrCtx],
+        sc: Expr[StringContext],
         args: Expr[Seq[Any]]
-    )(dfc: Expr[DFC])(using Quotes): Expr[DFConstAny] = ???
+    )(dfc: Expr[DFC])(using Quotes): Expr[Any] = ???
   end StrInterpOps
 
   object Val:
