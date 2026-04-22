@@ -25,7 +25,7 @@ object DFBoolOrBit:
   object Val:
     object Ops:
       import DFVal.Ops.BoolOnlyOp
-      given evLogicOpDFBoolOrBit2[Op <: FuncOp, L, R, O <: DFValAny](using
+      given evLogicOpDFBoolOrBit2[Op, L, R, O <: DFValAny](using
           ic: ExactOp2Aux[Op, DFC, DFValAny, L, R, O]
       ): ExactOp2Aux[BoolOnlyOp[Op], DFC, DFValAny, L, R, O] = ???
 
