@@ -48,121 +48,25 @@ class DesignContext:
   val loopIterMap = mutable.Map.empty[Meta, DFValAny]
   var isDuplicate = false
 
-  def setOriginRefs(member: DFMember): Unit =
-    member.getRefs.foreach { r => originRefTable += r -> member }
-
-  def addMember[M <: DFMember](member: M): M =
-    memberTable += (member -> members.length)
-    members += MemberEntry(member, Set(), false)
-    setOriginRefs(member)
-    member
-  end addMember
-
-  // same as addMember, but if the member is at design-level scope,
-  // the ownerRef needs to be added, referring to the meta designer owner.
+  def setOriginRefs(member: DFMember): Unit = ???
+  def addMember[M <: DFMember](member: M): M = ???
   def plantMember[M <: DFMember](
       owner: DFOwner | DFMember.Empty,
       member: M,
       updateOwnerCond: DFOwner => Boolean = _.isInstanceOf[DFDesignBlock]
-  )(using MemberGetSet): M =
-    if (owner == DFMember.Empty || updateOwnerCond(member.getOwner))
-      // now this reference will refer to meta design owner
-      newRefFor[DFOwner | DFMember.Empty, DFOwner.Ref](
-        member.ownerRef,
-        owner
-      )
-    addMember(member)
-  end plantMember
-
-  def newRefFor[M <: DFMember, R <: DFRef[M]](ref: R, member: M): R =
-    memberTable.get(member) match
-      // The member already exists, but it might have been updated
-      case Some(idx) =>
-        // get the newest member at index
-        val memberEntry = members(idx)
-        members.update(idx, memberEntry.copy(refSet = memberEntry.refSet + ref))
-        refTable += (ref -> memberEntry.irValue)
-      // In case where we do meta programming and planting one design into another,
-      // we may not have the member available at the table. This is OK.
-      // So we only add the reference here.
-      case _ =>
-        refTable += (ref -> member)
-    ref
-  end newRefFor
-
-  def setMember[M <: DFMember](originalMember: M, newMemberFunc: M => M): M =
-    val idx = memberTable(originalMember)
-    // get the most updated member currently positioned at the index of the original member
-    val originalMemberUpdated = members(idx)._1.asInstanceOf[M]
-    // apply function to get the new member
-    val newMember = newMemberFunc(originalMemberUpdated)
-    // For DFDesignBlock, `copy` creates a fresh instance whose private
-    // `designInstCache` is None. Transfer the pre-copy cache so elaboration
-    // lookups via `designBlock.getDesignInst` keep working across replaces
-    // (e.g., `setClsNamePos` overwriting meta/instMode).
-    (originalMemberUpdated, newMember) match
-      case (orig: DFDesignBlock, upd: DFDesignBlock) =>
-        upd.copyDesignInstCacheFrom(orig)
-      case _ =>
-    val memberEntry = members(idx)
-    // update all references to the new member
-    memberEntry.refSet.foreach(r => refTable.update(r, newMember))
-    // add the member to the table with the position index
-    // (we don't remove the old member since it might still be used as a user-reference in a mutable DB)
-    memberTable.update(newMember, idx)
-    // update the member in the member position array
-    members.update(idx, memberEntry.copy(irValue = newMember))
-    // update the origin references to the new member
-    setOriginRefs(newMember)
-    newMember
-  end setMember
-
-  def replaceMember[M <: DFMember](originalMember: M, newMember: M): M =
-    if (originalMember == newMember) return newMember // nothing to do
-    // marking the newMember slot as 'ignore' in case it exists
-    ignoreMember(newMember)
-    // replace the member by setting a new one at its position
-    setMember[M](originalMember, _ => newMember)
-    newMember
-  end replaceMember
-
-  def ignoreMember[M <: DFMember](
-      member: M
-  ): M = // ignoring it means removing it for the immutable DB
-    memberTable.get(member).foreach { idx =>
-      members.update(idx, members(idx).copy(irValue = member, ignore = true))
-    }
-    member
-  end ignoreMember
-
-  def hasMember(member: DFMember): Boolean = memberTable.contains(member)
-
-  def getMemberRefs(member: DFMember): Set[DFRefAny] =
-    memberTable.get(member).map(idx => members(idx).refSet).getOrElse(Set.empty)
-
-  def getLatestMember: DFMember =
-    members.view.filterNot(e => e.ignore).map(e => e.irValue).head
-
-  def inject(sourceCtx: DesignContext): Unit =
-    sourceCtx.getImmutableMemberList.foreach { m =>
-      if (!memberTable.contains(m))
-        addMember(m)
-    }
-    refTable ++= sourceCtx.refTable
-    originRefTable ++= sourceCtx.originRefTable
-  end inject
-
-  def getImmutableMemberList: List[DFMember] =
-    members.view.filterNot(e => e.ignore).map(e => e.irValue).toList
-
-  def getImmutableRefTable: Map[DFRefAny, DFMember] =
-    refTable.toMap
-
-  def getReachableNamedValue(dfVal: DFVal, cf: => DFVal): DFVal =
-    unreachableNamedValues.getOrElseUpdate(dfVal, cf)
-
-  def getReachableDFType(dfType: DFType, cf: => DFType): DFType =
-    unreachableDFTypes.getOrElseUpdate(dfType, cf)
+  )(using MemberGetSet): M = ???
+  def newRefFor[M <: DFMember, R <: DFRef[M]](ref: R, member: M): R = ???
+  def setMember[M <: DFMember](originalMember: M, newMemberFunc: M => M): M = ???
+  def replaceMember[M <: DFMember](originalMember: M, newMember: M): M = ???
+  def ignoreMember[M <: DFMember](member: M): M = ???
+  def hasMember(member: DFMember): Boolean = ???
+  def getMemberRefs(member: DFMember): Set[DFRefAny] = ???
+  def getLatestMember: DFMember = ???
+  def inject(sourceCtx: DesignContext): Unit = ???
+  def getImmutableMemberList: List[DFMember] = ???
+  def getImmutableRefTable: Map[DFRefAny, DFMember] = ???
+  def getReachableNamedValue(dfVal: DFVal, cf: => DFVal): DFVal = ???
+  def getReachableDFType(dfType: DFType, cf: => DFType): DFType = ???
 end DesignContext
 
 final class MutableDB():
