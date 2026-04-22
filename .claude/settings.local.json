@@ -8,7 +8,7 @@
       "Bash(/tmp/repro_check.sh *)",
       "Bash(chmod +x /tmp/repro.sh)",
       "Bash(/tmp/repro.sh)",
-      "Bash(git rm *)"
+      "Bash(*)"
     ]
   }
 }
