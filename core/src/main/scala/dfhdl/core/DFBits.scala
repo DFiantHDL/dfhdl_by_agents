@@ -20,17 +20,11 @@ object DFBits:
   object StrInterpOps
 
   object Val:
-    trait Candidate[R] extends Exact0.TC[R, DFC]:
+    trait Candidate[R]:
       type OutW <: IntP
       type OutP
-      type Out = DFValTP[DFBits[OutW], OutP]
-      def conv(from: R)(using DFC): Out = apply(from)
-      def apply(value: R)(using DFC): Out
-    trait CandidateLP
-    object Candidate extends CandidateLP:
+    object Candidate:
       type Aux[R, W <: IntP, P] = Candidate[R] { type OutW = W; type OutP = P }
-    end Candidate
-
     object TC
     object TCConv
     object Compare
