@@ -1,7 +1,5 @@
 package dfhdl.core
 import ir.DFVal.Func.Op as FuncOp
-import ir.DFDecimal.NativeType
-import NativeType.*
 
 // stubs replacing dfhdl.compiler.ir and dfhdl.internals
 object ir:
@@ -9,17 +7,12 @@ object ir:
   trait DFBoolOrBit extends DFType
   trait DFDecimal extends DFType
   trait DFVal
-  val DFInt32: DFType = ???
   object DFVal:
     object Func:
       sealed trait Op
       object Op:
         sealed trait `+` extends Op; object `+` extends `+`
         sealed trait `-` extends Op; object `-` extends `-`
-  object DFDecimal:
-    sealed trait NativeType
-    object NativeType:
-      sealed trait Int32 extends NativeType
 end ir
 
 trait ExactOp2Aux[Op, C, B, L, R, O]
