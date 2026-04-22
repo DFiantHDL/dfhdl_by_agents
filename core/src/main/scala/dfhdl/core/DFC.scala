@@ -29,60 +29,31 @@ final case class DFC(
       position: Position = position,
       docOpt: Option[String] = docOpt,
       annotations: List[Annotation] = Nil
-  ) =
-    if (refGen.getGrpId == (0, 0))
-      refGen.setGrpId(DFC.getGrpId(position))
-    copy(
-      nameOpt = nameOpt,
-      position = position,
-      docOpt = docOpt,
-      annotations = annotations.getActiveHWAnnotations
-    ).asInstanceOf[this.type]
-  def setMeta(
-      meta: ir.Meta
-  ) =
-    if (refGen.getGrpId == (0, 0))
-      refGen.setGrpId(DFC.getGrpId(position))
-    copy(
-      nameOpt = meta.nameOpt,
-      position = meta.position,
-      docOpt = meta.docOpt,
-      annotations = meta.annotations
-    ).asInstanceOf[this.type]
-  def setTags(tags: ir.DFTags) = copy(tags = tags)
-  def tag[CT <: ir.DFTag: ClassTag](customTag: CT) = setTags(tags.tag(customTag))
-  def emptyTags = setTags(ir.DFTags.empty)
+  ): this.type = ???
+  def setMeta(meta: ir.Meta): this.type = ???
+  def setTags(tags: ir.DFTags): DFC = ???
+  def tag[CT <: ir.DFTag: ClassTag](customTag: CT): DFC = ???
+  def emptyTags: DFC = ???
   given getSet: ir.MemberGetSet = mutableDB.getSet
-  def getMeta: ir.Meta = ir.Meta(nameOpt, position, docOpt, annotations)
-  def enterOwner(owner: DFOwnerAny): Unit =
-    mutableDB.OwnershipContext.enter(owner.asIR)
-  def exitOwner(): Unit = mutableDB.OwnershipContext.exit()
-  def owner: DFOwnerAny = mutableDB.OwnershipContext.owner.asFE
-  def enterLate(): Unit =
-    mutableDB.OwnershipContext.enterLate()
-  def exitLate(): Unit =
-    mutableDB.OwnershipContext.exitLate()
-  def lateConstruction: Boolean = mutableDB.OwnershipContext.lateConstruction
-  def ownerOption: Option[DFOwnerAny] =
-    mutableDB.OwnershipContext.ownerOption.map(_.asFE)
-  // Returns the IR ref for the current owner, or a ref to DFMember.Empty when there is no
-  // owner in the context. Prefer this over `dfc.owner.ref` when constructing raw IR members
-  // (e.g. ir.Goto) inside a MetaDesign body: the `ref` extension method requires
-  // `import dfhdl.core.*` in scope, which can conflict with other `dfhdl.core` imports.
-  def ownerOrEmptyRef: ir.DFOwner.Ref =
-    ownerOption.map(_.asIR.ref(using this)).getOrElse(ir.DFMember.Empty.ref(using this))
-  def setName(name: String): this.type =
-    copy(nameOpt = Some(name)).asInstanceOf[this.type]
-  def setAnnotations(annotations: List[HWAnnotation]): this.type =
-    copy(annotations = annotations).asInstanceOf[this.type]
-  def anonymize: this.type = copy(nameOpt = None).asInstanceOf[this.type]
-  def logEvent(event: LogEvent): Unit = mutableDB.logger.logEvent(event)
-  def injectEvents(newEvents: List[LogEvent]): Unit = mutableDB.logger.injectEvents(newEvents)
-  def getErrors: List[DFError] = mutableDB.logger.getErrors
-  def getWarnings: List[DFWarning] = mutableDB.logger.getWarnings
-  def getEvents: List[LogEvent] = mutableDB.logger.getEvents
-  def inMetaProgramming: Boolean = mutableDB.inMetaProgramming
-  def clearEvents(): Unit = mutableDB.logger.clearEvents()
+  def getMeta: ir.Meta = ???
+  def enterOwner(owner: DFOwnerAny): Unit = ???
+  def exitOwner(): Unit = ???
+  def owner: DFOwnerAny = ???
+  def enterLate(): Unit = ???
+  def exitLate(): Unit = ???
+  def lateConstruction: Boolean = ???
+  def ownerOption: Option[DFOwnerAny] = ???
+  def ownerOrEmptyRef: ir.DFOwner.Ref = ???
+  def setName(name: String): this.type = ???
+  def setAnnotations(annotations: List[HWAnnotation]): this.type = ???
+  def anonymize: this.type = ???
+  def logEvent(event: LogEvent): Unit = ???
+  def injectEvents(newEvents: List[LogEvent]): Unit = ???
+  def getErrors: List[DFError] = ???
+  def getWarnings: List[DFWarning] = ???
+  def getEvents: List[LogEvent] = ???
+  def inMetaProgramming: Boolean = ???
+  def clearEvents(): Unit = ???
 end DFC
 object DFC:
   import java.util.concurrent.atomic.AtomicInteger
