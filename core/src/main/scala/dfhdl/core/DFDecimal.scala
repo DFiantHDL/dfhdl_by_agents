@@ -238,37 +238,24 @@ object DFXInt:
         type OutN = Int32
         type OutP = CONST
         def apply(arg: R)(using dfc: DFC): Out = ???
-      // DFInt32 acts as a wildcard in operations: it adapts to the
-      // bit-accurate value's sign and width. OutN = Int32 (true) signals wildcard status.
       given fromDFConstInt32[P, R <: DFValTP[DFInt32, P]]: Candidate[R] with
         type OutS = Boolean
         type OutW = Int
         type OutN = Int32
         type OutP = P
-        def apply(arg: R)(using DFC): Out = arg
-      given fromDFXIntVal[S <: Boolean, W <: IntP, N <: NativeType, P, R <: DFValTP[
-        DFXInt[S, W, N],
-        P
-      ]]: Candidate[R] with
+        def apply(arg: R)(using DFC): Out = ???
+      given fromDFXIntVal[S <: Boolean, W <: IntP, N <: NativeType, P, R <: DFValTP[DFXInt[S, W, N], P]]: Candidate[R] with
         type OutS = S
         type OutW = W
         type OutN = N
         type OutP = P
-        def apply(arg: R)(using DFC): Out = arg
+        def apply(arg: R)(using DFC): Out = ???
       inline given errDFEncoding[E <: DFEncoding]: Candidate[E] =
-        compiletime.error(
-          "Cannot apply an enum entry value to a DFHDL decimal variable."
-        )
+        compiletime.error("")
       given fromIf[
-          C <: DFValOf[DFBoolOrBit],
-          T,
-          F,
-          TS <: Boolean,
-          TW <: IntP,
-          TN <: NativeType,
-          TP,
-          FP,
-          R <: IfWrapper[C, T, F]
+          C <: DFValOf[DFBoolOrBit], T, F,
+          TS <: Boolean, TW <: IntP, TN <: NativeType,
+          TP, FP, R <: IfWrapper[C, T, F]
       ](using
           tTC: Candidate[T] { type OutS = TS; type OutW = TW; type OutN = TN; type OutP = TP },
           fTC: DFVal.TC[DFXInt[TS, TW, TN], F] { type OutP = FP }
@@ -277,8 +264,7 @@ object DFXInt:
         type OutW = TW
         type OutN = TN
         type OutP = TP | FP
-        def apply(value: R)(using DFC): Out = value.unwrap
-      end fromIf
+        def apply(value: R)(using DFC): Out = ???
     end Candidate
 
     extension [S <: Boolean, W <: IntP, N <: NativeType](dfVal: DFValOf[DFXInt[S, W, N]])
