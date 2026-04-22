@@ -181,10 +181,6 @@ object DFXInt:
       def apply(arg: R)(using DFC): Out
     trait CandidateLP
     object Candidate extends CandidateLP:
-      type Exact = Exact0[DFC, Candidate]
-      type ExactAux[R] = Exact0[DFC, Candidate] {
-        type ExactFrom = R
-      }
       type Aux[R, S <: Boolean, W <: IntP, N <: NativeType, P] =
         Candidate[R] {
           type OutS = S
@@ -194,59 +190,9 @@ object DFXInt:
         }
     end Candidate
 
-    extension [S <: Boolean, W <: IntP, N <: NativeType](dfVal: DFValOf[DFXInt[S, W, N]])
-      private[core] def getActualSignedWidthOpt(using dfc: DFC): Option[(signed: Boolean, widthIntOpt: Option[Int])] = ???
-    end extension
-
-    object TC:
-      def apply(
-          dfType: DFXInt[Boolean, Int, NativeType],
-          dfVal: DFValOf[DFXInt[Boolean, Int, NativeType]]
-      )(using DFC): DFValOf[DFXInt[Boolean, Int, NativeType]] = ???
-      import DFVal.TC
-      given [LS <: Boolean, LW <: IntP, LN <: NativeType, R, RP, IC <: Candidate[R]](using
-          ic: IC { type OutP = RP }
-      )(using
-          check: TCCheck[LS, LW, ic.OutS, ic.OutW],
-          nativeCheck: NativeCheck[LN, ic.OutN]
-      ): DFVal.TC[DFXInt[LS, LW, LN], R] with
-        type OutP = RP
-        def conv(dfType: DFXInt[LS, LW, LN], value: R)(using dfc: DFC): Out = ???
-      end given
-    end TC
-
-    object TCConv:
-      given DFXIntFromCandidateConv[LS <: Boolean, R, RP, IC <: Candidate[R]](using
-          ic: IC { type OutP = RP }
-      )(using
-          checkS: `LS >= RS`.Check[LS, ic.OutS],
-          lsigned: OptionalGiven[ValueOf[LS]]
-      ): DFVal.TCConv[DFXInt[LS, Int, BitAccurate], R] with
-        type OutP = RP
-        def apply(value: R)(using dfc: DFC): Out = ???
-    end TCConv
-
-    object Compare:
-      import DFVal.Compare
-      given DFXIntCompare[
-          LS <: Boolean,
-          LW <: IntP,
-          LN <: NativeType,
-          R,
-          RP,
-          IC <: Candidate[R],
-          Op <: FuncOp,
-          C <: Boolean
-      ](using
-          ic: IC { type OutP = RP }
-      )(using
-          check: CompareCheck[LS, LW, ic.OutS, ic.OutW, ic.OutN, C],
-          nativeCheck: NativeCheck[LN, ic.OutN]
-      ): Compare[DFXInt[LS, LW, LN], R, Op, C] with
-        type OutP = RP
-        def conv(dfType: DFXInt[LS, LW, LN], arg: R)(using dfc: DFC): Out = ???
-      end DFXIntCompare
-    end Compare
+    object TC
+    object TCConv
+    object Compare
 
     object Ops:
       export DFUInt.Val.Ops.*
