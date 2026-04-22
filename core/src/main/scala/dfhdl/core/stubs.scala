@@ -56,29 +56,29 @@ end DFDecimal
 
 object DFXInt:
   object Val:
-    trait Candidate[R, P]
+    trait Candidate[P]
 
     object Ops:
       type CommutativeArithOp = FuncOp.+.type
       type NonCommutativeArithOp = FuncOp.-.type
       given evOpCommutativeArithDFXInt[Op <: CommutativeArithOp, L, LP, R, RP](using
-          icL: Candidate[L, LP],
-          icR: Candidate[R, RP]
+          icL: Candidate[LP],
+          icR: Candidate[RP]
       ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFTypeAny, LP | RP]] = ???
       given evOpNonCommutativeArithDFXInt[Op <: NonCommutativeArithOp, L, LP, R, RP](using
-          icL: Candidate[L, LP],
-          icR: Candidate[R, RP]
+          icL: Candidate[LP],
+          icR: Candidate[RP]
       ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFTypeAny, LP | RP]] = ???
 
       import DFVal.Ops.CarryOp
       given evOpCarryAddSubDFXInt[Op <: FuncOp, L, LP, R, RP](using
-          icL: Candidate[L, LP],
-          icR: Candidate[R, RP]
+          icL: Candidate[LP],
+          icR: Candidate[RP]
       ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[DFTypeAny, LP | RP]] = ???
 
       given evOpCarryMulDFXInt[Op <: FuncOp, L, LP, R, RP](using
-          icL: Candidate[L, LP],
-          icR: Candidate[R, RP]
+          icL: Candidate[LP],
+          icR: Candidate[RP]
       ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[DFTypeAny, LP | RP]] = ???
     end Ops
   end Val
