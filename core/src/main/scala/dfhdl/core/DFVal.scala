@@ -8,8 +8,7 @@ type DFValAny = DFVal[DFTypeAny, ModifierAny]
 type DFConstOf[+T <: DFTypeAny] = DFVal[T, Modifier.CONST]
 type DFValTP[+T <: DFTypeAny, +P] = DFVal[T, Modifier[P]]
 
-inline def isConstCheck[T]: Boolean = ${ isConstCheckMacro[T] }
-def isConstCheckMacro[T](using Quotes, Type[T]): Expr[Boolean] = ???
+inline def isConstCheck[T]: Boolean = ${ ??? }
 
 object DFVal:
   export DFXInt.Val.Ops.{
