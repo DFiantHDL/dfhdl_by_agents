@@ -1,9 +1,5 @@
 package dfhdl.core
-import dfhdl.compiler.ir
 import ir.DFVal.Func.Op as FuncOp
-import dfhdl.internals.*
-
-import annotation.{implicitNotFound, targetName}
 
 type BitNum = 0 | 1
 type DFBoolOrBit = DFType[ir.DFBoolOrBit, NoArgs]

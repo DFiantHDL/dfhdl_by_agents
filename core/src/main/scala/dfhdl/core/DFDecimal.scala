@@ -1,12 +1,10 @@
 package dfhdl.core
-import dfhdl.compiler.ir
-import dfhdl.internals.*
 import ir.DFVal.Func.{Op => FuncOp}
 import ir.DFDecimal.NativeType
 import NativeType.*
 
 import scala.quoted.*
-import scala.annotation.targetName
+import scala.compiletime.ops.boolean.||
 
 type DFDecimal[S <: Boolean, W <: IntP, F <: Int, N <: NativeType] =
   DFType[ir.DFDecimal, Args4[S, W, F, N]]

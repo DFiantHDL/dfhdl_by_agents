@@ -1,6 +1,4 @@
 package dfhdl.core
-import dfhdl.internals.*
-import dfhdl.compiler.ir
 import scala.annotation.Annotation
 
 final case class DFC(

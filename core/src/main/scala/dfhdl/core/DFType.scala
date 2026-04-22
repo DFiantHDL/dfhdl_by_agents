@@ -1,5 +1,4 @@
 package dfhdl.core
-import dfhdl.compiler.ir
 
 sealed trait Args
 sealed trait NoArgs extends Args
