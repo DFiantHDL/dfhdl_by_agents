@@ -1,3 +1,3 @@
 package dfhdl.core
-final class MutableDB
+class MutableDB
 
