@@ -179,17 +179,7 @@ object DFXInt:
       type Out = DFValTP[DFXInt[OutS, OutW, OutN], OutP]
       def conv(from: R)(using DFC): Out = apply(from)
       def apply(arg: R)(using DFC): Out
-    trait CandidateLP:
-      given fromDFBitsValCandidate[R, W <: IntP, P](using
-          ic: DFBits.Val.Candidate.Aux[R, W, P]
-      ): Candidate[R] with
-        type OutS = false
-        type OutW = W
-        type OutN = BitAccurate
-        type OutP = P
-        def apply(arg: R)(using dfc: DFC): Out = ???
-      end fromDFBitsValCandidate
-    end CandidateLP
+    trait CandidateLP
     object Candidate extends CandidateLP:
       type Exact = Exact0[DFC, Candidate]
       type ExactAux[R] = Exact0[DFC, Candidate] {
