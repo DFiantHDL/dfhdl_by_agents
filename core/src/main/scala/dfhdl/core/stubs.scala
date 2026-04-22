@@ -24,7 +24,6 @@ object ir:
       sealed trait Int32 extends NativeType
 end ir
 
-trait MetaContext
 trait ExactOp2Aux[Op, C, B, L, R, O]
 
 sealed class Modifier[+A, +C, +I, +P]
@@ -49,7 +48,7 @@ end DFType
 
 final case class DFC(
     mutableDB: MutableDB = new MutableDB()
-) extends MetaContext
+)
 
 type DFBoolOrBit = DFType[ir.DFBoolOrBit, NoArgs]
 object DFBoolOrBit:
