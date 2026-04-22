@@ -713,38 +713,20 @@ object DFXInt:
       import DFVal.Ops.CarryOp
       given evOpCarryAddSubDFXInt[
           Op <: FuncOp.+.type | FuncOp.-.type,
-          L,
-          LS <: Boolean,
-          LW <: IntP,
-          LN <: NativeType,
-          LP,
-          R,
-          RS <: Boolean,
-          RW <: IntP,
-          RN <: NativeType,
-          RP
+          L, LS <: Boolean, LW <: IntP, LN <: NativeType, LP,
+          R, RS <: Boolean, RW <: IntP, RN <: NativeType, RP
       ](using
           icL: Candidate.Aux[L, LS, LW, LN, LP],
-          icR: Candidate.Aux[R, RS, RW, RN, RP],
-          op: ValueOf[Op]
+          icR: Candidate.Aux[R, RS, RW, RN, RP]
       ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[
         DFXInt[LS || RS, IntP.+[IntP.Max[LW, RW], 1], BitAccurate],
         LP | RP
       ]] = ???
-      end evOpCarryAddSubDFXInt
 
       given evOpCarryMulDFXInt[
           Op <: FuncOp.`*`.type,
-          L,
-          LS <: Boolean,
-          LW <: IntP,
-          LN <: NativeType,
-          LP,
-          R,
-          RS <: Boolean,
-          RW <: IntP,
-          RN <: NativeType,
-          RP
+          L, LS <: Boolean, LW <: IntP, LN <: NativeType, LP,
+          R, RS <: Boolean, RW <: IntP, RN <: NativeType, RP
       ](using
           icL: Candidate.Aux[L, LS, LW, LN, LP],
           icR: Candidate.Aux[R, RS, RW, RN, RP]
@@ -752,7 +734,6 @@ object DFXInt:
         DFXInt[LS || RS, IntP.+[LW, RW], BitAccurate],
         LP | RP
       ]] = ???
-      end evOpCarryMulDFXInt
 
       // TODO: this takes the RHS's width as the result type width. This is how VHDL behaves.
       // But verilog requires the result type width to be the same as the LHS's width.
