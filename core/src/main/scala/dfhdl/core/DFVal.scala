@@ -1,6 +1,5 @@
 package dfhdl.core
 import ir.DFVal.Func.Op as FuncOp
-import scala.quoted.*
 
 into final class DFVal[+T <: DFTypeAny, +M <: ModifierAny](val irValue: ir.DFVal)
 
