@@ -109,47 +109,9 @@ object DFType:
       ]
   object TC extends TCLP:
     type Aux[T, OT <: DFTypeAny] = TC[T] { type Type = OT }
-    def apply[T, OT <: DFTypeAny](value: OT): Aux[T, OT] = ???
-
     given ofDFType[T <: DFTypeAny]: TC[T] with
       type Type = T
       def apply(t: T)(using DFC): Type = ???
-
-    given ofBooleanCompanion: TC[Boolean.type] with
-      type Type = DFBool
-      def apply(t: Boolean.type)(using DFC): Type = ???
-
-    given ofByteCompanion: TC[Byte.type] with
-      type Type = DFBits[8]
-      def apply(t: Byte.type)(using DFC): Type = ???
-
-    given ofIntCompanion: TC[Int.type] with
-      type Type = DFInt32
-      def apply(t: Int.type)(using DFC): Type = ???
-
-    given ofDoubleCompanion: TC[Double.type] with
-      type Type = DFDouble
-      def apply(t: Double.type)(using DFC): Type = ???
-
-    given ofLongCompanion: TC[Long.type] with
-      type Type = DFSInt[64]
-      def apply(t: Long.type)(using DFC): Type = ???
-
-    given ofOpaque[T <: DFTypeAny, TFE <: DFOpaque.Frontend[T]]: TC[TFE] with
-      type Type = DFOpaque[TFE]
-      def apply(t: TFE)(using DFC): Type = ???
-
-    transparent inline given ofProductCompanion[T <: Object]: TC[T] = ${ productMacro[T] }
-    def productMacro[T <: Object](using Quotes, Type[T]): Expr[TC[T]] = ???
-
-    transparent inline given ofTuple[T <: NonEmptyTuple]: TC[T] = ${ ofTupleMacro[T] }
-    def ofTupleMacro[T <: NonEmptyTuple](using Quotes, Type[T]): Expr[TC[T]] = ???
-
-    transparent inline given ofNamedTuple[N <: NonEmptyTuple, T <: NonEmptyTuple]
-        : TC[NamedTuple[N, T]] = ${ ofNamedTupleMacro[N, T] }
-    def ofNamedTupleMacro[N <: NonEmptyTuple, T <: NonEmptyTuple](using
-        Quotes, Type[N], Type[T]
-    ): Expr[TC[NamedTuple[N, T]]] = ???
   end TC
 
   extension [LW <: IntP](lhs: DFTypeW[LW])
