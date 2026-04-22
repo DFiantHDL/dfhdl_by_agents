@@ -28,19 +28,10 @@ object DFC:
   def emptyNoEO: DFC = ???
   sealed trait Scope
   object Scope:
-    sealed trait Global extends Scope
-    object Global extends Global
-    given Global = Global
-    sealed trait Local extends Scope
-    sealed trait Design extends Local
+    sealed trait Design extends Scope
     object Design extends Design
-    sealed trait Domain extends Local
+    sealed trait Domain extends Scope
     object Domain extends Domain
-    sealed trait Process extends Local
-    object Process extends Process
-    sealed trait Interface extends Local
-    object Interface extends Interface
-  end Scope
 end DFC
 
 into opaque type DFCG <: DFC = DFC
