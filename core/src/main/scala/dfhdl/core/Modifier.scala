@@ -46,56 +46,13 @@ object Modifier:
   extension (modifier: ModifierAny) def asIR: IRModifier = modifier.value
 
   given evPortVarConstructor[
-      T <: DFType.Supported,
-      OT <: DFTypeAny,
-      A,
-      C,
-      I,
-      P,
-      SC <: DFC.Scope,
-      DT <: DomainType,
-      M <: Modifier[A, C, I, P]
+      T <: DFType.Supported, OT <: DFTypeAny, A, C, I, P,
+      SC <: DFC.Scope, DT <: DomainType, M <: Modifier[A, C, I, P]
   ](using
       tc: DFType.TC.Aux[T, OT],
       checkLocal: AssertGiven[DFC.Scope.Local, "Port/Variable declarations cannot be global"],
-      ck: SC,
-      dt: DT
-  ): ExactOp2Aux["<>", DFC, Any, T, M, DFVal[
-    OT,
-    Modifier[A & SC & DT, C, I, P]
-  ]] = new ExactOp2["<>", DFC, Any, T, M]:
-    type Out = DFVal[OT, Modifier[A & SC & DT, C, I, P]]
-    def apply(t: T, modifier: M)(using DFC): Out = trydf {
-      val ownerIR = dfc.owner.asIR
-      // check that the owner is a domain
-      if (modifier.value.isPort)
-        ownerIR match
-          case _: ir.DFDomainOwner =>
-          case _                   =>
-            throw new IllegalArgumentException(
-              "Ports can only be directly owned by a design, a domain or an interface."
-            )
-
-      val dfType = tc(t)
-      dfType.asIR match
-        case ir.DFOpaque(kind = kind) => kind match
-            case ir.DFOpaque.Kind.Clk | ir.DFOpaque.Kind.Rst =>
-              ownerIR match
-                case domainOwner: ir.DFDomainOwner =>
-                  domainOwner.domainType match
-                    case ir.DomainType.RT(ir.RTDomainCfg.Related(ref)) =>
-                      import dfc.getSet
-                      throw new IllegalArgumentException(
-                        s"Cannot create a clk/rst in a related domain.\nYou can create the clk/rst in the primary domain `${ref.get.getName}` and reference it here instead."
-                      )
-                    case _ =>
-                case _ =>
-            case _ =>
-        case _ =>
-      end match
-      DFVal.Dcl(dfType, modifier.asInstanceOf[Modifier[A & SC & DT, C, I, P]])
-    }(using dfc, CTName("Port/Variable constructor"))
-  end evPortVarConstructor
+      ck: SC, dt: DT
+  ): ExactOp2Aux["<>", DFC, Any, T, M, DFVal[OT, Modifier[A & SC & DT, C, I, P]]] = ???
 end Modifier
 
 sealed trait VAL
