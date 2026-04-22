@@ -806,20 +806,7 @@ object DFXInt:
     end Candidate
 
     extension [S <: Boolean, W <: IntP, N <: NativeType](dfVal: DFValOf[DFXInt[S, W, N]])
-      private[core] def getActualSignedWidthOpt(using
-          dfc: DFC
-      ): Option[(signed: Boolean, widthIntOpt: Option[Int])] =
-        if (dfVal.dfType.asIR.isDFInt32)
-          import dfc.getSet
-          dfVal.asIR.injectGlobalCtx()
-          dfVal.asIR.getConstData[Option[BigInt]] match
-            case ir.ConstData.KnownConst(Some(n: BigInt)) =>
-              val int = n.toInt
-              Some(int < 0, Some(IntInfo.calcWidth(int)))
-            case _ => None
-        else
-          Some(dfVal.dfType.signed.value, dfVal.widthIntOpt)
-      end getActualSignedWidthOpt
+      private[core] def getActualSignedWidthOpt(using dfc: DFC): Option[(signed: Boolean, widthIntOpt: Option[Int])] = ???
     end extension
 
     object TC:
