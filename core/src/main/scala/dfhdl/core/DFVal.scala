@@ -681,49 +681,22 @@ end DFVal
 
 
 extension [T <: DFTypeAny](dfVar: DFValOf[T])
-  def assign[R <: DFTypeAny](rhs: DFValOf[R])(using DFC): Unit =
-    DFNet(dfVar.asIR, DFNet.Op.Assignment, rhs.asIR)
-  def nbassign[R <: DFTypeAny](rhs: DFValOf[R])(using DFC): Unit =
-    DFNet(dfVar.asIR, DFNet.Op.NBAssignment, rhs.asIR)
+  def assign[R <: DFTypeAny](rhs: DFValOf[R])(using DFC): Unit = ???
+  def nbassign[R <: DFTypeAny](rhs: DFValOf[R])(using DFC): Unit = ???
 
 extension [T <: DFTypeAny](lhs: DFValOf[T])
-  def connect[R <: DFTypeAny](rhs: DFValOf[R])(using DFC): Unit =
-    val op = if (dfc.lateConstruction) DFNet.Op.ViaConnection else DFNet.Op.Connection
-    DFNet(lhs.asIR, op, rhs.asIR)
+  def connect[R <: DFTypeAny](rhs: DFValOf[R])(using DFC): Unit = ???
 end extension
 
 trait VarsTuple[T <: NonEmptyTuple]:
   type Width <: Int
 object VarsTuple:
   transparent inline given [T <: NonEmptyTuple]: VarsTuple[T] = ${ evMacro[T] }
-  def evMacro[T <: NonEmptyTuple](using Quotes, Type[T]): Expr[VarsTuple[T]] =
-    import quotes.reflect.*
-    val tTpe = TypeRepr.of[T]
-    def varsCheck(tpe: TypeRepr): Option[String] =
-      tpe.asTypeOf[Any] match
-        case '[DFVarOf[t]]    => None
-        case '[NonEmptyTuple] =>
-          tpe.getTupleArgs.view.map(varsCheck).collectFirst { case Some(v) => v }
-        case _ =>
-          println(tpe.widen.dealias.show)
-          Some(s"All tuple elements must be mutable but found an immutable type `${tpe.showType}`")
-    varsCheck(tTpe) match
-      case Some(err) => ControlledMacroError.report(err)
-      case None      =>
-        import Width.calcValWidth
-        val widthType = tTpe.calcValWidth.asTypeOf[Int]
-        '{
-          new VarsTuple[T]:
-            type Width = widthType.Underlying
-        }
-  end evMacro
+  def evMacro[T <: NonEmptyTuple](using Quotes, Type[T]): Expr[VarsTuple[T]] = ???
 end VarsTuple
 
 final class REG_DIN[T <: DFTypeAny](val irValue: DFError.REG_DIN[T]) extends AnyVal:
-  def :=(rhs: DFVal.TC.Exact[T])(using DFC): Unit = trydf {
-    val dfVar = irValue.dfVar
-    dfVar.assign(rhs(dfVar.dfType))
-  }
+  def :=(rhs: DFVal.TC.Exact[T])(using DFC): Unit = ???
 
 object DFVarOps
 
