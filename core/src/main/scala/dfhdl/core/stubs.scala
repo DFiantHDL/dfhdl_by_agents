@@ -58,18 +58,11 @@ object DFBoolOrBit:
   given DFBool = DFBool
 
   object Val:
-    trait Candidate[R]:
-      type OutP
-    object Candidate:
-      type Aux[R, P] = Candidate[R] { type OutP = P }
-    end Candidate
-
     object Ops:
       import DFVal.Ops.BoolOnlyOp
       given evLogicOpDFBoolOrBit2[Op <: FuncOp, L, R, O <: DFValAny](using
           ic: ExactOp2Aux[Op, DFC, DFValAny, L, R, O]
       ): ExactOp2Aux[BoolOnlyOp[Op], DFC, DFValAny, L, R, O] = ???
-    end Ops
   end Val
 end DFBoolOrBit
 
