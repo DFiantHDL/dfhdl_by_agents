@@ -144,18 +144,6 @@ object DFVal extends DFValLP:
         case DFStruct.Val(dfVal) => Some(dfVal)
         case _                   => None
 
-  // Enabling equality with Int, Boolean, and Tuples.
-  // just to give a better error message via the compiler plugin.
-  // See the method `rejectBadPrimitiveOps` in `MetaContextGenPhase.scala`
-  given [T <: DFTypeAny, M <: ModifierAny]: CanEqual[Int, DFVal[T, M]] =
-    CanEqual.derived
-  given [T <: DFTypeAny, M <: ModifierAny]: CanEqual[Boolean, DFVal[T, M]] =
-    CanEqual.derived
-  given [T <: DFTypeAny, M <: ModifierAny]: CanEqual[Tuple, DFVal[T, M]] =
-    CanEqual.derived
-  // Enabling encoding comparison
-  given [T <: DFTypeAny, M <: ModifierAny]: CanEqual[DFEncoding, DFVal[T, M]] =
-    CanEqual.derived
 
   trait ConstCheck[P]
   given [P](using
