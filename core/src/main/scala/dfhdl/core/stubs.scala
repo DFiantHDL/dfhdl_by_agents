@@ -52,8 +52,6 @@ final case class DFC(
 
 type DFBoolOrBit = DFType[ir.DFBoolOrBit, NoArgs]
 object DFBoolOrBit:
-  given DFBool = DFBool
-
   object Val:
     object Ops:
       import DFVal.Ops.BoolOnlyOp
@@ -62,9 +60,6 @@ object DFBoolOrBit:
       ): ExactOp2Aux[BoolOnlyOp[Op], DFC, DFValAny, L, R, O] = ???
   end Val
 end DFBoolOrBit
-
-type DFBool = DFType[ir.DFBool.type, NoArgs]
-final lazy val DFBool = ir.DFBool.asFE[DFBool]
 
 type DFDecimal[S, W, F, N] = DFType[ir.DFDecimal, Args4[S, W, F, N]]
 object DFDecimal:
