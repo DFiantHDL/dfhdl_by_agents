@@ -3,7 +3,6 @@ import dfhdl.compiler.ir
 import dfhdl.internals.*
 
 import scala.annotation.targetName
-import dfhdl.options.OnError
 
 sealed trait LogEvent derives CanEqual:
   val dfMsg: String
@@ -93,20 +92,7 @@ class Logger:
 
 def trydfSpecific[T](
     block: => T
-)(finale: DFError => T)(using dfc: DFC, ctName: CTName): T =
-  if (dfc.inMetaProgramming || !dfc.elaborationOptions.trapErrors) block
-  else
-    try block
-    catch
-      case e: Exception =>
-        val dfErr = e match
-          case e: IllegalArgumentException => DFError.Basic(ctName.value, e)
-          case e: DFError                  => e
-          case e                           => throw e
-        if (dfc.ownerOption.isEmpty)
-          exitWithError(dfErr.toString())
-        dfc.logEvent(dfErr)
-        finale(dfErr)
+)(finale: DFError => T)(using dfc: DFC, ctName: CTName): T = ???
 
 @targetName("tryDFType")
 @metaContextForward(0)
@@ -128,10 +114,4 @@ def trydf(block: => Unit)(using DFC, CTName): Unit =
 def trydf[V <: DFOwnerAny](block: => V)(using DFC, CTName): V =
   trydfSpecific(block)(_.asOwner.asInstanceOf[V])
 
-def exitWithError(msg: String)(using DFC): Nothing =
-  dfc.elaborationOptions.onError match
-    case OnError.Exit =>
-      println(msg)
-      sys.exit(1)
-    case _ =>
-      throw new IllegalArgumentException(s"Elaboration errors found!\n$msg")
+def exitWithError(msg: String)(using DFC): Nothing = ???

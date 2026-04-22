@@ -1,8 +1,6 @@
 package dfhdl.core
 import dfhdl.internals.*
 import dfhdl.compiler.ir
-import dfhdl.options.ElaborationOptions
-import dfhdl.hw.annotation.getActiveHWAnnotations
 import scala.reflect.ClassTag
 import collection.mutable
 import scala.annotation.Annotation
@@ -10,20 +8,17 @@ import scala.annotation.implicitNotFound
 import ir.annotation.HWAnnotation
 
 @implicitNotFound(
-  "Missing local design context.\nEither this operation is not supported in global context or `using DFC` is missing."
+  "Missing local design context."
 )
 final case class DFC(
     nameOpt: Option[String],
     position: Position,
     docOpt: Option[String],
-    annotations: List[HWAnnotation] = Nil, // TODO: removing default causes stale symbol crash
+    annotations: List[HWAnnotation] = Nil,
     mutableDB: MutableDB = new MutableDB(),
     refGen: ir.RefGen = ir.RefGen.initial,
-    tags: ir.DFTags = ir.DFTags.empty,
-    elaborationOptionsContr: () => ElaborationOptions = () =>
-      summon[ElaborationOptions.Defaults[Design]]
+    tags: ir.DFTags = ir.DFTags.empty
 ) extends MetaContext:
-  lazy val elaborationOptions: ElaborationOptions = elaborationOptionsContr()
   def setMeta(
       nameOpt: Option[String] = nameOpt,
       position: Position = position,
@@ -56,8 +51,6 @@ final case class DFC(
   def clearEvents(): Unit = ???
 end DFC
 object DFC:
-  private def getGrpId(position: Position): (Int, Int) = ???
-  def empty(eo: ElaborationOptions): DFC = ???
   def emptyNoEO: DFC = ???
   sealed trait Scope
   object Scope:
