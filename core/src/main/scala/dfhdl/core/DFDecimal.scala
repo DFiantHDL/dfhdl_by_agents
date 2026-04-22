@@ -995,92 +995,9 @@ object DFXInt:
       extension [P, S <: Boolean, W <: IntP, N <: NativeType](lhs: DFValTP[DFXInt[S, W, N], P])
         protected[core] def toDFXIntOf[RS <: Boolean, RW <: IntP, RN <: NativeType](
             dfType: DFXInt[RS, RW, RN]
-        )(using dfc: DFC): DFValTP[DFXInt[RS, RW, RN], P] =
-          import dfc.getSet
-          val dfValIR =
-            if (dfType.asIR.isDFInt32 && lhs.dfType.asIR.isDFInt32) lhs.asIR
-            else
-              val lhsSignFix: DFValOf[DFSInt[Int]] =
-                if (!lhs.dfType.asIR.isDFInt32 && dfType.signed && !lhs.dfType.signed)
-                  lhs.asValOf[DFUInt[Int]].signed.asValOf[DFSInt[Int]]
-                else lhs.asValOf[DFSInt[Int]]
-              // Auto-promote anonymous +/-/* to carry when target is wide enough
-              import IntParam.+
-              val funcWidth = lhsSignFix.widthIntParam
-
-              // if not a constant, optimistically assume it's large enough to allow carry promotion
-              def carryPromoteWidthCheck: Boolean =
-                dfType.asFE[DFSInt[Int]].compareWidths(lhsSignFix.dfType)(_ > _).getOrElse(true)
-
-              val lhsCarryPromo: DFValOf[DFSInt[Int]] = lhsSignFix.asIR match
-                case func @ ir.DFVal.Func(
-                      dfType = dt @ (ir.DFUInt(_) | ir.DFSInt(_)),
-                      op = op @ (FuncOp.+ | FuncOp.- | FuncOp.*)
-                    )
-                    if func.isAnonymous && carryPromoteWidthCheck =>
-                  // For multi-arg merged Funcs (3+ args), peel the last arg:
-                  // Func(+, [a, b, c]) → Func(+, [Func(+, [a, b]), c])
-                  // Shrink the original func in-place to become the inner (non-carry)
-                  // Func, then add a new binary carry Func at the tail. This keeps
-                  // the inner before the carry Func in member order.
-                  // Skipped during meta-programming where MutableDB ref tracking is limited.
-                  val carryFunc =
-                    if (func.args.length > 2 && !dfc.inMetaProgramming)
-                      val lastArgRef = func.args.last
-                      // Shrink `func` in-place to the inner Func (N-1 args, non-carry)
-                      val innerFunc =
-                        dfc.mutableDB.setMember(func, _.copy(args = func.args.dropRight(1)))
-                      // Add a new binary carry Func at the tail referencing innerFunc
-                      func.copy(args =
-                        List(innerFunc.refTW[ir.DFVal](knownReachable = true), lastArgRef)
-                      ).addMember
-                    else func
-                  // Check B: warn if sub-expressions contain implicit Int with
-                  // narrow non-carry arith. Check args (not func itself, since
-                  // the func is about to be carry-promoted).
-                  val argHasImplicitFromIntTag =
-                    carryFunc.args.exists(ref => hasImplicitlyFromIntTag(ref.get))
-                  val argsContainNarrowNonCarryArith =
-                    carryFunc.args.exists(ref => containsNarrowNonCarryArith(ref.get))
-                  val argsContainNarrowNonCarryArithWithTaggedOperand = carryFunc.args.exists(ref =>
-                    containsNarrowNonCarryArithWithTaggedOperand(ref.get)
-                  )
-                  if argHasImplicitFromIntTag && argsContainNarrowNonCarryArith ||
-                    argsContainNarrowNonCarryArithWithTaggedOperand
-                  then
-                    dfc.logEvent(DFWarning(op.toString, verilogSemanticsWarnMsg))
-                  end if
-                  val cw: IntParam[Int] = carryFunc.op.runtimeChecked match
-                    case FuncOp.+ | FuncOp.- => funcWidth + 1
-                    case FuncOp.*            => funcWidth + funcWidth
-                  val newDT = dt.copy(widthParamRef = cw.ref)
-                  dfc.mutableDB
-                    .setMember(carryFunc, _.updateDFType(newDT))
-                    .asValOf[DFSInt[Int]]
-                case _ => lhsSignFix
-              end lhsCarryPromo
-              val nativeTypeChanged = dfType.nativeType != lhsCarryPromo.dfType.nativeType
-              if (nativeTypeChanged) dfType.asIR.nativeType match
-                case Int32 =>
-                  lhsCarryPromo.toInt.asIR
-                case BitAccurate =>
-                  DFVal.Alias.AsIs(dfType, lhsCarryPromo)(using
-                    dfc.tag(ir.ImplicitlyFromIntTag)
-                  ).asIR
-              else if (
-                !dfType.asIR.widthParamRef.isSimilarTo(lhsCarryPromo.dfType.asIR.widthParamRef)
-              )
-                lhsCarryPromo.resize(dfType.widthIntParam).asIR
-              else lhsCarryPromo.asIR
-              end if
-            end if
-          end dfValIR
-          dfValIR.asValTP[DFXInt[RS, RW, RN], P]
-        end toDFXIntOf
-        def toScalaInt(using DFC, DFVal.ConstCheck[P]): Int =
-          lhs.toScalaValue.toInt
-        def toScalaBigInt(using DFC, DFVal.ConstCheck[P]): BigInt =
-          lhs.toScalaValue
+        )(using dfc: DFC): DFValTP[DFXInt[RS, RW, RN], P] = ???
+        def toScalaInt(using DFC, DFVal.ConstCheck[P]): Int = ???
+        def toScalaBigInt(using DFC, DFVal.ConstCheck[P]): BigInt = ???
       end extension
       extension [S <: Boolean, W <: IntP, N <: NativeType, P](lhs: DFValTP[DFXInt[S, W, N], P])
         @targetName("resizeDFXIntAuto")
