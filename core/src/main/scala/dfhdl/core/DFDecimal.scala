@@ -111,35 +111,7 @@ object DFDecimal:
       ]
   end Constraints
 
-  object StrInterp:
-    private[DFDecimal] val widthNoValuePattern = "([\\d_,]+)'".r
-    private[DFDecimal] val valueNoWidthPattern = "'(-?\\d+)".r
-    private[DFDecimal] val widthValuePattern = "(\\d+)'(-?[\\d_,]+)".r
-    private[DFDecimal] val widthFixedPattern = "(\\d+)\\.(\\d+)'(-?\\d+)\\.?(\\d*)".r
-    private[DFDecimal] val numPattern = "(-?\\d+)".r
-    private[DFDecimal] def fromIntDecString(
-        numStr: String,
-        signedForced: Boolean
-    ): (Boolean, Int, Int, BigInt) = ???
-    private def fromDecString(
-        dec: String,
-        signedForced: Boolean
-    ): Either[String, (Boolean, Int, Int, BigInt)] = ???
-
-    extension (fullTerm: String)
-      private[DFDecimal] def interpolate[S <: Boolean, W <: IntP, F <: Int](
-          op: String,
-          explicitWidthOption: Option[IntP]
-      )(using DFC): DFConstOf[DFDecimal[S, W, F, BitAccurate]] = ???
-    end extension
-
-    extension (using Quotes)(fullTerm: quotes.reflect.Term)
-      private[DFDecimal] def interpolate(
-          opExpr: Expr[String],
-          explicitWidthOptionExpr: Expr[Option[IntP]]
-      )(dfc: Expr[DFC]): Expr[DFConstAny] = ???
-    end extension
-  end StrInterp
+  object StrInterp
 
   // Unclear why, but the compiler crashes if we do not separate these definitions from StrInterp
   object StrInterpOps:
