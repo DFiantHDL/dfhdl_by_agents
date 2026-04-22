@@ -21,14 +21,6 @@ object ir:
       object Op:
         sealed trait `+` extends Op; object `+` extends `+`
         sealed trait `-` extends Op; object `-` extends `-`
-        sealed trait `*` extends Op; object `*` extends `*`
-        sealed trait `/` extends Op; object `/` extends `/`
-        sealed trait `%` extends Op; object `%` extends `%`
-        sealed trait max extends Op; object max extends max
-        sealed trait min extends Op; object min extends min
-        sealed trait `|` extends Op; object `|` extends `|`
-        sealed trait `&` extends Op; object `&` extends `&`
-        sealed trait `^` extends Op; object `^` extends `^`
   object DFDecimal:
     sealed trait NativeType
     object NativeType:
