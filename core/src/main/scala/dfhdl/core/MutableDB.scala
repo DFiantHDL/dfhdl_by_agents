@@ -1,6 +1,5 @@
 package dfhdl.core
 import dfhdl.internals.*
-import dfhdl.hw
 import dfhdl.compiler.ir.{
   DB,
   DuplicateTag,
