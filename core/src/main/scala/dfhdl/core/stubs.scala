@@ -35,3 +35,16 @@ end ir
 trait Position
 trait MetaContext
 trait ExactOp2Aux[Op, C, B, L, R, O]
+
+sealed class Modifier[+A, +C, +I, +P]
+type ModifierAny = Modifier[Any, Any, Any, Any]
+object Modifier:
+  type CONST = Modifier[Any, Any, Any, Any]
+
+type IntP = Any
+object IntP:
+  type +[L <: IntP, R <: IntP] = Int
+  type Max[L <: IntP, R <: IntP] = Int
+end IntP
+
+export DFType.asFE
