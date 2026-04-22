@@ -343,28 +343,13 @@ object DFVal extends DFValLP:
   ): ConstCheck[P] with {}
 
   extension [D, T <: ir.DFType, P](lhs: DFValTP[DFType[ir.DFType.Aux[T, Option[D]], ?], P])
-    protected[core] def toScalaValue(using dfc: DFC, check: ConstCheck[P]): D =
-      import dfc.getSet
-      val lhsIR = lhs.asIR
-      def error(errMsg: String): Nothing =
-        exitWithError(
-          s"""|Scala value access error!
-              |Position:  ${lhsIR.meta.position}
-              |Hierarchy: ${lhsIR.getOwnerDesign.getFullName}
-              |Message:   ${errMsg}""".stripMargin
-        )
-      lhsIR.injectGlobalCtx()
-      lhsIR.getConstDataThroughParams[Option[D]]
-        .getOrElse(error("Cannot fetch a Scala value from a non-constant DFHDL value."))
-        .getOrElse(error("Cannot fetch a Scala value from a bubble (invalid) DFHDL value."))
+    protected[core] def toScalaValue(using dfc: DFC, check: ConstCheck[P]): D = ???
   end extension
 
   extension [LW <: IntP, LT <: DFTypeW[LW]](lhs: DFValOf[LT])
     protected[core] def compareWidths[RW <: IntP, RT <: DFTypeW[RW]](
         rhs: DFValOf[RT]
-    )(func: (Int, Int) => Boolean)(using dfc: DFC): Option[Boolean] =
-      import dfc.getSet
-      lhs.dfType.compareWidths(rhs.dfType)(func)
+    )(func: (Int, Int) => Boolean)(using dfc: DFC): Option[Boolean] = ???
 
   trait InitCheck[I]
   given [I](using
@@ -376,46 +361,17 @@ object DFVal extends DFValLP:
 
   extension [T <: DFTypeAny, M <: ModifierAny](dfVal: DFVal[T, M])
     @metaContextForward(0)
-    infix def tag[CT <: ir.DFTag: ClassTag](customTag: CT)(using
-        dfc: DFC
-    ): DFVal[T, M] =
-      import dfc.getSet
-      dfVal.asIR
-        .setTags(_.tag(customTag))
-        .setMeta(m => if (m.isAnonymous && !dfc.getMeta.isAnonymous) dfc.getMeta else m)
-        .asVal[T, M]
+    infix def tag[CT <: ir.DFTag: ClassTag](customTag: CT)(using dfc: DFC): DFVal[T, M] = ???
     @metaContextForward(0)
-    infix def tag[CT <: ir.DFTag: ClassTag](condCustomTag: Conditional[CT])(using
-        dfc: DFC
-    ): DFVal[T, M] = if (condCustomTag.isActive) dfVal.tag(condCustomTag.getArg) else dfVal
-    def hasTag[CT <: ir.DFTag: ClassTag](using dfc: DFC): Boolean =
-      import dfc.getSet
-      dfVal.asIR.tags.hasTagOf[CT]
+    infix def tag[CT <: ir.DFTag: ClassTag](condCustomTag: Conditional[CT])(using dfc: DFC): DFVal[T, M] = ???
+    def hasTag[CT <: ir.DFTag: ClassTag](using dfc: DFC): Boolean = ???
     @metaContextForward(0)
-    infix def setName(name: String)(using dfc: DFC): DFVal[T, M] =
-      import dfc.getSet
-      dfVal.asIR
-        .setMeta(m =>
-          if (m.isAnonymous && !dfc.getMeta.isAnonymous) dfc.getMeta.setName(name)
-          else m.setName(name)
-        )
-        .asVal[T, M]
-    def anonymize(using dfc: DFC): DFVal[T, M] =
-      import dfc.getSet
-      dfVal.asIR match
-        case dfValIR: (ir.DFVal.Alias | ir.DFVal.Const | ir.DFVal.Func) =>
-          dfValIR.setMeta(m => m.anonymize).asVal[T, M]
-        case _ => dfVal
-    def inDFCPosition(using DFC): Boolean = dfVal.asIR.meta.position == dfc.getMeta.position
-    def anonymizeInDFCPosition(using DFC): DFVal[T, M] =
-      if (inDFCPosition) dfVal.anonymize else dfVal
+    infix def setName(name: String)(using dfc: DFC): DFVal[T, M] = ???
+    def anonymize(using dfc: DFC): DFVal[T, M] = ???
+    def inDFCPosition(using DFC): Boolean = ???
+    def anonymizeInDFCPosition(using DFC): DFVal[T, M] = ???
     @metaContextForward(0)
-    def nameInDFCPosition(using dfc: DFC): DFVal[T, M] =
-      import dfc.getSet
-      val dfValIR = dfVal.asIR
-      if (inDFCPosition && dfValIR.isAnonymous && !dfc.isAnonymous)
-        dfValIR.setMeta(_ => dfc.getMeta).asVal[T, M]
-      else dfVal
+    def nameInDFCPosition(using dfc: DFC): DFVal[T, M] = ???
   end extension
 
   @metaContextForward(0)
