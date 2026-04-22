@@ -23,7 +23,6 @@ type DFTypeAny = DFType[Any, Any]
 
 final case class DFC(mutableDB: MutableDB)
 
-type DFBoolOrBit = DFType[Any, Any]
 object DFBoolOrBit:
   object Val:
     object Ops:
