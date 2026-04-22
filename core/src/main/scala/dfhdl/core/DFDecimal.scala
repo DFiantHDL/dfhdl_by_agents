@@ -1197,21 +1197,7 @@ object DFXInt:
           op: FuncOp,
           lhs: DFValTP[DFXInt[LS, LW, LN], LP],
           rhs: DFValTP[DFXInt[RS, RW, RN], RP]
-      )(using dfc: DFC): DFValTP[DFXInt[OS, OW, ON], LP | RP] =
-        val rhsFix = rhs.toDFXIntOf(lhs.dfType)(using dfc.anonymize)
-        import dfc.getSet
-        // Check A: / and % — both operands are context-determined in Verilog
-        val shouldWarn = op match
-          case FuncOp./ | FuncOp.% =>
-            (hasImplicitlyFromIntTag(rhsFix.asIR) &&
-              containsNarrowNonCarryArith(lhs.asIR)) ||
-            (hasImplicitlyFromIntTag(lhs.asIR) &&
-              containsNarrowNonCarryArith(rhsFix.asIR))
-          case _ => false
-        if shouldWarn then
-          dfc.logEvent(DFWarning(op.toString, verilogSemanticsWarnMsg))
-        DFVal.Func(dfType, op, List(lhs, rhsFix))
-      end arithOp
+      )(using dfc: DFC): DFValTP[DFXInt[OS, OW, ON], LP | RP] = ???
 
       type CommutativeArithOp =
         FuncOp.+.type | FuncOp.*.type | FuncOp.max.type | FuncOp.min.type
