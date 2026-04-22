@@ -32,23 +32,19 @@ object DFXInt:
       type CommutativeArithOp = Int
       type NonCommutativeArithOp = String
       given evOpCommutativeArithDFXInt[Op <: CommutativeArithOp, LP, RP](using
-          icL: Candidate[LP],
-          icR: Candidate[RP]
+          Candidate[LP], Candidate[RP]
       ): ExactOp2Aux[Op, DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
       given evOpNonCommutativeArithDFXInt[Op <: NonCommutativeArithOp, LP, RP](using
-          icL: Candidate[LP],
-          icR: Candidate[RP]
+          Candidate[LP], Candidate[RP]
       ): ExactOp2Aux[Op, DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
 
       import DFVal.Ops.CarryOp
       given evOpCarryAddSubDFXInt[LP, RP](using
-          icL: Candidate[LP],
-          icR: Candidate[RP]
+          Candidate[LP], Candidate[RP]
       ): ExactOp2Aux[CarryOp, DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
 
       given evOpCarryMulDFXInt[LP, RP](using
-          icL: Candidate[LP],
-          icR: Candidate[RP]
+          Candidate[LP], Candidate[RP]
       ): ExactOp2Aux[CarryOp, DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
 
 type DFConstInt32 = DFConstOf[DFType]
