@@ -8,7 +8,6 @@ import ir.DFDecimal.NativeType
 import scala.annotation.unchecked.uncheckedVariance
 import scala.annotation.{implicitNotFound, targetName}
 import scala.quoted.*
-import DFOpaque.Abstract as DFOpaqueA
 import dfhdl.compiler.ir.MemberGetSet
 import scala.annotation.tailrec
 
