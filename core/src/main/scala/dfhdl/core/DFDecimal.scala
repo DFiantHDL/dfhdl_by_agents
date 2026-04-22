@@ -728,14 +728,7 @@ object DFXInt:
         type OutW = W
         type OutN = BitAccurate
         type OutP = P
-        def apply(arg: R)(using dfc: DFC): Out =
-          import DFBits.Val.Ops.uint
-          val dfVal = ic(arg)(using dfc.anonymize)
-          val ret =
-            if (dfVal.hasTag[ir.ResizeTag])
-              dfVal.uint.tag(ir.ResizeTag)
-            else dfVal.uint
-          ret.asValTP[DFXInt[OutS, OutW, OutN], OutP]
+        def apply(arg: R)(using dfc: DFC): Out = ???
       end fromDFBitsValCandidate
     end CandidateLP
     object Candidate extends CandidateLP:
@@ -757,11 +750,7 @@ object DFXInt:
         type OutW = OW
         type OutN = Int32
         type OutP = CONST
-        def apply(arg: R)(using dfc: DFC): Out =
-          val dfType = DFXInt(info.signed(arg), info.width(arg), BitAccurate)
-          DFVal.Const(dfType, Some(BigInt(arg)), named = true)(using
-            dfc.tag(ir.ImplicitlyFromIntTag)
-          ).asInstanceOf[Out]
+        def apply(arg: R)(using dfc: DFC): Out = ???
       // DFInt32 acts as a wildcard in operations: it adapts to the
       // bit-accurate value's sign and width. OutN = Int32 (true) signals wildcard status.
       given fromDFConstInt32[P, R <: DFValTP[DFInt32, P]]: Candidate[R] with
