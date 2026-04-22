@@ -12,27 +12,8 @@ import DFDecimal.Constraints.*
 type DFDecimal[S <: Boolean, W <: IntP, F <: Int, N <: NativeType] =
   DFType[ir.DFDecimal, Args4[S, W, F, N]]
 object DFDecimal:
-  protected[core] def apply[S <: Boolean, W <: IntP, F <: Int, N <: NativeType](
-      signed: Inlined[S],
-      width: IntParam[W],
-      fractionWidth: Inlined[F],
-      nativeType: N
-  )(using dfc: DFC, check: Width.CheckNUB[S, W]): DFDecimal[S, W, F, N] = ???
-  protected[core] def forced[S <: Boolean, W <: IntP, F <: Int, N <: NativeType](
-      signed: Boolean,
-      width: Int,
-      fractionWidth: Int,
-      nativeType: NativeType
-  )(using DFC): DFDecimal[S, W, F, N] = ???
-
   given DFInt32 = DFInt32
-  given [S <: Boolean, W <: IntP & Singleton, F <: Int, N <: NativeType](using
-      ValueOf[S], ValueOf[W], ValueOf[F], ValueOf[N]
-  )(using DFCG, Width.CheckNUB[S, W]): DFDecimal[S, W, F, N] = ???
-  object Extensions:
-    extension [S <: Boolean, W <: IntP, F <: Int, N <: NativeType](dfType: DFDecimal[S, W, F, N])
-      def signed: Inlined[S] = ???
-      def nativeType: N = ???
+  object Extensions
 
   protected[core] object Constraints:
     object Width extends Check2[Boolean, Int, [s <: Boolean, w <: Int] =>> true, [s <: Boolean, w <: Int] =>> ""]
@@ -91,11 +72,6 @@ end DFDecimal
 
 type DFXInt[S <: Boolean, W <: IntP, N <: NativeType] = DFDecimal[S, W, 0, N]
 object DFXInt:
-  def apply[S <: Boolean, W <: IntP, N <: NativeType & Singleton](
-      signed: Inlined[S],
-      width: IntParam[W],
-      nativeType: N
-  )(using DFC, Width.CheckNUB[S, W]): DFXInt[S, W, N] = DFDecimal(signed, width, 0, nativeType)
 
   object Val:
     trait Candidate[R] extends Exact0.TC[R, DFC]:
