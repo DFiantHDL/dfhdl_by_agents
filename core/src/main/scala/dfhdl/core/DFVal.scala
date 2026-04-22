@@ -151,32 +151,4 @@ object DFVal:
 end DFVal
 
 
-extension [T <: DFTypeAny](dfVar: DFValOf[T])
-  def assign[R <: DFTypeAny](rhs: DFValOf[R])(using DFC): Unit = ???
-  def nbassign[R <: DFTypeAny](rhs: DFValOf[R])(using DFC): Unit = ???
-
-extension [T <: DFTypeAny](lhs: DFValOf[T])
-  def connect[R <: DFTypeAny](rhs: DFValOf[R])(using DFC): Unit = ???
-end extension
-
-trait VarsTuple[T <: NonEmptyTuple]:
-  type Width <: Int
-object VarsTuple:
-  transparent inline given [T <: NonEmptyTuple]: VarsTuple[T] = ${ evMacro[T] }
-  def evMacro[T <: NonEmptyTuple](using Quotes, Type[T]): Expr[VarsTuple[T]] = ???
-end VarsTuple
-
-final class REG_DIN[T <: DFTypeAny](val irValue: DFError.REG_DIN[T]) extends AnyVal:
-  def :=(rhs: DFVal.TC.Exact[T])(using DFC): Unit = ???
-
-object DFVarOps
-
-object ConnectOps:
-  def specialConnect[LT, LM, RT, RM](lhs: Any, rhs: Any)(using DFC): Unit = ???
-end ConnectOps
-
-extension (dfVal: ir.DFVal)
-  protected[core] def isUnreachable(using dfc: DFC): Boolean = ???
-  protected[core] def cloneUnreachable(using dfc: DFC): ir.DFVal = ???
-  protected[dfhdl] def cloneAnonValueAndDepsHere(using dfc: DFC): ir.DFVal = ???
-end extension
+final class REG_DIN[T <: DFTypeAny](val irValue: DFError.REG_DIN[T]) extends AnyVal
