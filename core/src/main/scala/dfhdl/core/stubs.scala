@@ -12,10 +12,9 @@ class DFType
 class DFC(mutableDB: MutableDB)
 
 object DFBoolOrBit:
-  object Ops:
-    given bl[Op, O](using
-        ExactOp2Aux[Op, DFC, O]
-    ): ExactOp2Aux[DFVal.Ops.BoolOnlyOp, DFC, O] = ???
+  given bl[Op, O](using
+      ExactOp2Aux[Op, DFC, O]
+  ): ExactOp2Aux[DFVal.Ops.BoolOnlyOp, DFC, O] = ???
 
 object DFDecimal:
   object Ops:
