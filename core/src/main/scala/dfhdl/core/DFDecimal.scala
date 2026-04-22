@@ -1020,53 +1020,10 @@ object DFXInt:
         end resize
       end extension
 
-      private[core] val verilogSemanticsWarnMsg =
-        """|Implicit Scala/DFHDL Int conversion may produce different results than Verilog.
-           |In Verilog, integer literals are 32-bit, which can widen intermediate arithmetic.
-           |In DFHDL, Int literals are converted to minimum bit-accurate width.
-           |Use carry operations (+^, -^, *^) or explicit bit-accurate literals (d"W'V").""".stripMargin
-
-      // Check if a value is tagged with ImplicitlyFromIntTag
-      private[core] def hasImplicitlyFromIntTag(dfVal: ir.DFVal): Boolean =
-        dfVal.tags.hasTagOf[ir.ImplicitlyFromIntTag]
-
-      // Check if an anonymous sub-tree contains non-carry +/-/* with width < 32.
-      private[core] def containsNarrowNonCarryArith(
-          dfVal: ir.DFVal
-      )(using ir.MemberGetSet): Boolean =
-        dfVal match
-          case func: ir.DFVal.Func if func.isAnonymous =>
-            func.op match
-              case FuncOp.+ | FuncOp.- | FuncOp.* =>
-                val isNonCarry = func.dfType =~ func.args.head.get.dfType
-                val isNarrowNonCarry = isNonCarry && func.widthIntOpt.map(_ < 32).getOrElse(false)
-                isNarrowNonCarry ||
-                func.args.exists(ref => containsNarrowNonCarryArith(ref.get))
-              case _ =>
-                func.args.exists(ref => containsNarrowNonCarryArith(ref.get))
-          case _ => false
-
-      // Check if an anonymous sub-tree contains narrow non-carry arith that
-      // also has an ImplicitlyFromIntTag operand (Verilog "Forcing Larger
-      // Evaluation" pattern, or implicit Int in a chain assigned to wider target).
-      private[core] def containsNarrowNonCarryArithWithTaggedOperand(
-          dfVal: ir.DFVal
-      )(using ir.MemberGetSet): Boolean =
-        dfVal match
-          case func: ir.DFVal.Func if func.isAnonymous =>
-            func.op match
-              case FuncOp.+ | FuncOp.- | FuncOp.* =>
-                val isNonCarry = func.dfType =~ func.args.head.get.dfType
-                val isNarrowNonCarry = isNonCarry && func.widthIntOpt.map(_ < 32).getOrElse(false)
-                (isNarrowNonCarry && func.args.exists(ref => hasImplicitlyFromIntTag(ref.get))) ||
-                func.args.exists(ref =>
-                  containsNarrowNonCarryArithWithTaggedOperand(ref.get)
-                )
-              case _ =>
-                func.args.exists(ref =>
-                  containsNarrowNonCarryArithWithTaggedOperand(ref.get)
-                )
-          case _ => false
+      private[core] val verilogSemanticsWarnMsg = ""
+      private[core] def hasImplicitlyFromIntTag(dfVal: ir.DFVal): Boolean = ???
+      private[core] def containsNarrowNonCarryArith(dfVal: ir.DFVal)(using ir.MemberGetSet): Boolean = ???
+      private[core] def containsNarrowNonCarryArithWithTaggedOperand(dfVal: ir.DFVal)(using ir.MemberGetSet): Boolean = ???
 
       // Check that a wildcard `Int` value fits in the bit-accurate value's type.
       // Produces an elaboration error if it doesn't.
