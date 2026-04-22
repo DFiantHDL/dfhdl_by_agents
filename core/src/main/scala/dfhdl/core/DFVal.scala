@@ -154,10 +154,6 @@ object DFVal extends DFValLP:
   object TC:
     type Exact[T <: DFTypeAny] = Exact1[DFTypeAny, T, [t <: DFTypeAny] =>> t, DFC, TC]
     type Aux[T <: DFTypeAny, R, OutP0] = TC[T, R] { type OutP = OutP0 }
-    export DFBoolOrBit.Val.TC.given
-    export DFBits.Val.TC.given
-    export DFDecimal.Val.TC.given
-    export DFEnum.Val.TC.given
   end TC
 
   trait TCConv[T <: DFTypeAny, R] extends TC[T, R]:
@@ -166,9 +162,7 @@ object DFVal extends DFValLP:
     def conv(dfType: T, from: R)(using DFC): Out = ???
     def apply(from: R)(using DFC): Out
 
-  object TCConv:
-    export DFBits.Val.TCConv.given
-    export DFDecimal.Val.TCConv.given
+  object TCConv
 
   trait Compare[T <: DFTypeAny, V, Op <: FuncOp, C <: Boolean] extends TCCommon[T, V, DFValAny]:
     type OutP
@@ -176,10 +170,6 @@ object DFVal extends DFValLP:
   end Compare
   object Compare:
     type Aux[T <: DFTypeAny, V, Op <: FuncOp, C <: Boolean, OutP0] = Compare[T, V, Op, C] { type OutP = OutP0 }
-    export DFBoolOrBit.Val.Compare.given
-    export DFBits.Val.Compare.given
-    export DFDecimal.Val.Compare.given
-    export DFEnum.Val.Compare.given
   end Compare
 
   trait DFDomainOnly
