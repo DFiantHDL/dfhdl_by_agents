@@ -346,153 +346,46 @@ object DFBits:
     object Ops:
       import IntP.{-, +}
       given evOpApplyDFBits[
-          W <: IntP,
-          A,
-          C,
-          I,
-          P,
-          L <: DFVal[DFBits[W], Modifier[A, C, I, P]],
-          R
+          W <: IntP, A, C, I, P,
+          L <: DFVal[DFBits[W], Modifier[A, C, I, P]], R
       ](using
           ub: DFUInt.Val.UBArg[W, R]
-      ): ExactOp2Aux["apply", DFC, DFValAny, L, R, DFVal[DFBit, Modifier[A, Any, Any, P]]] =
-        new ExactOp2["apply", DFC, DFValAny, L, R]:
-          type Out = DFVal[DFBit, Modifier[A, Any, Any, P]]
-          def apply(lhs: L, idx: R)(using DFC): Out = trydf {
-            DFVal.Alias.ApplyIdx(DFBit, lhs, ub(lhs.widthIntParam, idx)(using dfc.anonymize))
-          }(using dfc, CTName("bit selection (apply)"))
-      end evOpApplyDFBits
+      ): ExactOp2Aux["apply", DFC, DFValAny, L, R, DFVal[DFBit, Modifier[A, Any, Any, P]]] = ???
       given evOpApplyRangeDFBits[
-          W <: IntP,
-          A,
-          C,
-          I,
-          P,
+          W <: IntP, A, C, I, P,
           L <: DFVal[DFBits[W], Modifier[A, C, I, P]],
-          HI <: IntP,
-          LO <: IntP
+          HI <: IntP, LO <: IntP
       ](using
           checkHigh: BitIndex.CheckNUB[HI, W],
           checkLow: BitIndex.CheckNUB[LO, W],
           checkHiLo: BitsHiLo.CheckNUB[HI, LO]
-      ): ExactOp3Aux["apply", DFC, DFValAny, L, HI, LO, DFVal[
-        DFBits[HI - LO + 1],
-        Modifier[A, Any, Any, P]
-      ]] =
-        new ExactOp3["apply", DFC, DFValAny, L, HI, LO]:
-          type Out = DFVal[DFBits[HI - LO + 1], Modifier[A, Any, Any, P]]
-          def apply(lhs: L, idxHigh: HI, idxLow: LO)(using DFC): Out = trydf {
-            val idxHighParam = IntParam(idxHigh)
-            val idxLowParam = IntParam(idxLow)
-            val idxHighIntOpt = idxHighParam.toScalaIntOpt
-            val idxLowIntOpt = idxLowParam.toScalaIntOpt
-            val widthIntOpt = lhs.widthIntOpt
-            (idxHighIntOpt, widthIntOpt) match
-              case (Some(idxHighInt), Some(widthInt)) => checkHigh(idxHighInt, widthInt)
-              case _                                  =>
-            (idxLowIntOpt, widthIntOpt) match
-              case (Some(idxLowInt), Some(widthInt)) => checkLow(idxLowInt, widthInt)
-              case _                                 =>
-            (idxHighIntOpt, idxLowIntOpt) match
-              case (Some(idxHighInt), Some(idxLowInt)) => checkHiLo(idxHighInt, idxLowInt)
-              case _                                   =>
-            DFVal.Alias.ApplyRange(lhs, idxHighParam, idxLowParam)
-          }(using dfc, CTName("bit range selection (apply)"))
-      end evOpApplyRangeDFBits
+      ): ExactOp3Aux["apply", DFC, DFValAny, L, HI, LO, DFVal[DFBits[HI - LO + 1], Modifier[A, Any, Any, P]]] = ???
       given evLogicOpDFBits[
           Op <: FuncOp.|.type | FuncOp.&.type | FuncOp.^.type,
-          L,
-          LW <: IntP,
-          LP,
-          R,
-          RW <: IntP,
-          RP
+          L, LW <: IntP, LP, R, RW <: IntP, RP
       ](using
           icL: Candidate.Aux[L, LW, LP],
-          icR: Candidate.Aux[R, RW, RP],
-          op: ValueOf[Op]
-      )(using
-          check: `LW == RW`.CheckNUB[LW, RW]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFBits[LW], LP | RP]] =
-        new ExactOp2[Op, DFC, DFValAny, L, R]:
-          type Out = DFValTP[DFBits[LW], LP | RP]
-          def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-            val lhsVal = icL(lhs)
-            val rhsVal = icR(rhs)
-            (lhsVal.widthIntOpt, rhsVal.widthIntOpt) match
-              case (Some(lw), Some(rw)) => check(lw, rw)
-              case _                    =>
-            DFVal.Func(lhsVal.dfType, op.value, List(lhsVal, rhsVal))
-          }
-      end evLogicOpDFBits
+          icR: Candidate.Aux[R, RW, RP]
+      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFBits[LW], LP | RP]] = ???
       given evOpLogicReduceDFBits[
           Op <: FuncOp.|.type | FuncOp.&.type | FuncOp.^.type,
-          LW <: IntP,
-          LP,
+          LW <: IntP, LP,
           L <: DFValTP[DFBits[LW], LP] | DFValTP[DFUInt[LW], LP]
-      ](using
-          op: ValueOf[Op]
-      ): ExactOp1Aux[Op, DFC, DFValAny, L, DFValTP[DFBit, LP]] =
-        new ExactOp1[Op, DFC, DFValAny, L]:
-          type Out = DFValTP[DFBit, LP]
-          def apply(lhs: L)(using DFC): Out = trydf {
-            DFVal.Func(DFBit, op.value, List(lhs)).asValTP[DFBit, LP]
-          }
-      end evOpLogicReduceDFBits
+      ](using op: ValueOf[Op]): ExactOp1Aux[Op, DFC, DFValAny, L, DFValTP[DFBit, LP]] = ???
       given evConcatOpDFBits[
-          Op <: FuncOp.++.type,
-          L,
-          LW <: IntP,
-          LP,
-          R,
-          RW <: IntP,
-          RP
+          Op <: FuncOp.++.type, L, LW <: IntP, LP, R, RW <: IntP, RP
       ](using
           icL: Candidate.Aux[L, LW, LP],
-          icR: Candidate.Aux[R, RW, RP],
-          op: ValueOf[Op]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFBits[IntP.+[LW, RW]], LP | RP]] =
-        new ExactOp2[Op, DFC, DFValAny, L, R]:
-          type Out = DFValTP[DFBits[IntP.+[LW, RW]], LP | RP]
-          def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-            val lhsVal = icL(lhs)
-            val rhsVal = icR(rhs)
-            val width = lhsVal.widthIntParam + rhsVal.widthIntParam
-            DFVal.Func(DFBits(width), FuncOp.++, List(lhsVal, rhsVal))
-          }
-      end evConcatOpDFBits
+          icR: Candidate.Aux[R, RW, RP]
+      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFBits[IntP.+[LW, RW]], LP | RP]] = ???
       given evOpShift[
           Op <: FuncOp.>>.type | FuncOp.<<.type,
-          LW <: IntP,
-          LP,
+          LW <: IntP, LP,
           LT <: DFBits[LW] | DFSInt[LW] | DFUInt[LW] | DFInt32,
-          L <: DFValTP[LT, LP],
-          R,
-          RP
+          L <: DFValTP[LT, LP], R, RP
       ](using
-          ub: DFUInt.Val.UBArg.Aux[LW, R, RP],
-          op: ValueOf[Op]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[LT, LP | RP]] =
-        new ExactOp2[Op, DFC, DFValAny, L, R]:
-          type Out = DFValTP[LT, LP | RP]
-          def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-            import dfc.getSet
-            // Check B: shift amount is self-determined in Verilog,
-            // so only warn if the LHS chain itself contains a tagged operand
-            if DFXInt.Val.Ops.containsNarrowNonCarryArithWithTaggedOperand(
-                lhs.asIR
-              )
-            then
-              dfc.logEvent(
-                DFWarning(
-                  op.value.toString,
-                  DFXInt.Val.Ops.verilogSemanticsWarnMsg
-                )
-              )
-            val shiftVal = ub(lhs.widthIntParam.asInstanceOf[IntParam[LW]], rhs)
-            DFVal.Func(lhs.dfType, op.value, List(lhs, shiftVal))
-          }
-      end evOpShift
+          ub: DFUInt.Val.UBArg.Aux[LW, R, RP]
+      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[LT, LP | RP]] = ???
 
       extension [W <: IntP, P](lhs: DFValTP[DFBits[W], P])
         // TODO: IntP
