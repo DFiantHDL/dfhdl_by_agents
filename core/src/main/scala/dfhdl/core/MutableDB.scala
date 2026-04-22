@@ -87,106 +87,18 @@ final class MutableDB():
     var stack = List.empty[DesignContext]
     val designMembers = mutable.Map.empty[DFDesignBlock, List[DFMember]]
     val uniqueDesigns = mutable.Map.empty[String, List[List[DFDesignBlock]]]
-
-    def startDesign(design: DFDesignBlock): Unit =
-      stack = current :: stack
-      current = new DesignContext
-    def endDesign(design: DFDesignBlock): Unit =
-      val currentMembers = current.getImmutableMemberList.drop(1)
-      val currentRefTable = current.getImmutableRefTable
-      val designType = design.dclName
-      var isDuplicate = false
-      def sameDesignAs(groupDesign: DFDesignBlock): Boolean =
-        if (design.dclMeta == groupDesign.dclMeta)
-          currentMembers =~ designMembers(groupDesign)
-        else false
-      uniqueDesigns.get(designType) match
-        // this design type already exists and has at least one group
-        case Some(groupList) =>
-          // searching for the first group of designs that has the same members
-          val updatedGroupList = groupList.map { group =>
-            if (current.isDuplicate || !isDuplicate && sameDesignAs(group.head))
-              isDuplicate = true
-              // the head of each group will always be the first design discovered
-              // from that group and it keeps all its elements and not marked as a duplicate.
-              group.head :: design :: group.drop(1)
-            else group
-          }
-          if (isDuplicate) uniqueDesigns += designType -> updatedGroupList
-          // a new group was discovered so we add it to the group list
-          else uniqueDesigns += designType -> (List(design) :: groupList)
-        // first time encountering this design type, so add the first group
-        case None => uniqueDesigns += designType -> List(List(design))
-      end match
-      // If this design is a duplicate, we retain only the public members (ports, design
-      // parameters, domain blocks, and their dependencies) during elaboration, because
-      // user code may still reference them (e.g., connecting to a port requires the Dcl
-      // before a PortByNameSelect is created). These public members are later removed
-      // during immutable DB creation (see `immutable`), where ports are resolved
-      // on-demand via DuplicationRef in `DB.dupPortsByName`.
-      // If the current design context is already known to be a duplicate (as a result
-      // of a `hw.pure` annotation), then we can skip this extra step since the design
-      // context is already minimized to the named members.
-      if (isDuplicate && !current.isDuplicate)
-        val publicMembers = currentMembers.filterPublicMembers
-        designMembers += design -> publicMembers
-        val transferredRefs =
-          // getting the design references to parameters
-          design.getRefs.map(r => r -> currentRefTable(r)) ++
-            publicMembers.view.flatMap(m =>
-              (m.ownerRef -> currentRefTable(m.ownerRef)) ::
-                m.getRefs.map(r => r -> currentRefTable(r))
-            )
-        stack.head.refTable ++= transferredRefs
-      else
-        designMembers += design -> currentMembers
-        stack.head.refTable ++= currentRefTable
-      end if
-
-      stack.head.addMember(design)
-      current = stack.head
-      stack = stack.drop(1)
-    end endDesign
-    val pureDesignDefOutCache = mutable.Map.empty[(Position, List[DFType]), DFValAny]
-    def runFuncWithInputs[V <: DFValAny](func: => V, inputs: List[DFValAny]): (Boolean, V) =
-      current.defInputs = inputs
-      val currentDesign = OwnershipContext.currentDesign
-      val isPure = currentDesign.dclMeta.annotations.exists {
-        case annotation.Pure => true
-        case _               => false
-      }
-      if (isPure)
-        val key = (currentDesign.dclMeta.position, inputs.map(_.dfType.asIR))
-        pureDesignDefOutCache.get(key) match
-          case Some(ret) =>
-            current.isDuplicate = true
-            (true, ret.asInstanceOf[V])
-          case None =>
-            val ret = func
-            pureDesignDefOutCache += key -> ret
-            (false, ret)
-      else (false, func)
-    end runFuncWithInputs
-    def getDefInput(idx: Int): DFValAny =
-      current.defInputs(idx)
-    def addLoopIter(meta: Meta, iter: DFValAny): Unit =
-      current.loopIterMap += meta -> iter
-    def getLoopIter(meta: Meta): DFValAny =
-      current.loopIterMap(meta)
-    // for testing purposes only
-    def getMembersNum: Int = current.members.size
-    def getMembers(from: Int, until: Int): List[DFMember] =
-      current.members.view.slice(from, until).filterNot(e => e._3).map(e => e._1).toList
-    def getLastMembers(cnt: Int): List[DFMember] =
-      current.members.view.reverse.filterNot(e => e._3).map(e => e._1).take(cnt).toList.reverse
-    def getLastDesignInst: DFDesignBlock =
-      current.members.view.reverse.collectFirst { case MemberEntry(irValue = d: DFDesignBlock) =>
-        d
-      }.get
-    def getReachableNamedValue(dfVal: DFVal, cf: => DFVal): DFVal =
-      current.getReachableNamedValue(dfVal, cf)
-    def getReachableDFType(dfType: DFType, cf: => DFType): DFType =
-      current.getReachableDFType(dfType, cf)
+    def startDesign(design: DFDesignBlock): Unit = ???
+    def endDesign(design: DFDesignBlock): Unit = ???
+    def runFuncWithInputs[V <: DFValAny](func: => V, inputs: List[DFValAny]): (Boolean, V) = ???
+    def getDefInput(idx: Int): DFValAny = ???
+    def addLoopIter(meta: Meta, iter: DFValAny): Unit = ???
+    def getLoopIter(meta: Meta): DFValAny = ???
+    def getMembersNum: Int = ???
+    def getMembers(from: Int, until: Int): List[DFMember] = ???
+    def getLastMembers(cnt: Int): List[DFMember] = ???
+    def getLastDesignInst: DFDesignBlock = ???
+    def getReachableNamedValue(dfVal: DFVal, cf: => DFVal): DFVal = ???
+    def getReachableDFType(dfType: DFType, cf: => DFType): DFType = ???
   end DesignContext
 
   val injectedCtx = mutable.Set.empty[DesignContext]
