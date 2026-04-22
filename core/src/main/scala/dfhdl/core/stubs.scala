@@ -55,21 +55,8 @@ object DFType:
 end DFType
 
 final case class DFC(
-    nameOpt: Option[String],
-    position: Position,
-    docOpt: Option[String],
     mutableDB: MutableDB = new MutableDB()
-) extends MetaContext:
-  def setMeta(
-      nameOpt: Option[String] = nameOpt,
-      position: Position = position,
-      docOpt: Option[String] = docOpt,
-      annotations: List[Annotation] = Nil
-  ): this.type = ???
-  def setMeta(meta: ir.Meta): this.type = ???
-  def anonymize: this.type = ???
-  def setName(name: String): this.type = ???
-end DFC
+) extends MetaContext
 object DFC:
   def emptyNoEO: DFC = ???
 end DFC
