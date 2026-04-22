@@ -57,48 +57,14 @@ object DFBoolOrBit:
       ): ExactOp2Aux[BoolOnlyOp[Op], DFC, DFValAny, L, R, O] = ???
 
       extension [T <: DFBoolOrBit, P](lhs: DFValTP[T, P])
-        @targetName("notOfDFBoolOrBit")
-        private[core] def not(using DFC): DFValTP[T, P] = ???
         transparent inline def sel[OT, OF](inline onTrue: OT, inline onFalse: OF)(using
             dfc: DFCG
         ): Any =
-          inline val onTrueIsDFVal = inline compiletime.erasedValue[OT] match
-            case _: DFValAny => true
-            case _           => false
-          inline val onTrueIsDFConstInt32 = inline compiletime.erasedValue[OT] match
-            case _: DFConstInt32 => true
-            case _               => false
-          inline val onFalseIsDFVal = inline compiletime.erasedValue[OF] match
-            case _: DFValAny => true
-            case _           => false
-          inline val onFalseIsDFConstInt32 = inline compiletime.erasedValue[OF] match
-            case _: DFConstInt32 => true
-            case _               => false
-          // onTrue type has priority, except when onTrue is a DFHDL Int parameter while onFalse is not
-          inline if (onTrueIsDFVal && !(onTrueIsDFConstInt32 && !onFalseIsDFConstInt32))
-            inline onTrue match
-              case onTrueDFVal: DFValTP[tt, tp] =>
-                val tc = compiletime.summonInline[DFVal.TC[tt, OF]]
-                val dfType = onTrueDFVal.dfType
-                inline if (isConstCheck[OF])
-                  DFVal.Func(dfType, FuncOp.sel, List(lhs, onTrueDFVal, tc(dfType, onFalse)))
-                    .asValTP[tt, P | tp]
-                else
-                  DFVal.Func(dfType, FuncOp.sel, List(lhs, onTrueDFVal, tc(dfType, onFalse)))
-                    .asValOf[tt]
-          else if (onFalseIsDFVal)
-            inline onFalse match
-              case onFalseDFVal: DFValTP[ft, fp] =>
-                val tc = compiletime.summonInline[DFVal.TC[ft, OT]]
-                val dfType = onFalseDFVal.dfType
-                inline if (isConstCheck[OT])
-                  DFVal.Func(dfType, FuncOp.sel, List(lhs, tc(dfType, onTrue), onFalseDFVal))
-                    .asValTP[ft, P | fp]
-                else
-                  DFVal.Func(dfType, FuncOp.sel, List(lhs, tc(dfType, onTrue), onFalseDFVal))
-                    .asValOf[ft]
-          else
-            ???
+          inline onTrue match
+            case onTrueDFVal: DFValTP[tt, tp] =>
+              val tc = compiletime.summonInline[DFVal.TC[tt, OF]]
+              val dfType = onTrueDFVal.dfType
+              tc(dfType, onFalse).asValTP[tt, P | tp]
         end sel
       end extension
     end Ops
