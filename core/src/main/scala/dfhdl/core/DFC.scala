@@ -7,17 +7,11 @@ import scala.annotation.Annotation
 import scala.annotation.implicitNotFound
 import ir.annotation.HWAnnotation
 
-@implicitNotFound(
-  "Missing local design context."
-)
 final case class DFC(
     nameOpt: Option[String],
     position: Position,
     docOpt: Option[String],
-    annotations: List[HWAnnotation] = Nil,
-    mutableDB: MutableDB = new MutableDB(),
-    refGen: ir.RefGen = ir.RefGen.initial,
-    tags: ir.DFTags = ir.DFTags.empty
+    mutableDB: MutableDB = new MutableDB()
 ) extends MetaContext:
   def setMeta(
       nameOpt: Option[String] = nameOpt,
@@ -26,29 +20,9 @@ final case class DFC(
       annotations: List[Annotation] = Nil
   ): this.type = ???
   def setMeta(meta: ir.Meta): this.type = ???
-  def setTags(tags: ir.DFTags): DFC = ???
-  def tag[CT <: ir.DFTag: ClassTag](customTag: CT): DFC = ???
-  def emptyTags: DFC = ???
-  given getSet: ir.MemberGetSet = mutableDB.getSet
-  def getMeta: ir.Meta = ???
-  def enterOwner(owner: DFOwnerAny): Unit = ???
-  def exitOwner(): Unit = ???
-  def owner: DFOwnerAny = ???
-  def enterLate(): Unit = ???
-  def exitLate(): Unit = ???
-  def lateConstruction: Boolean = ???
-  def ownerOption: Option[DFOwnerAny] = ???
-  def ownerOrEmptyRef: ir.DFOwner.Ref = ???
-  def setName(name: String): this.type = ???
-  def setAnnotations(annotations: List[HWAnnotation]): this.type = ???
   def anonymize: this.type = ???
-  def logEvent(event: LogEvent): Unit = ???
-  def injectEvents(newEvents: List[LogEvent]): Unit = ???
-  def getErrors: List[DFError] = ???
-  def getWarnings: List[DFWarning] = ???
-  def getEvents: List[LogEvent] = ???
-  def inMetaProgramming: Boolean = ???
-  def clearEvents(): Unit = ???
+  def setName(name: String): this.type = ???
+  given getSet: ir.MemberGetSet = mutableDB.getSet
 end DFC
 object DFC:
   def emptyNoEO: DFC = ???
@@ -62,10 +36,7 @@ object DFC:
     object Design extends Design
     sealed trait Domain extends Local
     object Domain extends Domain
-    sealed trait Process extends Local:
-      // will include the step cache according to the name of the step block
-      // (the plugin will make sure that the name is unique)
-      private[core] val stepCache = mutable.Map.empty[String, ir.StepBlock]
+    sealed trait Process extends Local
     object Process extends Process
     sealed trait Interface extends Local
     object Interface extends Interface

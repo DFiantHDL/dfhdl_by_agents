@@ -11,10 +11,7 @@ private trait Container extends OnCreateEvents, HasDFC, Wait.ContainerOps:
   private[core] type TOwner <: DFOwnerAny
   private[core] lazy val __domainType: ir.DomainType
   private[dfhdl] def initOwner: TOwner
-  private val __initOwner = initOwner
-  private val ownerRef: ir.DFRefAny = __initOwner.asIR.ownerRef
   final private[dfhdl] def containedOwner: TOwner = ???
-  dfc.enterOwner(__initOwner)
 end Container
 
 abstract class DomainContainer[D <: DomainType](domainType: D) extends Container:
