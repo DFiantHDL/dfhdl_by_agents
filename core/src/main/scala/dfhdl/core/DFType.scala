@@ -44,29 +44,14 @@ object DFType:
   type FromDFVal[T] <: DFTypeAny = T match
     case DFVal[t, ?] => t
 
-  def of[T <: Supported](t: T)(using DFC): Of[T] = ???
-  private[core] def apply(t: Any)(using DFC): DFTypeAny = ???
-  private[core] def unapply(t: Any)(using DFC): Option[DFTypeAny] = ???
-
   extension [T <: ir.DFType, A <: Args](dfType: DFType[T, A])
     def asIR: T = ???
-    def codeString(using printer: Printer)(using DFC): String = ???
-  extension (dfType: ir.DFType) def asFE[T <: DFTypeAny]: T = new DFType(dfType).asInstanceOf[T]
-  extension (dfType: DFTypeAny) def asFE[T <: DFTypeAny]: T = dfType.asInstanceOf[T]
-  transparent inline implicit def conv[T <: Supported](inline t: T)(implicit
-      dfc: DFCG,
-      tc: TC[T]
-  ): DFTypeAny = tc(t)
-  export DFDecimal.Extensions.*
+  extension (dfType: ir.DFType) def asFE[T <: DFTypeAny]: T = ???
+  extension (dfType: DFTypeAny) def asFE[T <: DFTypeAny]: T = ???
   export DFBoolOrBit.given
   export DFBits.given
   export DFDecimal.given
   export DFEnum.given
-  export DFVector.given
-  export TDFDouble.given
-  export TDFString.given
-
-  given [T <: DFTypeAny]: CanEqual[T, T] = CanEqual.derived
 
   type Supported = DFTypeAny | FieldsOrTuple | DFEncoding | DFOpaqueA | Byte | Int | Long |
     Boolean | Double | String | Object | Unit
