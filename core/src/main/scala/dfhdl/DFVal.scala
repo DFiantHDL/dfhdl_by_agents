@@ -1,4 +1,4 @@
-package dfhdl.core
+package dfhdl
 
 final class DFVal[+T <: DFType, +M]
 

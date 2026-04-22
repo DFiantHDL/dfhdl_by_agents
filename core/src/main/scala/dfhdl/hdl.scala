@@ -1,6 +1,6 @@
 package dfhdl
 object hdl:
-  export core.DFBoolOrBit.given
-  export core.DFDecimal.Ops.*
+  export DFBoolOrBit.given
+  export DFDecimal.Ops.*
 
 export hdl.*

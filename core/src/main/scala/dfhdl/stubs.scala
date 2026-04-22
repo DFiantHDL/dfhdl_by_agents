@@ -1,4 +1,4 @@
-package dfhdl.core
+package dfhdl
 import DFVal.Ops.CarryOp
 import DFVal.Ops.BoolOnlyOp
 
