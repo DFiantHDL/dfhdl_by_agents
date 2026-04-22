@@ -9,7 +9,6 @@ import scala.compiletime.ops.boolean.||
 // stubs replacing dfhdl.compiler.ir and dfhdl.internals
 object ir:
   trait DFType
-  trait DFBits extends DFType
   trait DFBoolOrBit extends DFType
   trait DFBool extends DFType
   object DFBool extends DFBool
@@ -66,14 +65,8 @@ type DFTypeAny = DFType[ir.DFType, Args]
 object DFType:
   extension (dfType: ir.DFType) def asFE[T <: DFTypeAny]: T = ???
   export DFBoolOrBit.given
-  export DFBits.given
   export DFDecimal.given
 end DFType
-
-type DFBits[W <: IntP] = DFType[ir.DFBits, Args1[W]]
-object DFBits:
-  given [W <: IntP & Singleton]: DFBits[W] = ???
-end DFBits
 
 final case class DFC(
     nameOpt: Option[String],
