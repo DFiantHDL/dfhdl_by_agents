@@ -5,11 +5,10 @@ import ir.DFVal.Func.Op as FuncOp
 object ir:
   object DFVal:
     object Func:
-      sealed trait Op
+      trait Op
       object Op:
         object `+` extends Op
         object `-` extends Op
-end ir
 
 trait ExactOp2Aux[Op, C, B, L, R, O]
 
