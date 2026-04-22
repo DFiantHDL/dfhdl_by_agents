@@ -161,18 +161,11 @@ object DFType:
     ): Expr[TC[NamedTuple[N, T]]] = ???
   end TC
 
-  private def widthRef[W <: IntP](dfType: DFTypeW[W]): ir.IntParamRef =
-    dfType.asIR.runtimeChecked match
-      case dt: ir.DFBits    => dt.widthParamRef
-      case dt: ir.DFDecimal => dt.widthParamRef
   extension [LW <: IntP](lhs: DFTypeW[LW])
     protected[core] def compareWidths[RW <: IntP](rhs: DFTypeW[RW])(
         func: (Int, Int) => Boolean
-    )(using dfc: DFC): Option[Boolean] =
-      import dfc.getSet
-      widthRef(lhs).compare(widthRef(rhs))(func)
-    protected[core] def widthCodeString(using dfc: DFC): String =
-      widthRef(lhs).refCodeString
+    )(using dfc: DFC): Option[Boolean] = ???
+    protected[core] def widthCodeString(using dfc: DFC): String = ???
 
 end DFType
 
@@ -187,55 +180,10 @@ extension [T <: DFTypeAny, M <: ModifierAny](dfVal: DFVal[T, M])
   def dfType: T = dfVal.asIR.dfType.asFE[T]
 
 extension (intParamRef: ir.IntParamRef)
-  // currently unreachable type references are converted to literal integer parameters
-  def dropUnreachableRef(allowDesignParamRefs: Boolean)(using dfc: DFC): ir.IntParamRef =
-    import dfc.getSet
-    intParamRef.getRef match
-      case Some(ir.DFRef(dfVal)) =>
-        // globals are always accessible
-        if (dfVal.isGlobal) intParamRef
-        // TODO: consider improving referencing so internal design types that propagate upwards
-        // through ports conversion get special treatment (maybe referencing the original param at the owner design)
-        // else if (allowDesignParamRefs)
-        //   if (dfc.owner.asIR.getThisOrOwnerDesign == dfVal.getOwnerDesign) intParamRef
-        //   else IntParam(dfVal.asConstOf[DFInt32]).ref
-        else if (
-          // only accessible values are within the same design
-          allowDesignParamRefs && dfc.owner.asIR.getThisOrOwnerDesign == dfVal.getOwnerDesign
-        )
-          intParamRef
-        // inline reference value
-        else
-          // TODO: this is currently not triggered in tests. may not be needed
-          ir.IntParamRef(intParamRef.getIntUNSAFE)
-      case _ => intParamRef
-    end match
-  end dropUnreachableRef
+  def dropUnreachableRef(allowDesignParamRefs: Boolean)(using dfc: DFC): ir.IntParamRef = ???
 end extension
 
 extension (dfType: ir.DFType)
-  // drop unreachable type references for types that have type references.
-  // this is meant to work during user code elaboration, since due to meta-programming
-  // type referenced values may not always be directly accessible.
-  // see `dropUnreachableRef` on ir.IntParamRef for more details.
-  def dropUnreachableRefs(allowDesignParamRefs: Boolean)(using dfc: DFC): ir.DFType =
-    import dfc.getSet
-    given ir.RefGen = dfc.refGen
-    // if the type has unreachable references, we need to create a new type with reachable references.
-    if (dfType.getRefs.exists(_.get.isUnreachable))
-      // get the memoized reachable type or create a new one
-      dfc.mutableDB.DesignContext.getReachableDFType(
-        dfType, {
-          // create a new type with new references to point to reachable values
-          val updatedDFType = dfType.copyWithNewRefs
-          dfType.getRefs.lazyZip(updatedDFType.getRefs).foreach { (oldRef, newRef) =>
-            // add the new reference to the value
-            dfc.mutableDB.newRefFor(newRef, oldRef.get.cloneUnreachable)
-          }
-          updatedDFType
-        }
-      )
-    else dfType
-  end dropUnreachableRefs
-  def dropUnreachableRefs(using DFC): ir.DFType = dropUnreachableRefs(true)
+  def dropUnreachableRefs(allowDesignParamRefs: Boolean)(using dfc: DFC): ir.DFType = ???
+  def dropUnreachableRefs(using DFC): ir.DFType = ???
 end extension
