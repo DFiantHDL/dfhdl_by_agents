@@ -39,8 +39,8 @@ object DFDecimal:
       def sd: DecStrCtx = sc
     end extension
 
-    private def uintConst(value: BigInt)(using DFC): DFConstOf[DFUInt[Int]] = ???
-    private def sintConst(value: BigInt)(using DFC): DFConstOf[DFSInt[Int]] = ???
+    private def uintConst(value: BigInt)(using DFC): DFConstAny = ???
+    private def sintConst(value: BigInt)(using DFC): DFConstAny = ???
 
     private def applyMacro(
         sc: Expr[DecStrCtx],
@@ -134,25 +134,7 @@ object DFXInt:
   end Val
 end DFXInt
 
-type DFUInt[W <: IntP] = DFXInt[false, W, BitAccurate]
-object DFUInt:
-  object Val:
-    object Ops
-  end Val
-end DFUInt
-
-type DFSInt[W <: IntP] = DFXInt[true, W, BitAccurate]
-object DFSInt:
-  object Val:
-    object Ops
-  end Val
-end DFSInt
-
-//a native Int32 decimal has no explicit Scala compile-time width, since the
-//actual value determines its width.
 type DFInt32 =
-  DFType[ir.DFDecimal, Args4[Boolean, Int, 0, Int32]] // This means: DFDecimal[Boolean, Int, 0, Int32] (could not be defined this way because of type recursion)
+  DFType[ir.DFDecimal, Args4[Boolean, Int, 0, Int32]]
 final val DFInt32 = ir.DFInt32.asFE[DFInt32]
 type DFConstInt32 = DFConstOf[DFInt32]
-object DFConstInt32:
-  def apply(int: Int, named: Boolean = false)(using DFC): DFConstInt32 = ???
