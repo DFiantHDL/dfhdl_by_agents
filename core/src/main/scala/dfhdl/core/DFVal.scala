@@ -11,7 +11,6 @@ import scala.quoted.*
 import DFOpaque.Abstract as DFOpaqueA
 import dfhdl.compiler.ir.MemberGetSet
 import scala.annotation.tailrec
-import dfhdl.platforms.resources.Resource
 
 import scala.reflect.ClassTag
 into final class DFVal[+T <: DFTypeAny, +M <: ModifierAny](val irValue: ir.DFVal | DFError)
@@ -609,7 +608,6 @@ object DFVal extends DFValLP:
     def connect(dfVal: DFValOf[T], that: R)(using DFC): Unit
   object TC_Or_OPEN_Or_Resource:
     type Exact[T <: DFTypeAny] = Exact1[DFTypeAny, T, [t <: DFTypeAny] =>> t, DFC, TC_Or_OPEN_Or_Resource]
-  end TC_Or_OPEN_Or_Resource
 
 
   trait Compare[T <: DFTypeAny, V, Op <: FuncOp, C <: Boolean] extends TCCommon[T, V, DFValAny]:

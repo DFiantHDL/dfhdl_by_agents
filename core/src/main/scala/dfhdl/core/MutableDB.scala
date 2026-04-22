@@ -101,21 +101,6 @@ final class MutableDB():
     def ownerOption: Option[DFOwner] = ???
   end OwnershipContext
 
-  object ResourceOwnershipContext:
-    import dfhdl.platforms.resources.*
-    def getConnectedDclResourceMap: Map[DFVal.Dcl, List[(Range, Resource)]] = ???
-    def connectDclResource(dcl: DFVal.Dcl, range: Range, resource: Resource): Unit = ???
-    def connectDomainOwner(domainOwner: DFDomainOwner, clkResource: ClkResource): Unit = ???
-    def replaceDcl(fromPort: DFVal.Dcl, toPort: DFVal.Dcl): Unit = ???
-    def getConstrainedDcls(): Map[DFVal.Dcl, DFVal.Dcl] = ???
-    def getConstrainedDomainOwner(domainOwner: DFDomainOwner): DFDomainOwner = ???
-    def getTopResourceOwners: List[ResourceOwner] = ???
-    def emptyTopResourceOwners(): Unit = ???
-    def enter(owner: ResourceOwner): Unit = ???
-    def exit(): Unit = ???
-    def owner: ResourceOwner = ???
-    def ownerOpt: Option[ResourceOwner] = ???
-  end ResourceOwnershipContext
 
   object GlobalTagContext:
     def set[CT <: DFTag: ClassTag](tag: CT): Unit = ???
