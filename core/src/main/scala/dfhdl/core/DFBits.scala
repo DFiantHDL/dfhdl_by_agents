@@ -11,37 +11,20 @@ import DFDecimal.Constraints.`LW == RW`
 type DFBits[W <: IntP] = DFType[ir.DFBits, Args1[W]]
 object DFBits:
   def apply[W <: IntP](width: IntParam[W])(using
-      dfc: DFCG,
-      check: Arg.Width.CheckNUB[W]
-  ): DFBits[W] = trydf:
-    width.toScalaIntOpt.foreach(check(_))
-    ir.DFBits(width.ref).asFE[DFBits[W]]
-  def forced[W <: IntP](width: Int): DFBits[W] =
-    val check = summon[Arg.Width.Check[Int]]
-    check(width)
-    ir.DFBits(width).asFE[DFBits[W]]
-  def apply[W <: IntP](using dfc: DFCG, dfType: => DFBits[W]): DFBits[W] = trydf { dfType }
+      dfc: DFCG, check: Arg.Width.CheckNUB[W]
+  ): DFBits[W] = ???
+  def forced[W <: IntP](width: Int): DFBits[W] = ???
+  def apply[W <: IntP](using dfc: DFCG, dfType: => DFBits[W]): DFBits[W] = ???
   def until[V <: IntP](sup: IntParam[V])(using
-      dfc: DFCG,
-      check: Arg.LargerThan1.CheckNUB[V]
-  ): DFBits[IntP.CLog2[V]] = trydf:
-    sup.toScalaIntOpt.foreach(check(_))
-    ir.DFBits(sup.clog2.ref).asFE[DFBits[IntP.CLog2[V]]]
+      dfc: DFCG, check: Arg.LargerThan1.CheckNUB[V]
+  ): DFBits[IntP.CLog2[V]] = ???
   def to[V <: IntP](max: IntParam[V])(using
-      dfc: DFCG,
-      check: Arg.Positive.CheckNUB[V]
-  ): DFBits[IntP.CLog2[IntP.+[V, 1]]] = trydf:
-    max.toScalaIntOpt.foreach(check(_))
-    ir.DFBits((max + 1).clog2.ref).asFE[DFBits[IntP.CLog2[IntP.+[V, 1]]]]
+      dfc: DFCG, check: Arg.Positive.CheckNUB[V]
+  ): DFBits[IntP.CLog2[IntP.+[V, 1]]] = ???
 
   given [W <: IntP & Singleton](using
-      dfc: DFCG,
-      v: ValueOf[W],
-      check: Arg.Width.CheckNUB[W]
-  ): DFBits[W] = trydf:
-    val width = IntParam.forced(v)
-    width.toScalaIntOpt.foreach(check(_))
-    ir.DFBits(width.ref).asFE[DFBits[W]]
+      dfc: DFCG, v: ValueOf[W], check: Arg.Width.CheckNUB[W]
+  ): DFBits[W] = ???
 
   protected object `AW == TW` extends Check2[Int, Int, [AW <: Int, TW <: Int] =>> true, [AW <: Int, TW <: Int] =>> ""]
   protected object `LW >= RW` extends Check2[Int, Int, [LW <: Int, RW <: Int] =>> true, [LW <: Int, RW <: Int] =>> ""]
