@@ -113,20 +113,9 @@ final lazy val DFBool = ir.DFBool.asFE[DFBool]
 
 type DFDecimal[S, W, F, N] = DFType[ir.DFDecimal, Args4[S, W, F, N]]
 object DFDecimal:
-  object StrInterpOps:
-    extension (inline sc: StringContext)
-      transparent inline def apply(inline args: Any*)(using dfc: DFCG): Any =
-        ${ applyMacro('sc, 'args)('dfc) }
-    private def applyMacro(
-        sc: Expr[StringContext],
-        args: Expr[Seq[Any]]
-    )(dfc: Expr[DFC])(using Quotes): Expr[Any] = ???
-  end StrInterpOps
-
   object Val:
     object Ops:
       export DFXInt.Val.Ops.*
-  end Val
 end DFDecimal
 
 object DFXInt:
