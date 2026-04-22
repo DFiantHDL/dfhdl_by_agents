@@ -34,13 +34,3 @@ object Width extends WidthLP:
     '{ Success.asInstanceOf[Width[T] { type Out = Int; type OutI = Int }] }
 end Width
 
-extension [T <: DFTypeAny, M <: ModifierAny](dfVal: DFVal[T, M])
-  @targetName("dfValWidthOpt")
-  def widthIntOpt(using dfc: DFC, w: Width[T]): Option[Int] = ???
-  def widthIntParam(using dfc: DFC, w: Width[T]): IntParam[w.Out] = ???
-
-extension [T](t: T)(using tc: DFType.TC[T])
-  @targetName("tWidthOpt")
-  def widthIntOpt(using dfc: DFC, w: Width[tc.Type]): Option[Int] = ???
-  def widthIntParam(using dfc: DFC, w: Width[tc.Type]): IntParam[w.Out] = ???
-end extension
