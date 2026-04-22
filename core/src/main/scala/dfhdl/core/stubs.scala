@@ -40,7 +40,6 @@ type DFTypeAny = DFType[ir.DFType, Args]
 
 object DFType:
   extension (dfType: ir.DFType) def asFE[T <: DFTypeAny]: T = ???
-  export DFDecimal.given
 end DFType
 
 final case class DFC(
