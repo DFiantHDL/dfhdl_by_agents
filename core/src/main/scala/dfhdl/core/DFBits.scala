@@ -147,20 +147,15 @@ object DFBits:
       given fromDFBits[W <: IntP, P, R <: DFValTP[DFBits[W], P]]: Candidate[R] with
         type OutW = W
         type OutP = P
-        def apply(value: R)(using DFC): Out = value
+        def apply(value: R)(using DFC): Out = ???
       given fromDFBoolOrBit[P, R <: DFValTP[DFBoolOrBit, P]]: Candidate[R] with
         type OutW = 1
         type OutP = P
-        def apply(value: R)(using DFC): Out =
-          import DFVal.Ops.bits
-          value.bits
+        def apply(value: R)(using DFC): Out = ???
       given fromDFUInt[W <: IntP, P, R <: DFValTP[DFUInt[W], P]]: Candidate[R] with
         type OutW = W
         type OutP = P
-        def apply(value: R)(using DFC): Out =
-          import DFVal.Ops.bits
-          if (value.hasTag[ir.ResizeTag]) value.bits.tag(ir.ResizeTag)
-          else value.bits
+        def apply(value: R)(using DFC): Out = ???
       transparent inline given errDFEncoding[E <: DFEncoding]: Candidate[E] =
         compiletime.error(
           "Cannot apply an enum entry value to a bits variable."
@@ -170,46 +165,12 @@ object DFBits:
           "Cannot apply a signed value to a bits variable.\nConsider applying `.bits` conversion to resolve this issue."
         ).asInstanceOf[Dud[R]]
 
-      private[Val] def valueToBits(value: Any)(using dfc: DFC): DFValOf[DFBits[Int]] =
-        import DFBits.Val.Ops.concatBits
-        val dfcAnon = dfc.anonymize
-        value match
-          case x: NonEmptyTuple =>
-            x.toList.map(x => valueToBits(x)(using dfcAnon)).concatBits
-          case i: Int =>
-            DFVal.Const(DFBits(1), (BitVector.bit(i > 0), BitVector.zero), named = true)
-          case dfVal: DFVal[?, ?] =>
-            import DFVal.Ops.bits
-            val dfValIR = dfVal.asIR
-            dfValIR.dfType match
-              case _: ir.DFBits => dfValIR.asValOf[DFBits[Int]]
-              case _            =>
-                dfValIR.asValAny.bits(using dfc)(using Width.wide).asValOf[DFBits[Int]]
-        end match
-      end valueToBits
+      private[Val] def valueToBits(value: Any)(using dfc: DFC): DFValOf[DFBits[Int]] = ???
       transparent inline given fromTuple[R <: NonEmptyTuple]: Candidate[R] = ${ DFBitsMacro[R] }
       object TupleCandidate extends Candidate[Any]:
-        def apply(value: Any)(using DFC): Out =
-          valueToBits(value).asInstanceOf[Out]
+        def apply(value: Any)(using DFC): Out = ???
 
-      def DFBitsMacro[R](using
-          Quotes,
-          Type[R]
-      ): Expr[Candidate[R]] =
-        import quotes.reflect.*
-        import Width.*
-        val rTpe = TypeRepr.of[R]
-        val wType = rTpe.calcValWidth.asTypeOf[Int]
-        val pType = rTpe.isConstTpe.asTypeOf[Any]
-        '{
-          TupleCandidate.asInstanceOf[
-            Candidate[R] {
-              type OutW = wType.Underlying
-              type OutP = pType.Underlying
-            }
-          ]
-        }
-      end DFBitsMacro
+      def DFBitsMacro[R](using Quotes, Type[R]): Expr[Candidate[R]] = ???
     end Candidate
 
     object TC:
