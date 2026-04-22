@@ -11,8 +11,8 @@ object ir:
     object Func:
       sealed trait Op
       object Op:
-        sealed trait `+` extends Op; object `+` extends `+`
-        sealed trait `-` extends Op; object `-` extends `-`
+        object `+` extends Op
+        object `-` extends Op
 end ir
 
 trait ExactOp2Aux[Op, C, B, L, R, O]
