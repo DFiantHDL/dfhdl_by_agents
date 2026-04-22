@@ -187,36 +187,20 @@ object DFVal extends DFValLP:
     def conv(dfType: T, from: R)(using DFC): Out = ???
     def apply(from: R)(using DFC): Out
 
-  trait TCConvLP
-  object TCConv extends TCConvLP:
+  object TCConv:
     export DFBits.Val.TCConv.given
     export DFDecimal.Val.TCConv.given
-    export DFTuple.Val.TCConv.given
-    export DFVector.Val.TCConv.given
-
-  trait TC_Or_OPEN_Or_Resource[T <: DFTypeAny, R] extends TC[T, R]:
-    def connect(dfVal: DFValOf[T], that: R)(using DFC): Unit
-  object TC_Or_OPEN_Or_Resource:
-    type Exact[T <: DFTypeAny] = Exact1[DFTypeAny, T, [t <: DFTypeAny] =>> t, DFC, TC_Or_OPEN_Or_Resource]
-
 
   trait Compare[T <: DFTypeAny, V, Op <: FuncOp, C <: Boolean] extends TCCommon[T, V, DFValAny]:
     type OutP
     type Out = DFValTP[T, OutP]
-    def apply[P](dfVal: DFValTP[T, P], arg: V)(using DFC, ValueOf[Op], ValueOf[C]): DFValTP[DFBool, P | OutP] = ???
   end Compare
-  trait CompareLP
-  object Compare extends CompareLP:
+  object Compare:
     type Aux[T <: DFTypeAny, V, Op <: FuncOp, C <: Boolean, OutP0] = Compare[T, V, Op, C] { type OutP = OutP0 }
     export DFBoolOrBit.Val.Compare.given
     export DFBits.Val.Compare.given
     export DFDecimal.Val.Compare.given
     export DFEnum.Val.Compare.given
-    export DFVector.Val.Compare.given
-    export DFTuple.Val.Compare.given
-    export DFStruct.Val.Compare.given
-    export TDFDouble.Val.Compare.given
-    export TDFString.Val.Compare.given
   end Compare
 
   trait DFDomainOnly
