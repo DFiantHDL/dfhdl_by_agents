@@ -15,21 +15,6 @@ import scala.annotation.tailrec
 import scala.reflect.ClassTag
 into final class DFVal[+T <: DFTypeAny, +M <: ModifierAny](val irValue: ir.DFVal | DFError)
     extends DFMember[ir.DFVal]
-    with Selectable:
-  type Fields = DFVal.Fields[T @uncheckedVariance, M @uncheckedVariance]
-
-  def wait(using DFC): Unit = ???
-  def selectDynamic(name: String)(using DFC): Any = ???
-
-  transparent inline def ==[R](
-      inline that: R
-  )(using DFCG): DFValOf[DFBool] =
-    DFVal.Ops.compare[FuncOp.===.type, this.type, R](this, that)
-
-  transparent inline def !=[R](
-      inline that: R
-  )(using DFC): DFValTP[DFBool, Any] =
-    DFVal.Ops.compare[FuncOp.=!=.type, this.type, R](this, that)
 end DFVal
 
 type DFValAny = DFVal[DFTypeAny, ModifierAny]
