@@ -1,7 +1,7 @@
 package dfhdl.core
 import ir.DFVal.Func.Op as FuncOp
 
-final class DFVal[+T <: DFTypeAny, +M <: ModifierAny](val irValue: ir.DFVal)
+final class DFVal[+T <: DFTypeAny, +M <: ModifierAny]
 
 type DFValAny = DFVal[DFTypeAny, ModifierAny]
 type DFConstOf[+T <: DFTypeAny] = DFVal[T, Modifier.CONST]
