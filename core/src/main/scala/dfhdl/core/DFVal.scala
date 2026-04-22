@@ -16,13 +16,10 @@ into final class DFVal[+T <: DFTypeAny, +M <: ModifierAny](val irValue: ir.DFVal
 end DFVal
 
 type DFValAny = DFVal[DFTypeAny, ModifierAny]
-type DFVarAny = DFVal[DFTypeAny, Modifier.Mutable]
-type DFDclAny = DFVal[DFTypeAny, Modifier.Dcl]
 type DFConstAny = DFVal[DFTypeAny, Modifier.CONST]
 type DFValOf[+T <: DFTypeAny] = DFVal[T, ModifierAny]
 type DFConstOf[+T <: DFTypeAny] = DFVal[T, Modifier.CONST]
 type DFValTP[+T <: DFTypeAny, +P] = DFVal[T, Modifier[Any, Any, Any, P]]
-type DFVarOf[+T <: DFTypeAny] = DFVal[T, Modifier.Mutable]
 
 inline def isConstCheck[T]: Boolean = ${ isConstCheckMacro[T] }
 def isConstCheckMacro[T](using Quotes, Type[T]): Expr[Boolean] = ???
