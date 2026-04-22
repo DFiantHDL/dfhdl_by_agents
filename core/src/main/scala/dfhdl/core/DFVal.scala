@@ -406,32 +406,11 @@ object DFVal extends DFValLP:
   extension [T <: DFTypeAny, A, C, I, P, R](dfVal: DFVal[T, Modifier[A, C, I, P]])
     private[dfhdl] def initForced(initValues: List[DFConstOf[T]])(using
         dfc: DFC
-    ): DFVal[T, Modifier[A, C, Modifier.Initialized, P]] =
-      import dfc.getSet
-      require(
-        dfVal.asIR.isAnonymous,
-        s"Cannot initialize a named value ${dfVal.asIR.getFullName}. Initialization is only supported at the declaration of the value."
-      )
-      val modifier = Modifier[A, C, I, P](dfVal.asIR.asInstanceOf[ir.DFVal.Dcl].modifier)
-      // updating the member in the mutable DB, but in a new position, to make sure it comes
-      // after the initial value member construction.
-      val updatedDcl = DFVal.Dcl(dfVal.dfType, modifier, initValues)
-      // adding the updated member in the new position
-      dfc.mutableDB.addMember(updatedDcl.asIR)
-      // ignoring the old member
-      dfc.mutableDB.ignoreMember(dfVal.asIR)
-      // replacing all references to the old member with the new member
-      dfc.mutableDB.replaceMember(dfVal.asIR, updatedDcl.asIR)
-      updatedDcl.asVal[T, Modifier[A, C, Modifier.Initialized, P]]
-    end initForced
+    ): DFVal[T, Modifier[A, C, Modifier.Initialized, P]] = ???
 
     infix def init(
         initValues: InitValue[T]*
-    )(using DFC, InitCheck[I]): DFVal[T, Modifier[A, C, Modifier.Initialized, P]] = trydf {
-      val tvList =
-        initValues.view.filter(_.enable).map(tv => tv(dfVal.dfType)(using dfc.anonymize)).toList
-      dfVal.initForced(tvList)
-    }
+    )(using DFC, InitCheck[I]): DFVal[T, Modifier[A, C, Modifier.Initialized, P]] = ???
   end extension
   extension [T <: NonEmptyTuple, A, C, I, P](dfVal: DFVal[DFTuple[T], Modifier[A, C, I, P]])
     infix def init(
