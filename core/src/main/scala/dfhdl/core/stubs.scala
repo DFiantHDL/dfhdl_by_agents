@@ -160,10 +160,8 @@ object DFXInt:
       type Aux[R, P] = Candidate[R] { type OutP = P }
 
     object Ops:
-      type CommutativeArithOp =
-        FuncOp.+.type | FuncOp.*.type | FuncOp.max.type | FuncOp.min.type
-      type NonCommutativeArithOp =
-        FuncOp.-.type | FuncOp./.type | FuncOp.%.type
+      type CommutativeArithOp = FuncOp.+.type
+      type NonCommutativeArithOp = FuncOp.-.type
       given evOpCommutativeArithDFXInt[
           Op <: CommutativeArithOp, L, LP, R, RP
       ](using
