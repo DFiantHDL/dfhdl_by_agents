@@ -388,109 +388,47 @@ object DFBits:
       ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[LT, LP | RP]] = ???
 
       extension [W <: IntP, P](lhs: DFValTP[DFBits[W], P])
-        // TODO: IntP
-        private[DFBits] def resizeBits[RW <: IntP](updatedWidth: IntParam[RW])(using
-            DFC
-        ): DFValTP[DFBits[RW], P] =
-          // TODO: why this causes anonymous references?
-//          if (lhs.width == updatedWidth) lhs.asValOf[DFBits[RW]]
-//          else
-          DFVal.Alias.AsIs(DFBits(updatedWidth), lhs)
-        def resize(using DFCG): DFValTP[DFBits[Int], P] =
-          lhs.tag(ir.ResizeTag).asValTP[DFBits[Int], P]
+        private[DFBits] def resizeBits[RW <: IntP](updatedWidth: IntParam[RW])(using DFC): DFValTP[DFBits[RW], P] = ???
+        def resize(using DFCG): DFValTP[DFBits[Int], P] = ???
         def resize[RW <: IntP](updatedWidth: IntParam[RW])(using
-            check: Arg.Width.CheckNUB[RW],
-            dfc: DFCG
-        ): DFValTP[DFBits[RW], P] = trydf {
-          updatedWidth.toScalaIntOpt.foreach(check(_))
-          lhs.resizeBits(updatedWidth)
-        }
+            check: Arg.Width.CheckNUB[RW], dfc: DFCG
+        ): DFValTP[DFBits[RW], P] = ???
       end extension
       extension [T <: Int, P](iter: Iterable[DFValTP[DFBits[T], P]])
-        protected[core] def concatBits(using DFC): DFValTP[DFBits[Int], P] =
-          val width =
-            iter.map(_.widthIntParam.asInstanceOf[IntParam[Int]]).reduce(_ + _)
-          DFVal.Func(DFBits(width), FuncOp.++, iter.toList)
+        protected[core] def concatBits(using DFC): DFValTP[DFBits[Int], P] = ???
+      end extension
       extension [L <: DFValAny, LW <: IntP, LP](lhs: L)(using icL: Candidate.Aux[L, LW, LP])
-        def resize(using DFCG): DFValTP[DFBits[Int], icL.OutP] =
-          icL(lhs).tag(ir.ResizeTag).asValTP[DFBits[Int], icL.OutP]
+        def resize(using DFCG): DFValTP[DFBits[Int], icL.OutP] = ???
         def repeat[N <: IntP](num: IntParam[N])(using
-            dfc: DFCG,
-            check: Arg.Positive.CheckNUB[N]
-        ): DFValTP[DFBits[IntP.*[icL.OutW, N]], icL.OutP | CONST] = trydf {
-          val lhsVal = icL(lhs)
-          num.toScalaIntOpt.foreach(check(_))
-          val lhsWidth = lhsVal.widthIntParam
-          val width = lhsWidth * num
-          DFVal.Func(DFBits(width), FuncOp.repeat, List(lhsVal, num.toDFConst))
-        }
+            dfc: DFCG, check: Arg.Positive.CheckNUB[N]
+        ): DFValTP[DFBits[IntP.*[icL.OutW, N]], icL.OutP | CONST] = ???
       end extension
 
       given evOpAsDFBits[
-          W <: IntP,
-          A,
-          C,
-          I,
-          P,
+          W <: IntP, A, C, I, P,
           L <: DFVal[DFBits[W], Modifier[A, C, I, P]],
-          AT <: DFType.Supported,
-          OT <: DFTypeAny,
-          OW <: IntP
+          AT <: DFType.Supported, OT <: DFTypeAny, OW <: IntP
       ](using
           tc: DFType.TC.Aux[AT, OT],
           aW: Width.Aux[OT, OW]
       )(using
           check: `AW == TW`.CheckNUB[OW, W]
-      ): ExactOp2Aux["as", DFC, DFValAny, L, AT, DFValTP[OT, P]] =
-        new ExactOp2["as", DFC, DFValAny, L, AT]:
-          type Out = DFValTP[OT, P]
-          def apply(lhs: L, aliasType: AT)(using DFC): Out = trydf {
-            import dfc.getSet
-            val aliasDFType = tc(aliasType)
-            (aliasDFType.asIR.widthIntOpt, lhs.widthIntOpt) match
-              case (Some(aw), Some(lw)) => check(aw, lw)
-              case _                    =>
-            DFVal.Alias.AsIs(aliasDFType, lhs)
-          }(using dfc, CTName("cast from bits"))
-      end evOpAsDFBits
+      ): ExactOp2Aux["as", DFC, DFValAny, L, AT, DFValTP[OT, P]] = ???
 
       extension [W <: IntP, A, C, I, P](
           lhs: DFVal[DFBits[W], Modifier[A, C, I, P]]
       )
-        def uint(using DFCG): DFValTP[DFUInt[W], P] = trydf {
-          DFVal.Alias.AsIs(DFUInt(lhs.widthIntParam), lhs)
-        }
-        def sint(using DFCG): DFValTP[DFSInt[W], P] = trydf {
-          DFVal.Alias.AsIs(DFSInt(lhs.widthIntParam), lhs)
-        }
-        def unary_~(using DFCG): DFValTP[DFBits[W], P] = trydf {
-          DFVal.Func(lhs.dfType, FuncOp.unary_~, List(lhs))
-        }
-        def msbit(using DFCG): DFVal[DFBit, Modifier[A, Any, Any, P]] =
-          import DFVal.Ops.apply as applyBits
-          lhs.applyBits((lhs.widthIntParam - 1).toDFConst).asVal[DFBit, Modifier[A, Any, Any, P]]
-        def lsbit(using DFCG): DFVal[DFBit, Modifier[A, Any, Any, P]] =
-          import DFVal.Ops.apply as applyBits
-          lhs.applyBits(0).asVal[DFBit, Modifier[A, Any, Any, P]]
+        def uint(using DFCG): DFValTP[DFUInt[W], P] = ???
+        def sint(using DFCG): DFValTP[DFSInt[W], P] = ???
+        def unary_~(using DFCG): DFValTP[DFBits[W], P] = ???
+        def msbit(using DFCG): DFVal[DFBit, Modifier[A, Any, Any, P]] = ???
+        def lsbit(using DFCG): DFVal[DFBit, Modifier[A, Any, Any, P]] = ???
         def msbits[RW <: IntP](updatedWidth: IntParam[RW])(using
-            check: `LW >= RW`.CheckNUB[W, RW],
-            dfc: DFCG
-        ): DFValTP[DFBits[RW], P] = trydf {
-          (lhs.widthIntOpt, updatedWidth.toScalaIntOpt) match
-            case (Some(lhsWidthInt), Some(updatedWidthInt)) => check(lhsWidthInt, updatedWidthInt)
-            case _                                          =>
-          DFVal.Alias.ApplyRange(lhs, lhs.widthIntParam - 1, lhs.widthIntParam - updatedWidth)
-            .asValTP[DFBits[RW], P]
-        }
+            check: `LW >= RW`.CheckNUB[W, RW], dfc: DFCG
+        ): DFValTP[DFBits[RW], P] = ???
         def lsbits[RW <: IntP](updatedWidth: IntParam[RW])(using
-            check: `LW >= RW`.CheckNUB[W, RW],
-            dfc: DFCG
-        ): DFValTP[DFBits[RW], P] = trydf {
-          (lhs.widthIntOpt, updatedWidth.toScalaIntOpt) match
-            case (Some(lhsWidthInt), Some(updatedWidthInt)) => check(lhsWidthInt, updatedWidthInt)
-            case _                                          =>
-          DFVal.Alias.ApplyRange(lhs, updatedWidth - 1, 0).asValTP[DFBits[RW], P]
-        }
+            check: `LW >= RW`.CheckNUB[W, RW], dfc: DFCG
+        ): DFValTP[DFBits[RW], P] = ???
       end extension
     end Ops
   end Val
