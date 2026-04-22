@@ -1318,48 +1318,7 @@ object DFXInt:
         DFXInt[resultSign.Out, resultWidth.Out, resultNative.Out],
         LP | RP
       ]] =
-        new ExactOp2[Op, DFC, DFValAny, L, R]:
-          type Out = DFValTP[DFXInt[resultSign.Out, resultWidth.Out, resultNative.Out], LP | RP]
-          def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-            val dfcAnon = dfc.anonymize
-            val lhsVal = icL(lhs)(using dfcAnon)
-            val rhsVal = icR(rhs)(using dfcAnon)
-            import IntParam.{+, max}
-            val lhsIsWildcard = isWildcardL.value
-            val rhsIsWildcard = isWildcardR.value
-            val retVal =
-              if (lhsIsWildcard && !rhsIsWildcard)
-                // LHS is wildcard: adapt to RHS type
-                checkWildcardFit(lhsVal.asValOf[DFInt32], rhsVal.dfType)
-                arithOp(rhsVal.dfType, op.value, rhsVal, lhsVal)
-              else if (rhsIsWildcard) // LHS may be wildcard or concrete
-                // RHS is wildcard: adapt to LHS type
-                checkWildcardFit(rhsVal.asValOf[DFInt32], lhsVal.dfType)
-                arithOp(lhsVal.dfType, op.value, lhsVal, rhsVal)
-              else
-                // Both concrete: use max width, max signed
-                val lhsSFix =
-                  if (!lhsVal.dfType.signed && rhsVal.dfType.signed)
-                    lhsVal.asValOf[DFUInt[Int]].signed(using dfcAnon).asValOf[DFSInt[Int]]
-                  else lhsVal.asValOf[DFSInt[Int]]
-                val rhsSFix =
-                  if (!rhsVal.dfType.signed && lhsVal.dfType.signed)
-                    rhsVal.asValOf[DFUInt[Int]].signed(using dfcAnon).asValOf[DFSInt[Int]]
-                  else rhsVal.asValOf[DFSInt[Int]]
-                lhsSFix.compareWidths(rhsSFix)(_ >= _) match
-                  case Some(true)  => arithOp(lhsSFix.dfType, op.value, lhsSFix, rhsSFix)
-                  case Some(false) => arithOp(rhsSFix.dfType, op.value, rhsSFix, lhsSFix)
-                  case None        =>
-                    val lhsEffWidth: IntParam[Int] = lhsSFix.widthIntParam
-                    val rhsEffWidth: IntParam[Int] = rhsSFix.widthIntParam
-                    val maxWidth = lhsEffWidth.max(rhsEffWidth)
-                    val lhsWFix = lhsSFix.resize(maxWidth)
-                    val rhsWFix = rhsSFix.resize(maxWidth)
-                    arithOp(lhsWFix.dfType, op.value, lhsWFix, rhsWFix)
-              end if
-            end retVal
-            retVal.asInstanceOf[Out]
-          }(using dfc, CTName(op.value.toString))
+        ???
       end evOpCommutativeArithDFXInt
 
       given evOpNonCommutativeArithDFXInt[
