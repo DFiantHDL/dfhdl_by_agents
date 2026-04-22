@@ -73,8 +73,6 @@ final class MutableDB():
     val global: DesignContext = new DesignContext
     var current: DesignContext = global
     var stack = List.empty[DesignContext]
-    val designMembers = mutable.Map.empty[DFDesignBlock, List[DFMember]]
-    val uniqueDesigns = mutable.Map.empty[String, List[List[DFDesignBlock]]]
     def startDesign(design: DFDesignBlock): Unit = ???
     def endDesign(design: DFDesignBlock): Unit = ???
     def runFuncWithInputs[V <: DFValAny](func: => V, inputs: List[DFValAny]): (Boolean, V) = ???
