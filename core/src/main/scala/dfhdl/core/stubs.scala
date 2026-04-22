@@ -19,7 +19,6 @@ object Modifier:
   type CONST = Modifier[Any]
 
 final class DFType
-type DFTypeAny = DFType
 
 final case class DFC(mutableDB: MutableDB)
 
@@ -49,24 +48,24 @@ object DFXInt:
       given evOpCommutativeArithDFXInt[Op <: CommutativeArithOp, LP, RP](using
           icL: Candidate[LP],
           icR: Candidate[RP]
-      ): ExactOp2Aux[Op, DFC, DFValAny, Any, Any, DFValTP[DFTypeAny, LP | RP]] = ???
+      ): ExactOp2Aux[Op, DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
       given evOpNonCommutativeArithDFXInt[Op <: NonCommutativeArithOp, LP, RP](using
           icL: Candidate[LP],
           icR: Candidate[RP]
-      ): ExactOp2Aux[Op, DFC, DFValAny, Any, Any, DFValTP[DFTypeAny, LP | RP]] = ???
+      ): ExactOp2Aux[Op, DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
 
       import DFVal.Ops.CarryOp
       given evOpCarryAddSubDFXInt[Op <: FuncOp, LP, RP](using
           icL: Candidate[LP],
           icR: Candidate[RP]
-      ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, Any, Any, DFValTP[DFTypeAny, LP | RP]] = ???
+      ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
 
       given evOpCarryMulDFXInt[Op <: FuncOp, LP, RP](using
           icL: Candidate[LP],
           icR: Candidate[RP]
-      ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, Any, Any, DFValTP[DFTypeAny, LP | RP]] = ???
+      ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
     end Ops
   end Val
 end DFXInt
 
-type DFConstInt32 = DFConstOf[DFTypeAny]
+type DFConstInt32 = DFConstOf[DFType]
