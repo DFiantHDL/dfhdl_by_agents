@@ -13,15 +13,9 @@ object DFBoolOrBit:
   given DFBit = DFBit
 
   object Val:
-    @implicitNotFound(
-      "Argument of type ${R} is not a proper candidate for a DFBool or DFBit DFHDL value."
-    )
-    trait Candidate[R] extends Exact0.TC[R, DFC]:
+    trait Candidate[R]:
       type OutT <: DFBoolOrBit
       type OutP
-      type Out = DFValTP[OutT, OutP]
-      def conv(from: R)(using DFC): Out = apply(from)
-      def apply(arg: R)(using DFC): Out
     object Candidate:
       type Types = DFValOf[DFBoolOrBit] | Boolean | BitNum
       type Aux[R, T <: DFBoolOrBit, P] = Candidate[R] { type OutT = T; type OutP = P }
