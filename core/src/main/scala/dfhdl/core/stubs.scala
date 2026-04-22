@@ -5,7 +5,6 @@ import ir.DFVal.Func.Op as FuncOp
 object ir:
   trait DFType
   trait DFBoolOrBit extends DFType
-  trait DFDecimal extends DFType
   trait DFVal
   object DFVal:
     object Func:
@@ -26,7 +25,6 @@ export DFType.asFE
 
 sealed trait Args
 sealed trait NoArgs extends Args
-sealed trait Args4[T1, T2, T3, T4] extends Args
 
 final class DFType[+T <: ir.DFType, +A <: Args](val value: T) extends AnyVal
 type DFTypeAny = DFType[ir.DFType, Args]
