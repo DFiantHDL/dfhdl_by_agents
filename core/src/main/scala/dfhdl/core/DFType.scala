@@ -19,13 +19,8 @@ sealed trait Args3[T1, T2, T3] extends Args
 sealed trait Args4[T1, T2, T3, T4] extends Args
 
 final class DFType[+T <: ir.DFType, +A <: Args](val value: T | DFError) extends AnyVal:
-  def ==(that: DFTypeAny)(using dfc: DFC): Boolean =
-    import dfc.getSet
-    this.asIR =~ that.asIR
-  def !=(that: DFTypeAny)(using dfc: DFC): Boolean =
-    import dfc.getSet
-    !(this.asIR =~ that.asIR)
-  override def toString: String = value.toString
+  def ==(that: DFTypeAny)(using dfc: DFC): Boolean = ???
+  def !=(that: DFTypeAny)(using dfc: DFC): Boolean = ???
 type DFTypeAny = DFType[ir.DFType, Args]
 
 object DFType:
@@ -49,28 +44,9 @@ object DFType:
   type FromDFVal[T] <: DFTypeAny = T match
     case DFVal[t, ?] => t
 
-  def of[T <: Supported](t: T)(using DFC): Of[T] = DFType(t).asInstanceOf[Of[T]]
-  private[core] def apply(t: Any)(using DFC): DFTypeAny =
-    t match
-      case dfType: DFTypeAny         => dfType
-      case tuple: NonEmptyTuple      => DFTuple(tuple)
-      case tfe: DFOpaque.Frontend[?] => DFOpaque(tfe)
-      case fields: DFStruct.Fields   => DFStruct(fields)
-      case _: Byte.type              => DFBits(8)
-      case _: Boolean.type           => DFBool
-      case _: Int.type               => DFInt32
-      case _: Long.type              => DFSInt(64)
-      case _: Double.type            => DFDouble
-      // TODO: need to add proper upper-bound if fixed in Scalac
-      // see: https://contributors.scala-lang.org/t/missing-dedicated-class-for-enum-companions
-      case enumCompanion: Object => DFEnum(enumCompanion)
-  end apply
-  private[core] def unapply(t: Any)(using DFC): Option[DFTypeAny] =
-    t match
-      case dfVal: DFValAny  => Some(dfVal.dfType)
-      case DFTuple(dfType)  => Some(dfType)
-      case DFStruct(dfType) => Some(dfType)
-      case _                => None
+  def of[T <: Supported](t: T)(using DFC): Of[T] = ???
+  private[core] def apply(t: Any)(using DFC): DFTypeAny = ???
+  private[core] def unapply(t: Any)(using DFC): Option[DFTypeAny] = ???
 
   extension [T <: ir.DFType, A <: Args](dfType: DFType[T, A])
     def asIR: T = ???
