@@ -41,17 +41,8 @@ type DFConstOf[+T <: DFTypeAny] = DFVal[T, Modifier.CONST]
 type DFValTP[+T <: DFTypeAny, +P] = DFVal[T, Modifier[Any, Any, Any, P]]
 type DFVarOf[+T <: DFTypeAny] = DFVal[T, Modifier.Mutable]
 
-extension (using quotes: Quotes)(tpe: quotes.reflect.TypeRepr)
-  def isConstBool: Boolean = ???
-  def isConstTpe: quotes.reflect.TypeRepr = ???
-end extension
-
 inline def isConstCheck[T]: Boolean = ${ isConstCheckMacro[T] }
 def isConstCheckMacro[T](using Quotes, Type[T]): Expr[Boolean] = ???
-
-extension (using quotes: Quotes)(term: quotes.reflect.Term)
-  def getNonConstTerm: Option[quotes.reflect.Term] = ???
-end extension
 
 infix type <>[T <: DFType.Supported, M] = M match
   case DFRET => (DFC, DomainType.DF) ?=> DFValOf[DFType.Of[T]]
