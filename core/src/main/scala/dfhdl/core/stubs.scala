@@ -39,8 +39,8 @@ object DFXInt:
     trait Candidate[P]
 
     object Ops:
-      type CommutativeArithOp = FuncOp.+.type
-      type NonCommutativeArithOp = FuncOp.-.type
+      type CommutativeArithOp = Int
+      type NonCommutativeArithOp = String
       given evOpCommutativeArithDFXInt[Op <: CommutativeArithOp, LP, RP](using
           icL: Candidate[LP],
           icR: Candidate[RP]
