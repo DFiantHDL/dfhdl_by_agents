@@ -73,14 +73,8 @@ object DFType:
       case _                => None
 
   extension [T <: ir.DFType, A <: Args](dfType: DFType[T, A])
-    def asIR: T = dfType.value match
-      case dfTypeIR: T @unchecked                   => dfTypeIR
-      case err: DFError.REG_DIN[?] if err.firstTime =>
-        err.firstTime = false
-        throw err
-      case err: DFError => throw DFError.Derived(err)
-    def codeString(using printer: Printer)(using DFC): String =
-      printer.csDFType(asIR)
+    def asIR: T = ???
+    def codeString(using printer: Printer)(using DFC): String = ???
   extension (dfType: ir.DFType) def asFE[T <: DFTypeAny]: T = new DFType(dfType).asInstanceOf[T]
   extension (dfType: DFTypeAny) def asFE[T <: DFTypeAny]: T = dfType.asInstanceOf[T]
   transparent inline implicit def conv[T <: Supported](inline t: T)(implicit
