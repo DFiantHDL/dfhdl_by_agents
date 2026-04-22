@@ -40,14 +40,7 @@ object DFBoolOrBit:
         def apply(arg: R)(using DFC): Out = ???
     end Candidate
 
-    object TC:
-      import DFVal.TC
-      given DFBoolOrBitFromCandidate[T <: DFBoolOrBit, R, RP, IC <: Candidate[R]](using
-          ic: IC { type OutP = RP }
-      ): TC[T, R] with
-        type OutP = RP
-        def conv(dfType: T, arg: R)(using DFC): Out = ???
-    end TC
+    object TC
 
     object Compare
 
