@@ -20,14 +20,13 @@ object DFDecimal:
   object Ops:
     export DFXInt.Ops.*
 
+import DFVal.Ops.CarryOp
 object DFXInt:
   object Ops:
     type A = Int
     type B = String
     given arith1[Op <: A]: ExactOp2Aux[Op, DFC, DFValTP[DFType]] = ???
     given arith2[Op <: B]: ExactOp2Aux[Op, DFC, DFValTP[DFType]] = ???
-
-    import DFVal.Ops.CarryOp
     given c1: ExactOp2Aux[CarryOp, DFC, DFValTP[DFType]] = ???
     given c2: ExactOp2Aux[CarryOp, DFC, DFValTP[DFType]] = ???
 
