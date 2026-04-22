@@ -18,8 +18,5 @@ object DFType:
   export DFBits.given
   export DFDecimal.given
 
-  type Supported = Any
-  type Of[T <: Supported] = DFTypeAny
-
 end DFType
 
