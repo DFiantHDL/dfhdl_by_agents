@@ -415,12 +415,8 @@ object DFVal extends DFValLP:
   extension [T <: NonEmptyTuple, A, C, I, P](dfVal: DFVal[DFTuple[T], Modifier[A, C, I, P]])
     infix def init(
         initValues: InitTupleValues[T]
-    )(using DFC, InitCheck[I]): DFVal[DFTuple[T], Modifier[A, C, Modifier.Initialized, P]] =
-      trydf {
-        if (initValues.enable)
-          dfVal.initForced(initValues(dfVal.dfType)(using dfc.anonymize))
-        else dfVal.initForced(Nil)
-      }
+    )(using DFC, InitCheck[I]): DFVal[DFTuple[T], Modifier[A, C, Modifier.Initialized, P]] = ???
+  end extension
 
   extension [W <: IntP, T <: DFBits[W] | DFUInt[W], D1 <: IntP, A, C, I, P](
       dfVal: DFVal[DFVector[T, Tuple1[D1]], Modifier[A, C, I, P]]
