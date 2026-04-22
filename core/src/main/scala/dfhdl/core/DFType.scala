@@ -21,9 +21,5 @@ object DFType:
   type Supported = Any
   type Of[T <: Supported] = DFTypeAny
 
-  trait TC[T]:
-    type Type <: DFTypeAny
-  object TC:
-    type Aux[T, OT <: DFTypeAny] = TC[T] { type Type = OT }
 end DFType
 
