@@ -101,13 +101,7 @@ protected object hdl:
     inline def asValOf[T <: core.DFType.Supported]: T <> VAL =
       core.DFVal(dfVal).asInstanceOf[T <> VAL]
 
-  import java.util.Properties
-
-  val dfhdlVersion: String =
-    val props = new Properties()
-    val inputStream = getClass.getClassLoader.getResourceAsStream("version.properties")
-    props.load(inputStream)
-    props.getProperty("version")
+  val dfhdlVersion: String = ???
 end hdl
 
 export hdl.*
