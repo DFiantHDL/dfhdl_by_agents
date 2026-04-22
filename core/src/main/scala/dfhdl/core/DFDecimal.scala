@@ -66,16 +66,12 @@ type DFXInt[S <: Boolean, W <: IntP, N <: NativeType] = DFDecimal[S, W, 0, N]
 object DFXInt:
 
   object Val:
-    trait Candidate[R] extends Exact0.TC[R, DFC]:
+    trait Candidate[R]:
       type OutS <: Boolean
       type OutW <: IntP
       type OutN <: NativeType
       type OutP
-      type Out = DFValTP[DFXInt[OutS, OutW, OutN], OutP]
-      def conv(from: R)(using DFC): Out = apply(from)
-      def apply(arg: R)(using DFC): Out
-    trait CandidateLP
-    object Candidate extends CandidateLP:
+    object Candidate:
       type Aux[R, S <: Boolean, W <: IntP, N <: NativeType, P] =
         Candidate[R] {
           type OutS = S
@@ -83,11 +79,6 @@ object DFXInt:
           type OutN = N
           type OutP = P
         }
-    end Candidate
-
-    object TC
-    object TCConv
-    object Compare
 
     object Ops:
       type CommutativeArithOp =
