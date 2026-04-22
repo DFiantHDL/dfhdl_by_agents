@@ -152,7 +152,6 @@ object DFDecimal:
   end Val
 end DFDecimal
 
-type DFXInt[S, W, N] = DFDecimal[S, W, 0, N]
 object DFXInt:
   object Val:
     trait Candidate[R]:
