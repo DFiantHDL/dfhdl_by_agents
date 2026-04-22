@@ -25,19 +25,6 @@ object DFBoolOrBit:
     object Candidate:
       type Types = DFValOf[DFBoolOrBit] | Boolean | BitNum | IfWrapper[?, ?, ?]
       type Aux[R, T <: DFBoolOrBit, P] = Candidate[R] { type OutT = T; type OutP = P }
-      type Exact = Exact0[DFC, Candidate]
-      given fromBoolean[R <: Boolean]: Candidate[R] with
-        type OutT = DFBool
-        type OutP = CONST
-        def apply(arg: R)(using DFC): Out = ???
-      given fromBit[R <: BitNum]: Candidate[R] with
-        type OutT = DFBit
-        type OutP = CONST
-        def apply(arg: R)(using DFC): Out = ???
-      given fromDFBoolOrBitVal[T <: DFBoolOrBit, P, R <: DFValTP[T, P]]: Candidate[R] with
-        type OutT = T
-        type OutP = P
-        def apply(arg: R)(using DFC): Out = ???
     end Candidate
 
     object TC
