@@ -6,11 +6,9 @@ import dfhdl.internals.*
 import annotation.{implicitNotFound, targetName}
 
 type BitNum = 0 | 1
-type BitOrBool = BitNum | Boolean
 type DFBoolOrBit = DFType[ir.DFBoolOrBit, NoArgs]
 object DFBoolOrBit:
   given DFBool = DFBool
-  given DFBit = DFBit
 
   object Val:
     trait Candidate[R]:
