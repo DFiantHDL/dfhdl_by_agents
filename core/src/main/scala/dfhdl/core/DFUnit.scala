@@ -6,4 +6,4 @@ val DFUnit = new DFType[ir.DFUnit, NoArgs](ir.DFUnit)
 type DFUnit = DFType[ir.DFUnit, NoArgs]
 
 object DFUnitVal:
-  def apply()(using DFC): DFValOf[DFUnit] = DFVal.Const(DFUnit, ())
+  def apply()(using DFC): DFValOf[DFUnit] = ???
