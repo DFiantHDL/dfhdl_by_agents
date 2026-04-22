@@ -21,14 +21,8 @@ type ModifierAny = Modifier[Any]
 object Modifier:
   type CONST = Modifier[Any]
 
-export DFType.asFE
-
 final class DFType[+T, +A](val value: T) extends AnyVal
 type DFTypeAny = DFType[Any, Any]
-
-object DFType:
-  extension (dfType: ir.DFType) def asFE[T <: DFTypeAny]: T = ???
-end DFType
 
 final case class DFC(mutableDB: MutableDB)
 
