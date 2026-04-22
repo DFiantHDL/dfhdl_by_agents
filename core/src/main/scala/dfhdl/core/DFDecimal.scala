@@ -696,113 +696,19 @@ object DFXInt:
         ???
       end evOpArithIntDFInt32
       given evOpCommutativeArithDFXInt[
-          Op <: CommutativeArithOp,
-          L,
-          LS <: Boolean,
-          LW <: IntP,
-          LN <: NativeType,
-          LP,
-          R,
-          RS <: Boolean,
-          RW <: IntP,
-          RN <: NativeType,
-          RP
+          Op <: CommutativeArithOp, L, LS <: Boolean, LW <: IntP, LN <: NativeType, LP,
+          R, RS <: Boolean, RW <: IntP, RN <: NativeType, RP
       ](using
           icL: Candidate.Aux[L, LS, LW, LN, LP],
-          icR: Candidate.Aux[R, RS, RW, RN, RP],
-          op: ValueOf[Op],
-          isWildcardL: ValueOf[LN],
-          isWildcardR: ValueOf[RN],
-          // Type-level wildcard detection: when exactly one operand is a wildcard
-          // (Int32 NativeType), adapt to the bit-accurate value's sign and width.
-          // When both are wildcards, use LS || RS and Max (both-wildcard = DFInt32-like).
-          resultSign: Id[ITE[LN && ![RN], RS, ITE[RN && ![LN], LS, ITE[LN && RN, LS, LS || RS]]]],
-          resultWidth: Id[ITE[LN && ![RN], RW, ITE[
-            RN && ![LN],
-            LW,
-            ITE[
-              LN && RN,
-              LW,
-              IntP.Max[
-                ITE[![LS] && RS, LW + 1, LW],
-                ITE[![RS] && LS, RW + 1, RW]
-              ]
-            ]
-          ]]],
-          resultNative: Id[ITE[LN && ![RN], RN, LN]],
-          // Compile-time wildcard fit: when one operand is a literal wildcard,
-          // verify its sign and width fit in the bit-accurate value's type.
-          ubLW: UBound.Aux[Int, LW, ? <: Int],
-          ubRW: UBound.Aux[Int, RW, ? <: Int],
-          checkWS: `BaS >= WcS`.Check[
-            ITE[RN && ![LN], LS, ITE[LN && ![RN], RS, LS]],
-            ITE[RN && ![LN], RS, ITE[LN && ![RN], LS, LS]]
-          ],
-          checkWW: `BaW >= WcW`.Check[
-            ITE[RN && ![LN], ubLW.Out, ITE[LN && ![RN], ubRW.Out, ubLW.Out]],
-            ITE[
-              RN && ![LN],
-              ITE[LS && ![RS], ubRW.Out + 1, ubRW.Out],
-              ITE[
-                LN && ![RN],
-                ITE[RS && ![LS], ubLW.Out + 1, ubLW.Out],
-                ubLW.Out
-              ]
-            ]
-          ]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[
-        DFXInt[resultSign.Out, resultWidth.Out, resultNative.Out],
-        LP | RP
-      ]] =
-        ???
-      end evOpCommutativeArithDFXInt
-
+          icR: Candidate.Aux[R, RS, RW, RN, RP]
+      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFXInt[Boolean, Int, NativeType], LP | RP]] = ???
       given evOpNonCommutativeArithDFXInt[
-          Op <: NonCommutativeArithOp,
-          L,
-          LS <: Boolean,
-          LW <: IntP,
-          LN <: NativeType,
-          LP,
-          R,
-          RS <: Boolean,
-          RW <: IntP,
-          RN <: NativeType,
-          RP
+          Op <: NonCommutativeArithOp, L, LS <: Boolean, LW <: IntP, LN <: NativeType, LP,
+          R, RS <: Boolean, RW <: IntP, RN <: NativeType, RP
       ](using
           icL: Candidate.Aux[L, LS, LW, LN, LP],
-          icR: Candidate.Aux[R, RS, RW, RN, RP],
-          op: ValueOf[Op],
-          isWildcardL: ValueOf[LN],
-          isWildcardR: ValueOf[RN]
-      )(using
-          check: ArithCheck[LS, LW, LN, RS, RW, RN],
-          // Wildcard LHS adapts to RHS type; otherwise LHS-dominant
-          resultSign: Id[ITE[LN && ![RN], RS, LS]],
-          resultWidth: Id[ITE[LN && ![RN], RW, LW]],
-          resultNative: Id[ITE[LN && ![RN], RN, LN]],
-          // Compile-time wildcard fit: when LHS is a literal wildcard,
-          // verify its sign and width fit in the RHS (bit-accurate value) type.
-          ubLW: UBound.Aux[Int, LW, ? <: Int],
-          ubRW: UBound.Aux[Int, RW, ? <: Int],
-          checkWS: `BaS >= WcS`.Check[
-            ITE[LN && ![RN], RS, LS],
-            ITE[LN && ![RN], LS, LS]
-          ],
-          checkWW: `BaW >= WcW`.Check[
-            ITE[LN && ![RN], ubRW.Out, ubLW.Out],
-            ITE[
-              LN && ![RN],
-              ITE[RS && ![LS], ubLW.Out + 1, ubLW.Out],
-              ubLW.Out
-            ]
-          ]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[
-        DFXInt[resultSign.Out, resultWidth.Out, resultNative.Out],
-        LP | RP
-      ]] =
-        ???
-      end evOpNonCommutativeArithDFXInt
+          icR: Candidate.Aux[R, RS, RW, RN, RP]
+      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFXInt[Boolean, Int, NativeType], LP | RP]] = ???
 
       import DFVal.Ops.CarryOp
       given evOpCarryAddSubDFXInt[
