@@ -716,17 +716,7 @@ object DFVal extends DFValLP:
   end Alias
 
   object PortByNameSelect:
-    def apply(dfType: ir.DFType, designInst: ir.DFDesignBlock, namePath: String)(using
-        DFC
-    ): ir.DFVal.PortByNameSelect =
-      ir.DFVal.PortByNameSelect(
-        dfType.dropUnreachableRefs,
-        designInst.refTW[ir.DFVal.PortByNameSelect],
-        namePath,
-        dfc.owner.ref,
-        dfc.getMeta.anonymize,
-        dfc.tags
-      ).addMember
+    def apply(dfType: ir.DFType, designInst: ir.DFDesignBlock, namePath: String)(using DFC): ir.DFVal.PortByNameSelect = ???
 
   // object Iterator:
   //   def apply[P](range: DFRange[P])(using dfc: DFC): DFValTP[DFInt32, P] =
