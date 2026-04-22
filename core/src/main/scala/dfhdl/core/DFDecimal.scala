@@ -944,11 +944,7 @@ object DFXInt:
       ](using
           ub: DFUInt.Val.UBArg[W, R]
       ): ExactOp2Aux["apply", DFC, DFValAny, L, R, DFValTP[DFBit, P]] =
-        new ExactOp2["apply", DFC, DFValAny, L, R]:
-          type Out = DFValTP[DFBit, P]
-          def apply(lhs: L, idx: R)(using DFC): Out = trydf {
-            DFVal.Alias.ApplyIdx(DFBit, lhs, ub(lhs.widthIntParam, idx)(using dfc.anonymize))
-          }(using dfc, CTName("bit selection (apply)"))
+        ???
       end evOpApplyDFXInt
       given evOpApplyRangeDFXInt[
           S <: Boolean,
@@ -968,25 +964,7 @@ object DFXInt:
         DFXInt[S, HI - LO + 1, BitAccurate],
         P
       ]] =
-        new ExactOp3["apply", DFC, DFValAny, L, HI, LO]:
-          type Out = DFValTP[DFXInt[S, HI - LO + 1, BitAccurate], P]
-          def apply(lhs: L, idxHigh: HI, idxLow: LO)(using DFC): Out = trydf {
-            val idxHighParam = IntParam(idxHigh)
-            val idxLowParam = IntParam(idxLow)
-            val idxHighIntOpt = idxHighParam.toScalaIntOpt
-            val idxLowIntOpt = idxLowParam.toScalaIntOpt
-            val widthIntOpt = lhs.widthIntOpt
-            (idxHighIntOpt, widthIntOpt) match
-              case (Some(idxHighInt), Some(widthInt)) => checkHigh(idxHighInt, widthInt)
-              case _                                  =>
-            (idxLowIntOpt, widthIntOpt) match
-              case (Some(idxLowInt), Some(widthInt)) => checkLow(idxLowInt, widthInt)
-              case _                                 =>
-            (idxHighIntOpt, idxLowIntOpt) match
-              case (Some(idxHighInt), Some(idxLowInt)) => checkHiLo(idxHighInt, idxLowInt)
-              case _                                   =>
-            DFVal.Alias.ApplyRange.applyDFXInt(lhs, idxHighParam, idxLowParam)
-          }(using dfc, CTName("bit range selection (apply)"))
+        ???
       end evOpApplyRangeDFXInt
       given evOpShiftOrPowerInt[
           Op <: FuncOp.>>.type | FuncOp.<<.type | FuncOp.**.type,
@@ -996,11 +974,7 @@ object DFXInt:
       ](using
           op: ValueOf[Op]
       ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFInt32, RP]] =
-        new ExactOp2[Op, DFC, DFValAny, L, R]:
-          type Out = DFValTP[DFInt32, RP]
-          def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-            DFVal.Func(DFInt32, op.value, List(DFConstInt32(lhs), rhs)).asValTP[DFInt32, RP]
-          }
+        ???
       end evOpShiftOrPowerInt
 
       export dfhdl.internals.clog2
@@ -1252,12 +1226,7 @@ object DFXInt:
       ](using
           op: ValueOf[Op]
       ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFInt32, RP]] =
-        new ExactOp2[Op, DFC, DFValAny, L, R]:
-          type Out = DFValTP[DFInt32, RP]
-          def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-            val lhsVal = DFVal.Const(DFInt32, Some(BigInt(lhs)))
-            DFVal.Func(DFInt32, op, List(lhsVal, rhs)).asValTP[DFInt32, RP]
-          }(using dfc, CTName(op.value.toString))
+        ???
       end evOpArithIntDFInt32
       given evOpCommutativeArithDFXInt[
           Op <: CommutativeArithOp,
