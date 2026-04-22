@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sbtn *)",
+      "Bash(sbtn.bat *)",
+      "Bash(cat)",
+      "Bash(chmod +x /tmp/repro_check.sh)",
+      "Bash(/tmp/repro_check.sh *)",
+      "Bash(chmod +x /tmp/repro.sh)",
+      "Bash(/tmp/repro.sh)",
+      "Bash(git rm *)"
+    ]
+  }
+}
