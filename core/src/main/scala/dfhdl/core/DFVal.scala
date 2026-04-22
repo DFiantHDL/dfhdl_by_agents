@@ -183,37 +183,9 @@ object DFVal extends DFValLP:
   end Compare
 
   trait DFDomainOnly
-  given (using
-      domain: DomainType
-  )(using
-      AssertGiven[
-        domain.type <:< DomainType.DF,
-        "This construct is only available in a dataflow domain."
-      ]
-  ): DFDomainOnly with {}
   trait RTDomainOnly
-  given (using
-      domain: DomainType
-  )(using
-      AssertGiven[
-        domain.type <:< DomainType.RT,
-        "This construct is only available in a register-transfer domain."
-      ]
-  ): RTDomainOnly with {}
   trait PrevInitCheck[I]
-  given [I](using
-      AssertGiven[
-        I =:= Modifier.Initialized,
-        "Value must be an initialized declaration or `.prev` must have an initialization argument.\nE.g.: `x.prev(step, init)`.\nIt's possible to apply a bubble initialization with `init = ?`"
-      ]
-  ): PrevInitCheck[I] with {}
   trait RegInitCheck[I]
-  given [I](using
-      AssertGiven[
-        I =:= Modifier.Initialized,
-        "Value must be an initialized declaration or `.reg` must have an initialization argument.\nE.g.: `x.reg(step, init)`.\nIt's possible to apply an unknown initialization with `init = ?`"
-      ]
-  ): RegInitCheck[I] with {}
 
   export DFXInt.Val.Ops.{
     evOpCarryAddSubDFXInt,
