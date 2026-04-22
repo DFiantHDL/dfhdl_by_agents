@@ -149,116 +149,16 @@ object DFType:
       def apply(t: TFE)(using DFC): Type = DFOpaque(t)
 
     transparent inline given ofProductCompanion[T <: Object]: TC[T] = ${ productMacro[T] }
-    def productMacro[T <: Object](using Quotes, Type[T]): Expr[TC[T]] =
-      import quotes.reflect.*
-      val compObjTpe = TypeRepr.of[T]
-      val compPrefix = compObjTpe match
-        case TermRef(pre, _) => pre
-        case _               =>
-          report.errorAndAbort("Case class companion must be a term ref")
-      val clsSym = compObjTpe.typeSymbol.companionClass
-      if !clsSym.paramSymss.forall(_.headOption.forall(_.isTerm)) then
-        report.errorAndAbort(
-          "Case class with type parameters are not supported"
-        )
-      val clsTpe = compPrefix.select(clsSym)
-      clsTpe.asType match
-        case '[DFEncoding] =>
-          val clsType = clsTpe.asTypeOf[DFEncoding]
-          '{ apply[T, DFEnum[clsType.Underlying]](summonInline[DFEnum[clsType.Underlying]]) }
-        case '[DFStruct.Fields] =>
-          val clsType = clsTpe.asTypeOf[DFStruct.Fields]
-          '{ apply[T, DFStruct[clsType.Underlying]](summonInline[DFStruct[clsType.Underlying]]) }
-        case '[DFOpaque.Abstract] =>
-          val clsType = clsTpe.asTypeOf[DFOpaque.Abstract]
-          '{
-            apply[T, DFOpaque[clsType.Underlying]](summonInline[DFOpaque[clsType.Underlying]])
-          }
-        case _ =>
-          val badTypeStr = clsTpe.show
-          val msg =
-            if (badTypeStr.endsWith("$package.<none>"))
-              s"Type `$badTypeStr` is not a supported DFHDL type constructor.\nHint: Are you missing an argument in your DFHDL type constructor?"
-            else
-              s"Type `$badTypeStr` is not a supported product companion.\nHint: Did you forget to extends `Struct` or `Encoded`?"
-          ControlledMacroError.report(msg)
-      end match
-    end productMacro
+    def productMacro[T <: Object](using Quotes, Type[T]): Expr[TC[T]] = ???
 
     transparent inline given ofTuple[T <: NonEmptyTuple]: TC[T] = ${ ofTupleMacro[T] }
-    def ofTupleMacro[T <: NonEmptyTuple](using Quotes, Type[T]): Expr[TC[T]] =
-      import quotes.reflect.*
-      val tTpe = TypeRepr.of[T]
-      val args = tTpe.getTupleArgs
-      val fun = defn.TupleClass(args.length).typeRef
-      val tcTrees = args.map(t =>
-        Implicits.search(TypeRepr.of[TC].appliedTo(t)) match
-          case iss: ImplicitSearchSuccess =>
-            iss.tree
-          case isf: ImplicitSearchFailure =>
-            report.errorAndAbort(isf.explanation)
-      )
-      val tcList = '{
-        List(${ Varargs(tcTrees.map(_.asExpr)) }*).asInstanceOf[List[TC[Any]]]
-      }
-      val tpes = tcTrees
-        .map(_.tpe.asTypeOf[Any] match
-          case '[TC[t] { type Type = z }] => TypeRepr.of[z])
-        .map(t => TypeRepr.of[DFValOf].appliedTo(t))
-      def applyExpr(t: Expr[T])(dfc: Expr[DFC]): Expr[List[DFTypeAny]] =
-        '{
-          val tList = $t.toList.asInstanceOf[List[Any]]
-          $tcList.lazyZip(tList).map((tc, t) => tc(t)(using $dfc)).toList
-        }
-      val tplTpe = fun.appliedTo(tpes)
-      val tplType = tplTpe.asTypeOf[NonEmptyTuple]
-      '{
-        new TC[T]:
-          type Type = DFTuple[tplType.Underlying]
-          def apply(t: T)(using dfc: DFC): Type =
-            DFTuple[tplType.Underlying](${ applyExpr('t)('dfc) })
-      }
-    end ofTupleMacro
+    def ofTupleMacro[T <: NonEmptyTuple](using Quotes, Type[T]): Expr[TC[T]] = ???
 
     transparent inline given ofNamedTuple[N <: NonEmptyTuple, T <: NonEmptyTuple]
         : TC[NamedTuple[N, T]] = ${ ofNamedTupleMacro[N, T] }
     def ofNamedTupleMacro[N <: NonEmptyTuple, T <: NonEmptyTuple](using
-        Quotes,
-        Type[N],
-        Type[T]
-    ): Expr[TC[NamedTuple[N, T]]] =
-      import quotes.reflect.*
-      val tTpe = TypeRepr.of[T]
-      val args = tTpe.getTupleArgs
-      val fun = defn.TupleClass(args.length).typeRef
-      val tcTrees = args.map(t =>
-        Implicits.search(TypeRepr.of[TC].appliedTo(t)) match
-          case iss: ImplicitSearchSuccess =>
-            iss.tree
-          case isf: ImplicitSearchFailure =>
-            report.errorAndAbort(isf.explanation)
-      )
-      val tcList = '{
-        List(${ Varargs(tcTrees.map(_.asExpr)) }*).asInstanceOf[List[TC[Any]]]
-      }
-      val tpes = tcTrees
-        .map(_.tpe.asTypeOf[Any] match
-          case '[TC[t] { type Type = z }] => TypeRepr.of[z])
-        .map(t => TypeRepr.of[DFValOf].appliedTo(t))
-      def applyExpr(t: Expr[T])(dfc: Expr[DFC]): Expr[List[DFTypeAny]] =
-        '{
-          val tList = $t.toList.asInstanceOf[List[Any]]
-          $tcList.lazyZip(tList).map((tc, t) => tc(t)(using $dfc)).toList
-        }
-      val tplTpe = fun.appliedTo(tpes)
-      val tplType = tplTpe.asTypeOf[NonEmptyTuple]
-      '{
-        new TC[NamedTuple[N, T]]:
-          type Type = DFTuple[tplType.Underlying]
-          def apply(t: NamedTuple[N, T])(using dfc: DFC): Type =
-            DFTuple[tplType.Underlying](${ applyExpr('t)('dfc) })
-      }
-    end ofNamedTupleMacro
+        Quotes, Type[N], Type[T]
+    ): Expr[TC[NamedTuple[N, T]]] = ???
   end TC
 
   private def widthRef[W <: IntP](dfType: DFTypeW[W]): ir.IntParamRef =
