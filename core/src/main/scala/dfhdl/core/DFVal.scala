@@ -11,7 +11,7 @@ inline def x = ${ ??? }
 object DFVal:
   export DFXInt.Ops.{c1, c2}
   object Ops:
-    trait BoolOnlyOp
-    trait CarryOp
+    type BoolOnlyOp
+    type CarryOp
 
 
