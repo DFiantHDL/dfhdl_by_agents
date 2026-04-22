@@ -76,7 +76,7 @@ protected object hdl:
   export core.DFVal.CLK_FREQ
   export core.<>
   export core.X
-  export core.Process.Ops.*
+
 
   type ClkCfg = core.ClkCfg
   val ClkCfg = core.ClkCfg
