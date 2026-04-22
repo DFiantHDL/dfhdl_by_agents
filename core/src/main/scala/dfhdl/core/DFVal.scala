@@ -259,81 +259,22 @@ object DFVal extends DFValLP:
     def apply[IRT <: ir.DFType, D, T <: DFType[ir.DFType.Aux[IRT, D], ?]](
         dfType: T, data: D, named: Boolean = false
     )(using DFC): DFConstOf[T] = ???
-    def forced[T <: DFTypeAny](
-        dfType: T, data: Any, named: Boolean = false
-    )(using DFC): DFConstOf[T] = ???
   end Const
 
-  object DesignParam:
-    def apply[T <: DFTypeAny](
-        appliedVal: DFValOf[T], defaultVal: Option[DFValOf[T]] = None
-    )(using dfc: DFC): DFConstOf[T] = ???
-  end DesignParam
-
-  type CLK_FREQ = DFValOf[DFFreq]
-  def CLK_FREQ(using DFC, RTDomainOnly): DFValOf[DFFreq] = ???
-
   type OPEN = OPEN.type
-  object OPEN:
-    protected[dfhdl] def apply[T <: DFTypeAny](dfType: T)(using DFC): DFValOf[T] = ???
+  object OPEN
 
   type NOTHING = NOTHING.type
-  object NOTHING:
-    protected[dfhdl] def apply[T <: DFTypeAny](dfType: T)(using DFC): DFValOf[T] = ???
-
-  object Dcl:
-    def apply[T <: DFTypeAny, M <: ModifierAny](
-        dfType: T, modifier: M, initValues: List[DFConstOf[T]] = Nil
-    )(using DFC): DFVal[T, M] = ???
-    def iterator(using DFC): DFValOf[DFInt32] = ???
-  end Dcl
+  object NOTHING
 
   object Func:
     export ir.DFVal.Func.Op
     def apply[T <: DFTypeAny, P](
         dfType: T, op: FuncOp, args: List[DFValTP[?, P]]
     )(using DFC): DFValTP[T, P] = ???
-    @scala.annotation.targetName("applyFromIR")
-    def apply[T <: DFTypeAny, P](
-        dfType: T, op: FuncOp, args: List[ir.DFVal]
-    )(using dfc: DFC): DFValTP[T, P] = ???
   end Func
 
-  object Alias:
-    object AsIs:
-      def apply[AT <: DFTypeAny, VT <: DFTypeAny, M <: ModifierAny](
-          aliasType: AT,
-          relVal: DFVal[VT, M],
-          forceNewAlias: Boolean = false
-      )(using dfc: DFC): DFVal[AT, M] = ???
-      def ident[T <: DFTypeAny](relVal: DFVal[T, ?])(using DFC): Unit = ???
-      def forced(aliasType: ir.DFType, relVal: ir.DFVal, forceNewAlias: Boolean = false)(using DFC): ir.DFVal = ???
-    object History:
-      def apply[T <: DFTypeAny, M <: ModifierAny](relVal: DFVal[T, M], step: Int, op: Any, initOption: Option[DFConstOf[T]])(using DFC): DFVal[T, M] = ???
-    object ApplyRange:
-      import IntP.{-, +}
-      def apply[W <: IntP, M <: ModifierAny, H <: IntP, L <: IntP](
-          relVal: DFVal[DFBits[W], M], idxHigh: IntParam[H], idxLow: IntParam[L]
-      )(using DFC): DFVal[DFBits[H - L + 1], M] = ???
-      def applyDFXInt[S <: Boolean, W <: IntP, M <: ModifierAny, H <: IntP, L <: IntP](
-          relVal: DFVal[DFXInt[S, W, NativeType.BitAccurate], M], idxHigh: IntParam[H], idxLow: IntParam[L]
-      )(using DFC): DFVal[DFXInt[S, H - L + 1, NativeType.BitAccurate], M] = ???
-      def applyVector[T <: DFTypeAny, M <: ModifierAny, H <: IntP, L <: IntP](
-          relVal: DFVal[DFVector[T, Tuple1[?]], M], idxHigh: IntParam[H], idxLow: IntParam[L]
-      )(using DFC): DFVal[DFVector[T, Tuple1[H - L + 1]], M] = ???
-      def forced[H <: IntP, L <: IntP](relVal: ir.DFVal, idxHigh: IntParam[H], idxLow: IntParam[L])(using DFC): ir.DFVal = ???
-    object ApplyIdx:
-      def apply[T <: DFTypeAny, W <: IntP, M <: ModifierAny](
-          dfType: T, relVal: DFVal[DFTypeAny, M], relIdx: DFValOf[DFInt32]
-      )(using DFC): DFVal[T, M] = ???
-    object SelectField:
-      def apply[T <: DFTypeAny, M <: ModifierAny](
-          relVal: DFVal[DFTypeAny, M], fieldName: String
-      )(using dfc: DFC): DFVal[T, M] = ???
-  end Alias
-
-  object PortByNameSelect:
-    def apply(dfType: ir.DFType, designInst: ir.DFDesignBlock, namePath: String)(using DFC): ir.DFVal.PortByNameSelect = ???
+  type CLK_FREQ = DFValOf[DFFreq]
 
   trait TC[T <: DFTypeAny, R] extends TCCommon[T, R, DFValAny]:
     type OutP
