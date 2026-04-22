@@ -21,10 +21,6 @@ object DFBoolOrBit:
       type Aux[R, T <: DFBoolOrBit, P] = Candidate[R] { type OutT = T; type OutP = P }
     end Candidate
 
-    object TC
-
-    object Compare
-
     object Ops:
       import DFVal.Ops.BoolOnlyOp
       given evLogicOpDFBoolOrBit[
