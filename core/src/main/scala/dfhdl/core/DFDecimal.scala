@@ -35,92 +35,16 @@ object DFDecimal:
       def nativeType: N = ???
 
   protected[core] object Constraints:
-    object Width
-        extends Check2[
-          Boolean,
-          Int,
-          [s <: Boolean, w <: Int] =>> ITE[s, w > 1, w > 0],
-          [s <: Boolean, w <: Int] =>> ITE[
-            s,
-            "Signed value width must be larger than 1, but found: " + w,
-            "Unsigned value width must be positive, but found: " + w
-          ]
-        ]
-    object Sign
-        extends Check2[
-          Boolean,
-          Int,
-          [s <: Boolean, n <: Int] =>> ITE[s, true, n >= 0],
-          [s <: Boolean, n <: Int] =>> "Unsigned value must be natural, but found: " + n
-        ]
-
-    object `LW >= RW`
-        extends Check2[
-          Int,
-          Int,
-          [LW <: Int, RW <: Int] =>> LW >= RW,
-          [LW <: Int, RW <: Int] =>> "The applied RHS value width (" + RW +
-            ") is larger than the LHS variable width (" + LW + ")."
-        ]
-    object `W <= 32`
-        extends Check1[
-          Int,
-          [W <: Int] =>> W <= 32,
-          [W <: Int] =>> "Width must be no larger than 32, but found: " + W
-        ]
-    object `W <= 31`
-        extends Check1[
-          Int,
-          [W <: Int] =>> W <= 31,
-          [W <: Int] =>> "Width must be no larger than 31, but found: " + W
-        ]
-    object `LW == RW`
-        extends Check2[
-          Int,
-          Int,
-          [LW <: Int, RW <: Int] =>> LW == RW,
-          [LW <: Int, RW <: Int] =>> "Cannot apply this operation between a value of " + LW +
-            " bits width (LHS) and a value of " + RW +
-            " bits width (RHS).\nAn explicit conversion must be applied."
-        ]
-    object `LS >= RS`
-        extends Check2[
-          Boolean,
-          Boolean,
-          [LS <: Boolean, RS <: Boolean] =>> LS || ![RS],
-          [LS <: Boolean, RS <: Boolean] =>> "Cannot apply this operation between " +
-            ITE[LS, "a signed", "an unsigned"] + " value (LHS) and " +
-            ITE[RS, "a signed", "an unsigned"] +
-            " value (RHS).\nAn explicit conversion must be applied."
-        ]
-    object `BaS >= WcS`
-        extends Check2[
-          Boolean,
-          Boolean,
-          [BaS <: Boolean, WcS <: Boolean] =>> BaS || ![WcS],
-          [BaS <: Boolean, WcS <: Boolean] =>> "Cannot apply a signed wildcard `Int` value to " +
-            ITE[BaS, "a signed", "an unsigned"] +
-            " bit-accurate value.\nUse an explicit conversion or `sd\"\"` interpolation."
-        ]
-    object `BaW >= WcW`
-        extends Check2[
-          Int,
-          Int,
-          [BaW <: Int, WcW <: Int] =>> BaW >= WcW,
-          [BaW <: Int, WcW <: Int] =>> "The wildcard `Int` value width (" + WcW +
-            ") is larger than the bit-accurate value width (" + BaW + ")."
-        ]
-    type SignStr[S <: Boolean] = ITE[S, "a signed", "an unsigned"]
-    object `LS == RS`
-        extends Check2[
-          Boolean,
-          Boolean,
-          [LS <: Boolean, RS <: Boolean] =>> LS == RS,
-          [LS <: Boolean, RS <: Boolean] =>> "Cannot apply this operation between " +
-            ITE[LS, "a signed", "an unsigned"] + " value (LHS) and " +
-            ITE[RS, "a signed", "an unsigned"] +
-            " value (RHS).\nAn explicit conversion must be applied."
-        ]
+    object Width extends Check2[Boolean, Int, [s <: Boolean, w <: Int] =>> true, [s <: Boolean, w <: Int] =>> ""]
+    object Sign extends Check2[Boolean, Int, [s <: Boolean, n <: Int] =>> true, [s <: Boolean, n <: Int] =>> ""]
+    object `LW >= RW` extends Check2[Int, Int, [LW <: Int, RW <: Int] =>> true, [LW <: Int, RW <: Int] =>> ""]
+    object `W <= 32` extends Check1[Int, [W <: Int] =>> true, [W <: Int] =>> ""]
+    object `W <= 31` extends Check1[Int, [W <: Int] =>> true, [W <: Int] =>> ""]
+    object `LW == RW` extends Check2[Int, Int, [LW <: Int, RW <: Int] =>> true, [LW <: Int, RW <: Int] =>> ""]
+    object `LS >= RS` extends Check2[Boolean, Boolean, [LS <: Boolean, RS <: Boolean] =>> true, [LS <: Boolean, RS <: Boolean] =>> ""]
+    object `BaS >= WcS` extends Check2[Boolean, Boolean, [BaS <: Boolean, WcS <: Boolean] =>> true, [BaS <: Boolean, WcS <: Boolean] =>> ""]
+    object `BaW >= WcW` extends Check2[Int, Int, [BaW <: Int, WcW <: Int] =>> true, [BaW <: Int, WcW <: Int] =>> ""]
+    object `LS == RS` extends Check2[Boolean, Boolean, [LS <: Boolean, RS <: Boolean] =>> true, [LS <: Boolean, RS <: Boolean] =>> ""]
     trait TCCheck[LS <: Boolean, LW <: IntP, RS <: Boolean, RW <: IntP]:
       def apply(
           leftSigned: Boolean,
