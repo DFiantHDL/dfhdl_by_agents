@@ -32,8 +32,6 @@ type ModifierAny = Modifier[Any, Any, Any, Any]
 object Modifier:
   type CONST = Modifier[Any, Any, Any, Any]
 
-type IntP = Any
-
 export DFType.asFE
 
 sealed trait Args
