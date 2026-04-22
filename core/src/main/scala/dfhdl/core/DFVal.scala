@@ -165,20 +165,13 @@ object DFVal extends DFValLP:
     type OutP = NOTCONST
     def conv(dfType: DFTypeAny, value: DFValOf[DFTypeAny])(using dfc: DFC): DFValOf[DFTypeAny] = ???
 
-  trait TCLP
-  object TC extends TCLP:
+  object TC:
     type Exact[T <: DFTypeAny] = Exact1[DFTypeAny, T, [t <: DFTypeAny] =>> t, DFC, TC]
     type Aux[T <: DFTypeAny, R, OutP0] = TC[T, R] { type OutP = OutP0 }
     export DFBoolOrBit.Val.TC.given
     export DFBits.Val.TC.given
     export DFDecimal.Val.TC.given
     export DFEnum.Val.TC.given
-    export DFVector.Val.TC.given
-    export DFTuple.Val.TC.given
-    export DFStruct.Val.TC.given
-    export DFOpaque.Val.TC.given
-    export TDFDouble.Val.TC.given
-    export TDFString.Val.TC.given
   end TC
 
   trait TCConv[T <: DFTypeAny, R] extends TC[T, R]:
