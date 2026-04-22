@@ -1,5 +1,6 @@
 package dfhdl.core
 import DFVal.Ops.CarryOp
+import DFVal.Ops.BoolOnlyOp
 
 trait ExactOp2Aux[Op, C, O]
 
@@ -15,7 +16,7 @@ class DFC(mutableDB: MutableDB)
 object DFBoolOrBit:
   given bl[Op, O](using
       ExactOp2Aux[Op, DFC, O]
-  ): ExactOp2Aux[DFVal.Ops.BoolOnlyOp, DFC, O] = ???
+  ): ExactOp2Aux[BoolOnlyOp, DFC, O] = ???
 
 object DFDecimal:
   object Ops:
