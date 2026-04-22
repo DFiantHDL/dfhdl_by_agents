@@ -2,7 +2,6 @@ package dfhdl.core
 import dfhdl.internals.*
 import dfhdl.compiler.ir
 import scala.quoted.*
-import collection.immutable.ListMap
 import ir.DFVal.Func.Op as FuncOp
 import scala.annotation.targetName
 
@@ -13,43 +12,28 @@ sealed abstract class DFEncoding extends scala.reflect.Enum:
 
 object DFEncoding:
   sealed trait Auto extends DFEncoding:
-    final val bigIntValue: BigInt = encode(ordinal)
+    final val bigIntValue: BigInt = ???
   sealed trait ExplicitWidth[W <: Int & Singleton] extends DFEncoding:
     val width: W
   abstract class Default extends StartAt(0)
 
   abstract class Gray extends Auto:
-    final def calcWidth(entryCount: Int): Int =
-      (entryCount - 1).bitsWidth(false)
-    final def encode(idx: Int): BigInt = BigInt(idx ^ (idx >>> 1))
+    final def calcWidth(entryCount: Int): Int = ???
+    final def encode(idx: Int): BigInt = ???
 
   abstract class StartAt[V <: Int & Singleton](value: V) extends Auto:
-    final def calcWidth(entryCount: Int): Int =
-      (entryCount - 1 + value).bitsWidth(false)
-    final def encode(idx: Int): BigInt = BigInt(idx + value)
+    final def calcWidth(entryCount: Int): Int = ???
+    final def encode(idx: Int): BigInt = ???
 
   abstract class OneHot extends Auto:
-    final def calcWidth(entryCount: Int): Int = entryCount
-    final def encode(idx: Int): BigInt = BigInt(1) << idx
+    final def calcWidth(entryCount: Int): Int = ???
+    final def encode(idx: Int): BigInt = ???
 
   abstract class Manual[W <: Int & Singleton](val width: W) extends ExplicitWidth[W]:
     val value: DFConstOf[DFUInt[W]]
-    final def bigIntValue: BigInt =
-      value.asIR match
-        case ir.DFVal.Const(dfType = _: ir.DFDecimal, data = data: Option[BigInt] @unchecked) =>
-          data.getOrElse(
-            throw new IllegalArgumentException(
-              "Bubbles are not accepted as enumeration values."
-            )
-          )
-        case _ =>
-          throw new IllegalArgumentException(
-            "An enumeration value must be a literal constant."
-          )
-
-    final def calcWidth(entryCount: Int): Int = width
-    final def encode(idx: Int): BigInt = bigIntValue
-  end Manual
+    final def bigIntValue: BigInt = ???
+    final def calcWidth(entryCount: Int): Int = ???
+    final def encode(idx: Int): BigInt = ???
 
   abstract class Toggle extends Default, ExplicitWidth[1] derives CanEqual:
     val width: 1 = 1
@@ -62,42 +46,8 @@ object DFEnum:
       Quotes
   )(
       tpe: quotes.reflect.TypeRepr
-  ): Option[List[quotes.reflect.TypeRepr]] =
-    import quotes.reflect.*
-    tpe.asTypeOf[Any] match
-      case '[DFEncoding] =>
-        val enumTpe = TypeRepr.of[scala.reflect.Enum]
-        val sym = tpe.typeSymbol
-        val symCls = sym.companionClass
-        val symMdl = sym.companionModule
-        if (sym.flags.is(Flags.Enum) || symCls.flags.is(Flags.Enum))
-          Some(
-            symMdl.declaredFields.view
-              .map(f => tpe.memberType(f))
-              .filter(_ <:< enumTpe)
-              .toList
-          )
-        else None
-      case _ => None
-    end match
-  end unapply
-  def apply[E <: DFEncoding](enumCompanion: Object): DFEnum[E] =
-    val enumClass = classOf[scala.reflect.Enum]
-    val enumCompanionCls = enumCompanion.getClass
-    val fieldsAsPairs =
-      for (
-        field <- enumCompanionCls.getDeclaredFields
-        if enumClass.isAssignableFrom(field.getType)
-      ) yield
-        field.setAccessible(true)
-        (field.getName, field.get(enumCompanion).asInstanceOf[DFEncoding])
-    val name = enumCompanionCls.getSimpleName.replace("$", "")
-    val width = fieldsAsPairs.head._2.calcWidth(fieldsAsPairs.size)
-    val entryPairs = fieldsAsPairs.zipWithIndex.map { case ((name, entry), idx) =>
-      (name, entry.bigIntValue)
-    }
-    ir.DFEnum(name, width, ListMap(entryPairs*)).asFE[DFEnum[E]]
-  end apply
+  ): Option[List[quotes.reflect.TypeRepr]] = ???
+  def apply[E <: DFEncoding](enumCompanion: Object): DFEnum[E] = ???
 
   inline given [E <: DFEncoding]: DFEnum[E] = ${ dfTypeMacro[E] }
   def dfTypeMacro[E <: DFEncoding](using Quotes, Type[E]): Expr[DFEnum[E]] = ???
@@ -116,23 +66,6 @@ object DFEnum:
       ]: Compare[DFEnum[E], RE, Op, C] with
         type OutP = CONST
         def conv(dfType: DFEnum[E], arg: RE)(using DFC): Out = ???
-    object Ops:
-      given evOpAsDFEnumBinary[
-          P, L <: DFValTP[DFBoolOrBit, P], Comp <: Object, E <: DFEncoding
-      ](using
-          cc: CaseClass.Aux[Comp, DFEncoding, E]
-      )(using
-          check: E <:< DFEncoding.ExplicitWidth[1],
-          dfType: DFEnum[E]
-      ): ExactOp2Aux["as", DFC, DFValAny, L, Comp, DFValTP[DFEnum[E], P]] = ???
-
-      extension [P, E <: DFEncoding.ExplicitWidth[1]](lhs: DFValTP[DFEnum[E], P])
-        @targetName("boolOfDFEnumBinary")
-        def bool(using DFCG): DFValTP[DFBool, P] = ???
-        @targetName("bitOfDFEnumBinary")
-        def bit(using DFCG): DFValTP[DFBit, P] = ???
-        def toggle(using DFCG): DFValTP[DFEnum[E], P] = ???
-      end extension
-    end Ops
+    object Ops
   end Val
 end DFEnum
