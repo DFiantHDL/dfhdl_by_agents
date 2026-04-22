@@ -12,4 +12,3 @@ object DFError:
     var firstTime: Boolean = true
 end DFError
 
-class Logger
