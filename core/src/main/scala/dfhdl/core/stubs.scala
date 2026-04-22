@@ -1,4 +1,5 @@
 package dfhdl.core
+import DFVal.Ops.CarryOp
 
 trait ExactOp2Aux[Op, C, O]
 
@@ -20,7 +21,6 @@ object DFDecimal:
   object Ops:
     export DFXInt.Ops.*
 
-import DFVal.Ops.CarryOp
 object DFXInt:
   object Ops:
     type A = Int
