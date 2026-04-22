@@ -19,7 +19,7 @@ object Modifier:
 
 final class DFType
 
-final case class DFC(mutableDB: MutableDB)
+final class DFC(mutableDB: MutableDB)
 
 object DFBoolOrBit:
   object Val:
