@@ -144,17 +144,7 @@ object DFDecimal:
         checkS: `LS >= RS`.Check[LS, RS],
         checkW: `LW >= RW`.Check[LWI, ITE[LS != RS, RWI + 1, RWI]]
     ): TCCheck[LS, LW, RS, RW] with
-      def apply(
-          leftSigned: Boolean,
-          leftWidth: Int,
-          rightSigned: Boolean,
-          rightWidth: Int
-      ): Unit =
-        checkS(leftSigned, rightSigned)
-        checkW(
-          leftWidth,
-          if (leftSigned != rightSigned) rightWidth + 1 else rightWidth
-        )
+      def apply(leftSigned: Boolean, leftWidth: Int, rightSigned: Boolean, rightWidth: Int): Unit = ???
     end given
     trait CompareCheck[
         ValS <: Boolean,
@@ -197,26 +187,7 @@ object DFDecimal:
         argIsInt: ValueOf[ArgIsInt],
         castle: ValueOf[Castle]
     ): CompareCheck[ValS, ValW, ArgS, ArgW, ArgIsInt, Castle] with
-      def apply(
-          dfValSigned: Boolean,
-          dfValWidth: Int,
-          argSigned: Boolean,
-          argWidth: Int
-      ): Unit =
-        val isInt = argIsInt.value
-        val skipChecks = isInt && (dfValSigned || !argSigned)
-        val argWFix =
-          if (isInt && dfValSigned && !argSigned) argWidth + 1
-          else argWidth
-        if (isInt) checkVAW(dfValWidth, argWFix)
-        if (!skipChecks)
-          val ls = if (castle) argSigned else dfValSigned
-          val rs = if (castle) dfValSigned else argSigned
-          checkS(ls, rs)
-          val lw = if (castle) argWFix else dfValWidth
-          val rw = if (castle) dfValWidth else argWFix
-          checkW(lw, rw)
-      end apply
+      def apply(dfValSigned: Boolean, dfValWidth: Int, argSigned: Boolean, argWidth: Int): Unit = ???
     end given
 
     trait ArithCheck[
@@ -256,25 +227,7 @@ object DFDecimal:
         checkW: `LW >= RW`.Check[ITE[LN, LWI, LWI], ITE[LN, LWI, signedRW.Out]],
         isWildcardL: ValueOf[LN]
     ): ArithCheck[LS, LW, LN, RS, RW, RN] with
-      def apply(
-          lhs: DFValOf[DFXInt[LS, LW, LN]],
-          rhs: DFValOf[DFXInt[RS, RW, RN]]
-      )(using dfc: DFC): Unit =
-        if (!isWildcardL.value)
-          import dfc.getSet
-          import DFXInt.Val.getActualSignedWidthOpt
-          (lhs.getActualSignedWidthOpt, rhs.getActualSignedWidthOpt) match
-            case (Some(lhsSigned, lhsWidthIntOpt), Some(rhsSigned, rhsWidthIntOpt)) =>
-              checkS(lhsSigned, rhsSigned)
-              (lhsWidthIntOpt, rhsWidthIntOpt) match
-                case (Some(lhsWidth), Some(rhsWidth)) =>
-                  val rhsSignedWidth: Int =
-                    if (lhsSigned && !rhsSigned) rhsWidth + 1
-                    else rhsWidth
-                  checkW(lhsWidth, rhsSignedWidth)
-                case _ =>
-            case _ =>
-      end apply
+      def apply(lhs: DFValOf[DFXInt[LS, LW, LN]], rhs: DFValOf[DFXInt[RS, RW, RN]])(using dfc: DFC): Unit = ???
     end given
 
     trait SignCheck[
@@ -302,17 +255,7 @@ object DFDecimal:
         argIsInt: ValueOf[ArgIsInt],
         castle: ValueOf[Castle]
     ): SignCheck[ValS, ArgS, ArgIsInt, Castle] with
-      def apply(
-          dfValSigned: Boolean,
-          argSigned: Boolean
-      ): Unit =
-        val skipSignChecks: Boolean =
-          argIsInt.value && !castle && (dfValSigned || !argSigned)
-        if (!skipSignChecks)
-          val ls: Boolean = if (castle) argSigned else dfValSigned
-          val rs: Boolean = if (castle) dfValSigned else argSigned
-          checkS(ls, rs)
-      end apply
+      def apply(dfValSigned: Boolean, argSigned: Boolean): Unit = ???
     end given
 
     type NativeCheck[LN <: NativeType, RN <: NativeType] =
