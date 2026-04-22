@@ -109,57 +109,17 @@ final class MutableDB():
       DesignContext.global.inject(sourceCtx)
 
   object OwnershipContext:
-    private var stack: List[DFOwner] = Nil
-    private var lateStack: List[Boolean] = Nil
-    // containers are frontend for IR owners, which may change in the course of the elaboration.
-    // however, once a reference of an owner is constructed, it is guaranteed to be valid until the elaboration is complete.
-    // this map is used to store the most recent containerized owner for each reference.
-    private var refContainerizedOwnerMap = mutable.Map.empty[DFRefAny, DFDomainOwner]
-    def enter(owner: DFOwner): Unit =
-//      println(s"enter ${owner}")
-      owner match
-        case domainOwner: DFDomainOwner =>
-          refContainerizedOwnerMap += domainOwner.ownerRef -> domainOwner
-        case _ =>
-      stack = owner :: stack
-      lateStack = false :: lateStack
-      owner match
-        case design: DFDesignBlock =>
-        // DesignContext.startDesign(design)
-        case _ =>
-    def exit(): Unit =
-      // println(s"exit ${owner}")
-      owner match
-        case design: DFDesignBlock =>
-          DesignContext.endDesign(design)
-        case _ =>
-      stack = stack.drop(1)
-      lateStack = lateStack.drop(1)
-    def exitLastDesign(): Unit =
-      stack match
-        case (design: DFDesignBlock) :: Nil => exit()
-        case _                              =>
-    def enterLate(): Unit =
-      lateStack = true :: lateStack
-    def exitLate(): Unit =
-      lateStack = lateStack.drop(1)
-    def owner: DFOwner = stack.head
-    def currentDesign: DFDesignBlock = stack.collectFirst { case d: DFDesignBlock => d }.get
-    def lateConstruction: Boolean = lateStack.headOption.getOrElse(false)
-    def replaceOwner(originalOwner: DFOwner, newOwner: DFOwner): Unit =
-      stack = stack.map { o =>
-        if (o == originalOwner) newOwner
-        else o
-      }
-      originalOwner match
-        case domainOwner: DFDomainOwner =>
-          refContainerizedOwnerMap.update(
-            domainOwner.ownerRef,
-            newOwner.asInstanceOf[DFDomainOwner]
-          )
-        case _ =>
-    def containerizedOwnerOfRef(ref: DFRefAny): DFDomainOwner = refContainerizedOwnerMap(ref)
-    def ownerOption: Option[DFOwner] = stack.headOption
+    def enter(owner: DFOwner): Unit = ???
+    def exit(): Unit = ???
+    def exitLastDesign(): Unit = ???
+    def enterLate(): Unit = ???
+    def exitLate(): Unit = ???
+    def owner: DFOwner = ???
+    def currentDesign: DFDesignBlock = ???
+    def lateConstruction: Boolean = ???
+    def replaceOwner(originalOwner: DFOwner, newOwner: DFOwner): Unit = ???
+    def containerizedOwnerOfRef(ref: DFRefAny): DFDomainOwner = ???
+    def ownerOption: Option[DFOwner] = ???
   end OwnershipContext
 
   object ResourceOwnershipContext:
