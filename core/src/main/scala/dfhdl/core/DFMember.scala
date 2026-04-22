@@ -19,13 +19,7 @@ object DFMember:
 end DFMember
 
 extension [M <: ir.DFMember](member: M)
-  def addMember(using DFC): M =
-    dfc.mutableDB.addMember(member)
-  def replaceMemberWith(updated: M)(using DFC): M =
-    dfc.mutableDB.replaceMember(member, updated)
-  def removeTagOf[CT <: ir.DFTag: ClassTag](using dfc: DFC): M =
-    import dfc.getSet
-    member
-      .setTags(_.removeTagOf[CT])
-      .setMeta(m => if (m.isAnonymous && !dfc.getMeta.isAnonymous) dfc.getMeta else m)
+  def addMember(using DFC): M = ???
+  def replaceMemberWith(updated: M)(using DFC): M = ???
+  def removeTagOf[CT <: ir.DFTag: ClassTag](using dfc: DFC): M = ???
 end extension
