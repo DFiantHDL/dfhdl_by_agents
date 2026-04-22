@@ -170,13 +170,13 @@ object DFXInt:
       ](using
           icL: Candidate.Aux[L, LP],
           icR: Candidate.Aux[R, RP]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFXInt[Boolean, Int, NativeType], LP | RP]] = ???
+      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFTypeAny, LP | RP]] = ???
       given evOpNonCommutativeArithDFXInt[
           Op <: NonCommutativeArithOp, L, LP, R, RP
       ](using
           icL: Candidate.Aux[L, LP],
           icR: Candidate.Aux[R, RP]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFXInt[Boolean, Int, NativeType], LP | RP]] = ???
+      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFTypeAny, LP | RP]] = ???
 
       import DFVal.Ops.CarryOp
       given evOpCarryAddSubDFXInt[
@@ -184,14 +184,14 @@ object DFXInt:
       ](using
           icL: Candidate.Aux[L, LP],
           icR: Candidate.Aux[R, RP]
-      ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[DFXInt[Boolean, Int, NativeType], LP | RP]] = ???
+      ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[DFTypeAny, LP | RP]] = ???
 
       given evOpCarryMulDFXInt[
           Op <: FuncOp.`*`.type, L, LP, R, RP
       ](using
           icL: Candidate.Aux[L, LP],
           icR: Candidate.Aux[R, RP]
-      ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[DFXInt[Boolean, Int, NativeType], LP | RP]] = ???
+      ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[DFTypeAny, LP | RP]] = ???
     end Ops
   end Val
 end DFXInt
