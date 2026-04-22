@@ -28,14 +28,11 @@ object DFBoolOrBit:
       given evLogicOpDFBoolOrBit2[Op <: FuncOp, L, R, O <: DFValAny](using
           ic: ExactOp2Aux[Op, DFC, DFValAny, L, R, O]
       ): ExactOp2Aux[BoolOnlyOp[Op], DFC, DFValAny, L, R, O] = ???
-  end Val
-end DFBoolOrBit
 
 object DFDecimal:
   object Val:
     object Ops:
       export DFXInt.Val.Ops.*
-end DFDecimal
 
 object DFXInt:
   object Val:
@@ -63,8 +60,5 @@ object DFXInt:
           icL: Candidate[LP],
           icR: Candidate[RP]
       ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, Any, Any, DFValTP[DFType, LP | RP]] = ???
-    end Ops
-  end Val
-end DFXInt
 
 type DFConstInt32 = DFConstOf[DFType]
