@@ -439,22 +439,12 @@ object DFVal extends DFValLP:
   given evOpCompare[LT <: DFTypeAny, LP, L <: DFValTP[LT, LP], R, Op <: FuncOp, RP](using
       tc: Compare.Aux[LT, R, Op, false, RP],
       op: ValueOf[Op]
-  ): ExactOp2Aux[Op, DFC, DFValOf[DFBool], L, R, DFValTP[DFBool, LP | RP]] =
-    new ExactOp2[Op, DFC, DFValOf[DFBool], L, R]:
-      type Out = DFValTP[DFBool, LP | RP]
-      def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-        tc(lhs, rhs)
-      }(using dfc, CTName(op.value.toString))
+  ): ExactOp2Aux[Op, DFC, DFValOf[DFBool], L, R, DFValTP[DFBool, LP | RP]] = ???
 
   given evOpCompareCastled[L, LP, RT <: DFTypeAny, RP, R <: DFValTP[RT, RP], Op <: FuncOp](using
       tc: Compare.Aux[RT, L, Op, true, LP],
       op: ValueOf[Op]
-  ): ExactOp2Aux[Op, DFC, DFValOf[DFBool], L, R, DFValTP[DFBool, LP | RP]] =
-    new ExactOp2[Op, DFC, DFValOf[DFBool], L, R]:
-      type Out = DFValTP[DFBool, LP | RP]
-      def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-        tc(rhs, lhs)
-      }(using dfc, CTName(op.value.toString))
+  ): ExactOp2Aux[Op, DFC, DFValOf[DFBool], L, R, DFValTP[DFBool, LP | RP]] = ???
 
   object Ops:
     protected type SupportedValue =
