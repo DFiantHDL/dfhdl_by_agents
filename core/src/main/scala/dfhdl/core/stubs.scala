@@ -50,7 +50,6 @@ object DFBoolOrBit:
   end Val
 end DFBoolOrBit
 
-type DFDecimal[S, W, F, N] = DFType[ir.DFDecimal, Args4[S, W, F, N]]
 object DFDecimal:
   object Val:
     object Ops:
