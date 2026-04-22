@@ -54,17 +54,9 @@ object DFDecimal:
   end StrInterpOps
 
   object Val:
-    object TC:
-      export DFXInt.Val.TC.given
-      def apply(
-          dfType: DFDecimal[Boolean, Int, Int, NativeType],
-          dfVal: DFValOf[DFDecimal[Boolean, Int, Int, NativeType]]
-      )(using DFC): DFValOf[DFDecimal[Boolean, Int, Int, NativeType]] = ???
-    end TC
-    object TCConv:
-      export DFXInt.Val.TCConv.given
-    object Compare:
-      export DFXInt.Val.Compare.given
+    object TC
+    object TCConv
+    object Compare
     object Ops:
       export DFXInt.Val.Ops.*
   end Val
