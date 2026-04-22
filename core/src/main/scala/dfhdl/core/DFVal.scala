@@ -257,16 +257,6 @@ object DFVal extends DFValLP:
     evOpCarryMulDFXInt
   }
 
-  given evOpCompare[LT <: DFTypeAny, LP, L <: DFValTP[LT, LP], R, Op <: FuncOp, RP](using
-      tc: Compare.Aux[LT, R, Op, false, RP],
-      op: ValueOf[Op]
-  ): ExactOp2Aux[Op, DFC, DFValOf[DFBool], L, R, DFValTP[DFBool, LP | RP]] = ???
-
-  given evOpCompareCastled[L, LP, RT <: DFTypeAny, RP, R <: DFValTP[RT, RP], Op <: FuncOp](using
-      tc: Compare.Aux[RT, L, Op, true, LP],
-      op: ValueOf[Op]
-  ): ExactOp2Aux[Op, DFC, DFValOf[DFBool], L, R, DFValTP[DFBool, LP | RP]] = ???
-
   object Ops:
     protected type SupportedValue =
       DFValAny | Boolean | Int | Long | Double | NonEmptyTuple | Iterable[DFValAny] |
