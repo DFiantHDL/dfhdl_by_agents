@@ -26,24 +26,7 @@ object DFBits:
       type Out = DFValTP[DFBits[OutW], OutP]
       def conv(from: R)(using DFC): Out = apply(from)
       def apply(value: R)(using DFC): Out
-    trait CandidateLP:
-      given fromIf[
-          C <: DFValOf[DFBoolOrBit],
-          T,
-          F,
-          TW <: IntP,
-          TP,
-          FP,
-          R <: IfWrapper[C, T, F]
-      ](using
-          tTC: Candidate[T] { type OutW = TW; type OutP = TP },
-          fTC: DFVal.TC[DFBits[TW], F] { type OutP = FP }
-      ): Candidate[R] with
-        type OutW = TW
-        type OutP = TP | FP
-        def apply(value: R)(using DFC): Out = value.unwrap
-      end fromIf
-    end CandidateLP
+    trait CandidateLP
     object Candidate extends CandidateLP:
       type Aux[R, W <: IntP, P] = Candidate[R] { type OutW = W; type OutP = P }
     end Candidate
