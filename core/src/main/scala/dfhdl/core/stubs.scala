@@ -1,14 +1,4 @@
 package dfhdl.core
-import ir.DFVal.Func.Op as FuncOp
-
-// stubs replacing dfhdl.compiler.ir and dfhdl.internals
-object ir:
-  object DFVal:
-    object Func:
-      trait Op
-      object Op:
-        object `+` extends Op
-        object `-` extends Op
 
 trait ExactOp2Aux[Op, C, B, L, R, O]
 
