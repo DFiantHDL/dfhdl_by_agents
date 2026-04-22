@@ -38,7 +38,6 @@ export DFType.asFE
 
 sealed trait Args
 sealed trait NoArgs extends Args
-sealed trait Args1[T1] extends Args
 sealed trait Args4[T1, T2, T3, T4] extends Args
 
 final class DFType[+T <: ir.DFType, +A <: Args](val value: T) extends AnyVal
@@ -54,7 +53,6 @@ final case class DFC(
     mutableDB: MutableDB = new MutableDB()
 ) extends MetaContext
 
-type BitNum = 0 | 1
 type DFBoolOrBit = DFType[ir.DFBoolOrBit, NoArgs]
 object DFBoolOrBit:
   given DFBool = DFBool
