@@ -67,10 +67,7 @@ def DFValConversionMacro[T <: DFTypeAny, P, R](
     from: Expr[R]
 )(dfc: Expr[DFCG])(using Quotes, Type[T], Type[P], Type[R]): Expr[DFValTP[T, P]] = ???
 
-sealed protected trait DFValLP:
-  type CommonR = DFValAny | Bubble | DFVal.NOTHING | BoolSelWrapper[?, ?, ?]
-end DFValLP
-object DFVal extends DFValLP:
+object DFVal:
   protected[core] type Fields[T <: DFTypeAny, M <: ModifierAny] = Any
 
   inline def apply[T <: DFTypeAny, M <: ModifierAny, IR <: ir.DFVal | DFError](
@@ -145,22 +142,11 @@ object DFVal extends DFValLP:
   }
 
   object Ops:
-    protected type SupportedValue =
-      DFValAny | Boolean | Int | Long | Double | NonEmptyTuple | Iterable[DFValAny] |
-        SameElementsVector[?] | BoolSelWrapper[?, ?, ?]
-    extension (inline lhs: DFValAny)
-      transparent inline def apply(inline idx: Any)(using DFCG): DFValAny = ???
-      transparent inline def apply(inline idxLeft: Any, inline idxRight: Any)(using DFCG): DFValAny = ???
-    end extension
     protected[core] trait BoolOnlyOp[Op <: FuncOp]
     protected[core] trait CarryOp[Op <: FuncOp]
     private[core] transparent inline def compare[Op <: FuncOp, L, R](
         inline lhs: L, inline rhs: R
     )(using DFC, ValueOf[Op]): DFValOf[DFBool] = ???
-    extension [T <: DFTypeAny, A, C, I, P](dfVal: DFVal[T, Modifier[A, C, I, P]])
-      def bits(using DFCG)(using w: Width[T]): DFValTP[DFBits[w.Out], P] = ???
-      def genNewVar(using DFC): DFVarOf[T] = ???
-    end extension
   end Ops
 end DFVal
 
