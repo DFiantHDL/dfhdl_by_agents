@@ -77,86 +77,21 @@ object IntParam extends IntParamLP:
   @targetName("applyInlined")
   inline def apply[V <: Int](inline value: Inlined[V]): IntParam[V] =
     value.asInstanceOf[IntParam[V]]
-  private def calc[O <: IntP, V <: IntP](op: FuncOp, arg: IntParam[V])(
-      opInt: Int => Int
-  )(using dfc: DFC): IntParam[O] =
-    given DFC = dfc.anonymize
-    arg match
-      case int: Int            => forced[O](opInt(int))
-      case const: DFConstInt32 => forced[O](DFVal.Func(DFInt32, op, List(const)))
-  private def calc[O <: IntP, L <: IntP, R <: IntP](
-      op: FuncOp,
-      argL: IntParam[L],
-      argR: IntParam[R]
-  )(
-      opInt: (Int, Int) => Int
-  )(using dfc: DFC): IntParam[O] =
-    given DFC = dfc.anonymize
-    (argL, argR) match
-      case (intL: Int, intR: Int) => forced[O](opInt(intL, intR))
-      case _                      =>
-        val constL = argL.toDFConst
-        val constR = argR.toDFConst
-        import dfc.getSet
-        def func = forced[O](DFVal.Func(DFInt32, op, List(constL, constR)))
-        func
-    end match
-
-  end calc
   extension [L <: IntP](lhs: IntParam[L])(using dfc: DFC)
-    def toDFConst: DFConstInt32 =
-      lhs match
-        case int: Int            => DFConstInt32(int, named = true)
-        case const: DFConstInt32 => const
-    def toScalaIntOpt: Option[Int] =
-      lhs match
-        case int: Int            => Some(int)
-        case const: DFConstInt32 =>
-          import dfc.getSet
-          val constIR = const.asIR
-          constIR.injectGlobalCtx()
-          constIR.getConstData[Option[BigInt]] match
-            case ir.ConstData.KnownConst(Some(i: BigInt)) => Some(i.toInt)
-            case _                                        => None
-    def toScalaIntUNSAFE: Int = toScalaIntOpt.get
-    def ref: ir.IntParamRef =
-      lhs match
-        case int: Int            => ir.IntParamRef(int)
-        case const: DFConstInt32 =>
-          val constIR = const.asIR
-          constIR.injectGlobalCtx()
-          val reachable = constIR.getReachableMember
-          val newRef = dfc.refGen.genTypeRef
-          ir.IntParamRef(dfc.mutableDB.newRefFor(newRef, reachable))
-    def +[R <: IntP](rhs: IntParam[R]): IntParam[IntP.+[L, R]] =
-      calc(FuncOp.+, lhs, rhs)(_ + _)
-    def -[R <: IntP](rhs: IntParam[R]): IntParam[IntP.-[L, R]] =
-      calc(FuncOp.-, lhs, rhs)(_ - _)
-    def *[R <: IntP](rhs: IntParam[R]): IntParam[IntP.*[L, R]] =
-      calc(FuncOp.`*`, lhs, rhs)(_ * _)
-    def /[R <: IntP](rhs: IntParam[R]): IntParam[IntP./[L, R]] =
-      calc(FuncOp./, lhs, rhs)(_ / _)
-    def %[R <: IntP](rhs: IntParam[R]): IntParam[IntP.%[L, R]] =
-      calc(FuncOp.%, lhs, rhs)(_ % _)
-    infix def max[R <: IntP](rhs: IntParam[R]): IntParam[IntP.Max[L, R]] =
-      import scala.runtime.RichInt
-      calc(FuncOp.max, lhs, rhs)((x, y) => RichInt(x) max y)
-    infix def min[R <: IntP](rhs: IntParam[R]): IntParam[IntP.Min[L, R]] =
-      import scala.runtime.RichInt
-      calc(FuncOp.min, lhs, rhs)((x, y) => RichInt(x) min y)
-    def clog2: IntParam[IntP.CLog2[L]] =
-      calc(FuncOp.clog2, lhs)(dfhdl.internals.clog2)
-    def =~[R <: IntP](that: IntParam[R]): Boolean =
-      import dfc.getSet
-      (lhs, that) match
-        case (intL: Int, intR: Int)                       => intL == intR
-        case (constL: DFConstInt32, constR: DFConstInt32) => constL =~ constR
-        case _                                            => false
-    protected[dfhdl] def cloneAnonValueAndDepsHere: IntParam[Int] =
-      lhs match
-        case int: Int            => int
-        case const: DFConstInt32 =>
-          dfhdl.core.cloneAnonValueAndDepsHere(const.asIR).asConstOf[DFInt32]
+    def toDFConst: DFConstInt32 = ???
+    def toScalaIntOpt: Option[Int] = ???
+    def toScalaIntUNSAFE: Int = ???
+    def ref: ir.IntParamRef = ???
+    def +[R <: IntP](rhs: IntParam[R]): IntParam[IntP.+[L, R]] = ???
+    def -[R <: IntP](rhs: IntParam[R]): IntParam[IntP.-[L, R]] = ???
+    def *[R <: IntP](rhs: IntParam[R]): IntParam[IntP.*[L, R]] = ???
+    def /[R <: IntP](rhs: IntParam[R]): IntParam[IntP./[L, R]] = ???
+    def %[R <: IntP](rhs: IntParam[R]): IntParam[IntP.%[L, R]] = ???
+    infix def max[R <: IntP](rhs: IntParam[R]): IntParam[IntP.Max[L, R]] = ???
+    infix def min[R <: IntP](rhs: IntParam[R]): IntParam[IntP.Min[L, R]] = ???
+    def clog2: IntParam[IntP.CLog2[L]] = ???
+    def =~[R <: IntP](that: IntParam[R]): Boolean = ???
+    protected[dfhdl] def cloneAnonValueAndDepsHere: IntParam[Int] = ???
   end extension
 end IntParam
 
