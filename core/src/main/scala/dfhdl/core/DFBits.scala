@@ -176,51 +176,6 @@ object DFBits:
       private def bitsMacro(tpl: Expr[NonEmptyTuple])(dfc: Expr[DFCG])(using Quotes): Expr[Any] = ???
     end TupleOps
 
-    object Ops:
-
-      extension [W <: IntP, P](lhs: DFValTP[DFBits[W], P])
-        private[DFBits] def resizeBits[RW <: IntP](updatedWidth: IntParam[RW])(using DFC): DFValTP[DFBits[RW], P] = ???
-        def resize(using DFCG): DFValTP[DFBits[Int], P] = ???
-        def resize[RW <: IntP](updatedWidth: IntParam[RW])(using
-            check: Arg.Width.CheckNUB[RW], dfc: DFCG
-        ): DFValTP[DFBits[RW], P] = ???
-      end extension
-      extension [T <: Int, P](iter: Iterable[DFValTP[DFBits[T], P]])
-        protected[core] def concatBits(using DFC): DFValTP[DFBits[Int], P] = ???
-      end extension
-      extension [L <: DFValAny, LW <: IntP, LP](lhs: L)(using icL: Candidate.Aux[L, LW, LP])
-        def resize(using DFCG): DFValTP[DFBits[Int], icL.OutP] = ???
-        def repeat[N <: IntP](num: IntParam[N])(using
-            dfc: DFCG, check: Arg.Positive.CheckNUB[N]
-        ): DFValTP[DFBits[IntP.*[icL.OutW, N]], icL.OutP | CONST] = ???
-      end extension
-
-      given evOpAsDFBits[
-          W <: IntP, A, C, I, P,
-          L <: DFVal[DFBits[W], Modifier[A, C, I, P]],
-          AT <: DFType.Supported, OT <: DFTypeAny, OW <: IntP
-      ](using
-          tc: DFType.TC.Aux[AT, OT],
-          aW: Width.Aux[OT, OW]
-      )(using
-          check: `AW == TW`.CheckNUB[OW, W]
-      ): ExactOp2Aux["as", DFC, DFValAny, L, AT, DFValTP[OT, P]] = ???
-
-      extension [W <: IntP, A, C, I, P](
-          lhs: DFVal[DFBits[W], Modifier[A, C, I, P]]
-      )
-        def uint(using DFCG): DFValTP[DFUInt[W], P] = ???
-        def sint(using DFCG): DFValTP[DFSInt[W], P] = ???
-        def unary_~(using DFCG): DFValTP[DFBits[W], P] = ???
-        def msbit(using DFCG): DFVal[DFBit, Modifier[A, Any, Any, P]] = ???
-        def lsbit(using DFCG): DFVal[DFBit, Modifier[A, Any, Any, P]] = ???
-        def msbits[RW <: IntP](updatedWidth: IntParam[RW])(using
-            check: `LW >= RW`.CheckNUB[W, RW], dfc: DFCG
-        ): DFValTP[DFBits[RW], P] = ???
-        def lsbits[RW <: IntP](updatedWidth: IntParam[RW])(using
-            check: `LW >= RW`.CheckNUB[W, RW], dfc: DFCG
-        ): DFValTP[DFBits[RW], P] = ???
-      end extension
-    end Ops
+    object Ops
   end Val
 end DFBits
