@@ -7,9 +7,9 @@ type ModifierAny = Modifier
 object Modifier:
   type CONST = Modifier
 
-final class DFType
+class DFType
 
-final class DFC(mutableDB: MutableDB)
+class DFC(mutableDB: MutableDB)
 
 object DFBoolOrBit:
   object Ops:
