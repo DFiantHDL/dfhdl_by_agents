@@ -29,28 +29,8 @@ type DFVarOf[+T <: DFTypeAny] = DFVal[T, Modifier.Mutable]
 inline def isConstCheck[T]: Boolean = ${ isConstCheckMacro[T] }
 def isConstCheckMacro[T](using Quotes, Type[T]): Expr[Boolean] = ???
 
-infix type <>[T <: DFType.Supported, M] = M match
-  case DFRET => (DFC, DomainType.DF) ?=> DFValOf[DFType.Of[T]]
-  case RTRET => (DFC, DomainType.RT) ?=> DFValOf[DFType.Of[T]]
-  case EDRET => (DFC, DomainType.ED) ?=> DFValOf[DFType.Of[T]]
-  case VAL   => DFValOf[DFType.Of[T]]
-  case CONST => DFConstOf[DFType.Of[T]]
+type JUSTVAL[T] = DFValOf[DFTypeAny]
 
-infix type X[T <: DFType.Supported, M] = DFVector[DFType.Of[T], Tuple1[M]]
-type JUSTVAL[T <: DFType.Supported] = <>[T, VAL]
-
-extension [V <: ir.DFVal](dfVal: V)
-  inline def asValOf[T <: DFTypeAny]: DFValOf[T] = ???
-end extension
-
-extension (dfVal: DFValAny)
-  inline def asValOf[T <: DFTypeAny]: DFValOf[T] = ???
-  inline def asValTP[T <: DFTypeAny, P]: DFValTP[T, P] = ???
-end extension
-
-def DFValConversionMacro[T <: DFTypeAny, P, R](
-    from: Expr[R]
-)(dfc: Expr[DFCG])(using Quotes, Type[T], Type[P], Type[R]): Expr[DFValTP[T, P]] = ???
 
 object DFVal:
   protected[core] type Fields[T <: DFTypeAny, M <: ModifierAny] = Any
