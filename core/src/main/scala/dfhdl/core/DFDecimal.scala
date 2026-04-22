@@ -250,115 +250,15 @@ end DFXInt
 
 type DFUInt[W <: IntP] = DFXInt[false, W, BitAccurate]
 object DFUInt:
-  def apply[W <: IntP](width: IntParam[W])(using DFCG, Width.CheckNUB[false, W]): DFUInt[W] = ???
-  def forced[W <: IntP](width: IntP)(using DFC): DFUInt[W] = ???
-  def apply[W <: IntP](using dfc: DFCG, dfType: => DFUInt[W]): DFUInt[W] = ???
-  def until[V <: IntP](sup: IntParam[V])(using
-      dfc: DFCG, check: Arg.LargerThan1.CheckNUB[V]
-  ): DFUInt[IntP.CLog2[V]] = ???
-  def to[V <: IntP](max: IntParam[V])(using
-      dfc: DFCG, check: Arg.Positive.CheckNUB[V]
-  ): DFUInt[IntP.CLog2[IntP.+[V, 1]]] = ???
-
-  protected object Unsigned
-      extends Check1[
-        Boolean,
-        [S <: Boolean] =>> ![S],
-        [S <: Boolean] =>> "Argument must be unsigned"
-      ]
-  protected object `UB > R`
-      extends Check2[
-        Int,
-        Int,
-        [UB <: Int, R <: Int] =>> UB > R,
-        [UB <: Int, R <: Int] =>> "The argument must be smaller than the upper-bound " + UB +
-          " but found: " + R
-      ]
-  protected object `UBW == RW`
-      extends Check2[
-        Int,
-        Int,
-        [UBW <: Int, RW <: Int] =>> UBW == RW,
-        [UBW <: Int, RW <: Int] =>> "Expected argument width " + UBW + " but found: " + RW +
-          "\nTo Fix:\nUse `.resize` to match the width automatically."
-      ]
-
   object Val:
-    trait UBArg[UB <: IntP, R] extends Exact1.TC[IntP, UB, [ub <: IntP] =>> IntParam[ub], R, DFC]:
-      type OutP
-      type Out = DFValTP[DFInt32, OutP]
-      def conv(arg1: IntParam[UB], from: R)(using DFC): Out = apply(arg1, from)
-      def apply(ub: IntParam[UB], arg: R)(using DFC): Out
-    trait UBArgLP:
-      transparent inline given errorDMZ[UB <: Int, R](using
-          r: ShowType[R]
-      ): UBArg[UB, R] =
-        Error.call[
-          (
-              "Upper-bound argument cannot be constructed from the type `",
-              r.Out,
-              "`."
-          )
-        ]
-    object UBArg extends UBArgLP:
-      type Aux[UB <: IntP, R, P] = UBArg[UB, R] { type OutP = P }
-      type Exact[UB <: IntP] = Exact1[IntP, UB, [ub <: IntP] =>> IntParam[ub], DFC, UBArg]
-      given fromInt[UB <: Int, R <: Int](using
-          unsignedCheck: Unsigned.Check[R < 0],
-          ubCheck: `UB > R`.CheckNUB[UB, R]
-      ): UBArg[UB, R] with
-        type OutP = CONST
-        def apply(ub: IntParam[UB], arg: R)(using DFC): Out = ???
-      given fromR[
-          UB <: IntP, R, S <: Boolean, W <: IntP, N <: NativeType, P
-      ](using
-          ic: DFXInt.Val.Candidate.Aux[R, S, W, N, P]
-      )(using
-          unsignedCheck: Unsigned.Check[S],
-          widthCheck: `UBW == RW`.CheckNUB[IntP.CLog2[UB], W]
-      ): UBArg[UB, R] with
-        type OutP = P
-        def apply(ub: IntParam[UB], arg: R)(using DFC): Out = ???
-    end UBArg
-    object Ops:
-      extension [W <: IntP, P](lhs: DFValTP[DFUInt[W], P])
-        def signed(using DFCG): DFValTP[DFSInt[IntP.+[W, 1]], P] = ???
-        @scala.annotation.targetName("negateDFUInt")
-        def unary_-(using DFCG): DFValTP[DFSInt[IntP.+[W, 1]], P] = ???
-        @scala.annotation.targetName("toIntDFUInt")
-        def toInt(using dfc: DFCG, check: `W <= 31`.CheckNUB[W]): DFValTP[DFInt32, P] = ???
-      end extension
-    end Ops
+    object Ops
   end Val
-
 end DFUInt
 
 type DFSInt[W <: IntP] = DFXInt[true, W, BitAccurate]
 object DFSInt:
-  def apply[W <: IntP](width: IntParam[W])(using DFCG, Width.CheckNUB[true, W]): DFSInt[W] = ???
-  def forced[W <: IntP](width: IntP)(using DFC): DFSInt[W] = ???
-  def apply[W <: IntP](using dfc: DFCG, dfType: => DFSInt[W]): DFSInt[W] = ???
-  def untilAbs[V <: IntP](sup: IntParam[V])(using
-      dfc: DFCG, check: Arg.LargerThan1.CheckNUB[V]
-  ): DFSInt[IntP.+[IntP.CLog2[V], 1]] = ???
-  def toAbs[V <: IntP](max: IntParam[V])(using
-      dfc: DFCG, check: Arg.Positive.CheckNUB[V]
-  ): DFSInt[IntP.+[IntP.CLog2[IntP.+[V, 1]], 1]] = ???
-
   object Val:
-    object Ops:
-      extension [W <: IntP, P](lhs: DFValTP[DFSInt[W], P])
-        @scala.annotation.targetName("negateDFSInt")
-        def unary_-(using DFCG): DFValTP[DFSInt[W], P] = ???
-        def signbit(using dfc: DFCG): DFValTP[DFBit, P] = ???
-        def unsigned(using DFCG): DFValTP[DFUInt[IntP.-[W, 1]], P] = ???
-      extension [P](lhs: DFValTP[DFInt32, P])
-        @scala.annotation.targetName("negateDFInt32")
-        def unary_-(using DFCG): DFValTP[DFInt32, P] = ???
-      extension [W <: IntP, P](lhs: DFValTP[DFSInt[W], P])
-        @scala.annotation.targetName("toIntDFSInt")
-        def toInt(using dfc: DFCG, check: `W <= 32`.CheckNUB[W]): DFValTP[DFInt32, P] = ???
-    end Ops
+    object Ops
   end Val
 end DFSInt
 
