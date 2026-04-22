@@ -20,7 +20,7 @@ type ModifierAny = Modifier[Any]
 object Modifier:
   type CONST = Modifier[Any]
 
-final class DFType[+T, +A](val value: T) extends AnyVal
+final class DFType[+T, +A]
 type DFTypeAny = DFType[Any, Any]
 
 final case class DFC(mutableDB: MutableDB)
