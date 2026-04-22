@@ -23,8 +23,8 @@ object Modifier:
 
 export DFType.asFE
 
-final class DFType[+T <: ir.DFType, +A](val value: T) extends AnyVal
-type DFTypeAny = DFType[ir.DFType, Any]
+final class DFType[+T, +A](val value: T) extends AnyVal
+type DFTypeAny = DFType[Any, Any]
 
 object DFType:
   extension (dfType: ir.DFType) def asFE[T <: DFTypeAny]: T = ???
