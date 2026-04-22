@@ -163,97 +163,10 @@ object DFVal extends DFValLP:
       ]
   ): InitCheck[I] with {}
 
-  extension [T <: DFTypeAny, M <: ModifierAny](dfVal: DFVal[T, M])
-    @metaContextForward(0)
-    infix def tag[CT <: ir.DFTag: ClassTag](customTag: CT)(using dfc: DFC): DFVal[T, M] = ???
-    @metaContextForward(0)
-    infix def tag[CT <: ir.DFTag: ClassTag](condCustomTag: Conditional[CT])(using dfc: DFC): DFVal[T, M] = ???
-    def hasTag[CT <: ir.DFTag: ClassTag](using dfc: DFC): Boolean = ???
-    @metaContextForward(0)
-    infix def setName(name: String)(using dfc: DFC): DFVal[T, M] = ???
-    def anonymize(using dfc: DFC): DFVal[T, M] = ???
-    def inDFCPosition(using DFC): Boolean = ???
-    def anonymizeInDFCPosition(using DFC): DFVal[T, M] = ???
-    @metaContextForward(0)
-    def nameInDFCPosition(using dfc: DFC): DFVal[T, M] = ???
-  end extension
-
-  @metaContextForward(0)
-  trait InitValue[T <: DFTypeAny]:
-    def enable: Boolean
-    def apply(dfType: T)(using dfc: DFC): DFConstOf[T]
-  object InitValue:
-    transparent inline implicit def fromValue[T <: DFTypeAny, V](
-        inline value: V
-    ): InitValue[T] = ${ fromValueMacro[T, V]('value) }
-
-    def fromValueMacro[T <: DFTypeAny, V](
-        value: Expr[V]
-    )(using Quotes, Type[T], Type[V]): Expr[InitValue[T]] = ???
-  end InitValue
-
-  @metaContextForward(0)
-  trait InitTupleValues[T <: NonEmptyTuple]:
-    def enable: Boolean
-    def apply(dfType: DFTuple[T])(using dfc: DFC): List[DFConstOf[DFTuple[T]]]
-  object InitTupleValues:
-    transparent inline implicit def fromValue[T <: NonEmptyTuple, V](
-        inline value: V
-    ): InitTupleValues[T] = ${ fromValueMacro[T, V]('value) }
-
-    def fromValueMacro[T <: NonEmptyTuple, V](
-        value: Expr[V]
-    )(using Quotes, Type[T], Type[V]): Expr[InitTupleValues[T]] = ???
-  end InitTupleValues
-
-  extension [T <: DFTypeAny, A, C, I, P, R](dfVal: DFVal[T, Modifier[A, C, I, P]])
-    private[dfhdl] def initForced(initValues: List[DFConstOf[T]])(using
-        dfc: DFC
-    ): DFVal[T, Modifier[A, C, Modifier.Initialized, P]] = ???
-
-    infix def init(
-        initValues: InitValue[T]*
-    )(using DFC, InitCheck[I]): DFVal[T, Modifier[A, C, Modifier.Initialized, P]] = ???
-  end extension
-  extension [T <: NonEmptyTuple, A, C, I, P](dfVal: DFVal[DFTuple[T], Modifier[A, C, I, P]])
-    infix def init(
-        initValues: InitTupleValues[T]
-    )(using DFC, InitCheck[I]): DFVal[DFTuple[T], Modifier[A, C, Modifier.Initialized, P]] = ???
-  end extension
-
-  extension [W <: IntP, T <: DFBits[W] | DFUInt[W], D1 <: IntP, A, C, I, P](
-      dfVal: DFVal[DFVector[T, Tuple1[D1]], Modifier[A, C, I, P]]
-  )
-    infix def initFile(
-        path: String,
-        format: ir.InitFileFormat = ir.InitFileFormat.Auto,
-        undefinedValue: ir.InitFileUndefinedValue = ir.InitFileUndefinedValue.Zeros
-    )(using
-        dfc: DFC,
-        check: InitCheck[I]
-    ): DFVal[DFVector[T, Tuple1[D1]], Modifier[A, C, Modifier.Initialized, P]] = ???
-  end extension
-
-  implicit def BooleanHack(from: DFValOf[DFBoolOrBit])(using DFC): Boolean =
-    ???
-
-  // opaque values need special conversion that does not try to summon the opaque dftype
-  // because it can be abstract in extension methods that are applied generically on an abstract
-  // opaque super-type. E.g.:
-  // ```
-  // abstract class MyAbsOpaque extends Opaque
-  // case class MyOpaque extends MyAbsOpaque
-  // extension (a : MyAbsOpaque <> VAL) def foo : Unit = {}
-  // val a = MyOpaque <> VAR
-  // a.foo //here we currently access `foo` through conversion to MyAbsOpaque
-  //       //because DFOpaque is not completely covariant due to bug
-  //       //https://github.com/lampepfl/dotty/issues/15704
-  // ```
   given DFOpaqueValConversion[T <: DFOpaque.Abstract, R <: DFOpaque.Abstract](using
       DFC,
       R <:< T
-  ): Conversion[DFValOf[DFOpaque[R]], DFValOf[DFOpaque[T]]] = from =>
-    from.asInstanceOf[DFValOf[DFOpaque[T]]]
+  ): Conversion[DFValOf[DFOpaque[R]], DFValOf[DFOpaque[T]]] = ???
 
   object Const:
     def apply[IRT <: ir.DFType, D, T <: DFType[ir.DFType.Aux[IRT, D], ?]](
