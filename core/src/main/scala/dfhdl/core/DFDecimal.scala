@@ -19,28 +19,15 @@ object DFDecimal:
       extension (inline sc: DecStrCtx)
         transparent inline def apply(inline args: Any*)(using dfc: DFCG): Any =
           ${ applyMacro('sc, 'args)('dfc) }
-        transparent inline def unapplySeq[T <: DFTypeAny](
-            inline arg: DFValOf[T]
-        )(using dfc: DFC): Option[Seq[Any]] =
-          ${ unapplySeqMacro('sc, 'arg)('dfc) }
 
     extension (sc: StringContext)
       def d: DecStrCtx = sc
-      def sd: DecStrCtx = sc
     end extension
-
-    private def uintConst(value: BigInt)(using DFC): DFConstAny = ???
-    private def sintConst(value: BigInt)(using DFC): DFConstAny = ???
 
     private def applyMacro(
         sc: Expr[DecStrCtx],
         args: Expr[Seq[Any]]
     )(dfc: Expr[DFC])(using Quotes): Expr[DFConstAny] = ???
-
-    private def unapplySeqMacro[T <: DFTypeAny](
-        sc: Expr[DecStrCtx],
-        arg: Expr[DFValOf[T]]
-    )(dfc: Expr[DFC])(using Quotes, Type[T]): Expr[Option[Seq[DFValOf[T]]]] = ???
   end StrInterpOps
 
   object Val:
