@@ -331,59 +331,17 @@ object DFDecimal:
     private[DFDecimal] def fromIntDecString(
         numStr: String,
         signedForced: Boolean
-    ): (Boolean, Int, Int, BigInt) =
-      val value = BigInt(numStr)
-      val signed = value < 0 | signedForced
-      val actualWidth = value.bitsWidth(signed)
-      (signed, actualWidth, 0, value)
+    ): (Boolean, Int, Int, BigInt) = ???
     private def fromDecString(
         dec: String,
         signedForced: Boolean
-    ): Either[String, (Boolean, Int, Int, BigInt)] =
-      dec.replace(",", "").replace("_", "") match
-        case numPattern(numStr) => Right(fromIntDecString(numStr, signedForced))
-        case _                  =>
-          Left(s"Invalid decimal pattern found: $dec")
-      end match
-    end fromDecString
+    ): Either[String, (Boolean, Int, Int, BigInt)] = ???
 
     extension (fullTerm: String)
       private[DFDecimal] def interpolate[S <: Boolean, W <: IntP, F <: Int](
           op: String,
           explicitWidthOption: Option[IntP]
-      )(using DFC): DFConstOf[DFDecimal[S, W, F, BitAccurate]] =
-        val (interpSigned, interpWidth, interpFractionWidth, interpValue) =
-          fromDecString(fullTerm, op == "sd").toOption.get
-        val signed = Inlined.forced[S](interpSigned)
-        val fractionWidth = Inlined.forced[F](interpFractionWidth)
-        explicitWidthOption match
-          // explicit integer width
-          case Some(int: Int) =>
-            val width = IntParam.forced[W](int)
-            DFVal.Const(
-              DFDecimal(signed, width, fractionWidth, BitAccurate),
-              Some(interpValue),
-              named = true
-            )
-          // no explicit width, use inferred width from the value
-          case None =>
-            val width = IntParam.forced[W](interpWidth)
-            DFVal.Const(
-              DFDecimal(signed, width, fractionWidth, BitAccurate),
-              Some(interpValue),
-              named = true
-            )
-          // explicit parametric width, so use the inferred constant and resize it with the parameter
-          case Some(ref) =>
-            val width = IntParam.forced[W](ref)
-            import DFXInt.Val.Ops.resize
-            DFVal.Const(
-              DFDecimal(signed, interpWidth, fractionWidth, BitAccurate),
-              Some(interpValue)
-            )
-              .asConstOf[DFXInt[S, W, BitAccurate]].resize(width)
-              .asConstOf[DFDecimal[S, W, F, BitAccurate]]
-        end match
+      )(using DFC): DFConstOf[DFDecimal[S, W, F, BitAccurate]] = ???
     end extension
 
     extension (using Quotes)(fullTerm: quotes.reflect.Term)
