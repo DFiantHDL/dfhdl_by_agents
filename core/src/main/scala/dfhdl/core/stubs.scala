@@ -33,9 +33,7 @@ object DFType:
   extension (dfType: ir.DFType) def asFE[T <: DFTypeAny]: T = ???
 end DFType
 
-final case class DFC(
-    mutableDB: MutableDB = new MutableDB()
-)
+final case class DFC(mutableDB: MutableDB)
 
 type DFBoolOrBit = DFType[ir.DFBoolOrBit, NoArgs]
 object DFBoolOrBit:
