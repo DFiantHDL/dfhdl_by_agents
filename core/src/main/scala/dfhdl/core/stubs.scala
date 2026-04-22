@@ -23,11 +23,8 @@ object Modifier:
 
 export DFType.asFE
 
-sealed trait Args
-sealed trait NoArgs extends Args
-
-final class DFType[+T <: ir.DFType, +A <: Args](val value: T) extends AnyVal
-type DFTypeAny = DFType[ir.DFType, Args]
+final class DFType[+T <: ir.DFType, +A](val value: T) extends AnyVal
+type DFTypeAny = DFType[ir.DFType, Any]
 
 object DFType:
   extension (dfType: ir.DFType) def asFE[T <: DFTypeAny]: T = ???
@@ -35,7 +32,7 @@ end DFType
 
 final case class DFC(mutableDB: MutableDB)
 
-type DFBoolOrBit = DFType[ir.DFBoolOrBit, NoArgs]
+type DFBoolOrBit = DFType[ir.DFBoolOrBit, Any]
 object DFBoolOrBit:
   object Val:
     object Ops:
