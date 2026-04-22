@@ -50,49 +50,15 @@ type DFValTP[+T <: DFTypeAny, +P] = DFVal[T, Modifier[Any, Any, Any, P]]
 type DFVarOf[+T <: DFTypeAny] = DFVal[T, Modifier.Mutable]
 
 extension (using quotes: Quotes)(tpe: quotes.reflect.TypeRepr)
-  def isConstBool: Boolean =
-    import quotes.reflect.*
-    tpe.asType match
-      case '[DFConstOf[t]]  => true
-      case '[DFValOf[t]]    => false
-      case '[NonEmptyTuple] =>
-        tpe.getTupleArgs.forall(_.isConstBool)
-      case '[SameElementsVector[t]]      => TypeRepr.of[t].isConstBool
-      case '[BoolSelWrapper[sp, ot, of]] =>
-        List(TypeRepr.of[sp], TypeRepr.of[ot], TypeRepr.of[of]).forall(_.isConstBool)
-      case '[DFVal.NOTHING] => false
-      case _                => true
-  def isConstTpe: quotes.reflect.TypeRepr =
-    import quotes.reflect.*
-    if (tpe.isConstBool) TypeRepr.of[CONST]
-    else TypeRepr.of[NOTCONST]
+  def isConstBool: Boolean = ???
+  def isConstTpe: quotes.reflect.TypeRepr = ???
 end extension
 
 inline def isConstCheck[T]: Boolean = ${ isConstCheckMacro[T] }
-def isConstCheckMacro[T](using Quotes, Type[T]): Expr[Boolean] =
-  import quotes.reflect.*
-  val tpe = TypeRepr.of[T]
-  if (tpe.isConstBool) Expr(true)
-  else Expr(false)
+def isConstCheckMacro[T](using Quotes, Type[T]): Expr[Boolean] = ???
 
 extension (using quotes: Quotes)(term: quotes.reflect.Term)
-  def getNonConstTerm: Option[quotes.reflect.Term] =
-    import quotes.reflect.*
-    term match
-      case Apply(fun, args)    => (fun :: args).view.flatMap(_.getNonConstTerm).headOption
-      case NamedArg(_, expr)   => expr.getNonConstTerm
-      case Inlined(_, _, expr) => expr.getNonConstTerm
-      case Block(_, expr)      => expr.getNonConstTerm
-      case TypeApply(expr, _)  => expr.getNonConstTerm
-      case Typed(expr, _)      => expr.getNonConstTerm
-      case _                   =>
-        term.tpe.asType match
-          case '[DFConstOf[?]]  => None
-          case '[DFValOf[?]]    => Some(term)
-          case '[DFVal.NOTHING] => Some(term)
-          case _                => None
-    end match
-  end getNonConstTerm
+  def getNonConstTerm: Option[quotes.reflect.Term] = ???
 end extension
 
 infix type <>[T <: DFType.Supported, M] = M match
@@ -145,22 +111,7 @@ end extension
 
 def DFValConversionMacro[T <: DFTypeAny, P, R](
     from: Expr[R]
-)(dfc: Expr[DFCG])(using Quotes, Type[T], Type[P], Type[R]): Expr[DFValTP[T, P]] =
-  import quotes.reflect.*
-  val fromExactInfo = from.exactInfo
-  lazy val nonConstTermOpt = from.asTerm.getNonConstTerm
-  if (TypeRepr.of[P] =:= TypeRepr.of[CONST] && nonConstTermOpt.nonEmpty)
-    nonConstTermOpt.get.compiletimeErrorPosExpr("Applied argument must be a constant.")
-  else
-    val tStr = Expr(s"implicit conversion to type ${TypeRepr.of[T].showDFType}")
-    '{
-      val tc = compiletime.summonInline[DFVal.TCConv[T, fromExactInfo.Underlying]]
-      trydf {
-        tc(${ fromExactInfo.exactExpr })(using $dfc).asValTP[T, P]
-      }(using $dfc, CTName($tStr))
-    }
-  end if
-end DFValConversionMacro
+)(dfc: Expr[DFCG])(using Quotes, Type[T], Type[P], Type[R]): Expr[DFValTP[T, P]] = ???
 
 sealed protected trait DFValLP:
   /* TODO: IMPORTANT IMPLICIT CONVERSION ISSUE
