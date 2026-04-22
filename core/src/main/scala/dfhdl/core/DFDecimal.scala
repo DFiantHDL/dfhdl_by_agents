@@ -195,83 +195,10 @@ object DFXInt:
     object Compare
 
     object Ops:
-      export DFUInt.Val.Ops.*
-      export DFSInt.Val.Ops.*
-      import IntP.{-, +}
-
-      export dfhdl.internals.clog2
-      def clog2[P, S <: Boolean, W <: IntP, N <: NativeType](
-          dfVal: DFValTP[DFXInt[S, W, N], P]
-      )(using DFCG, DFVal.ConstCheck[P]): DFValTP[DFXInt[S, W, N], P] = ???
-      def abs[P, S <: Boolean, W <: IntP, N <: NativeType](
-          dfVal: DFValTP[DFXInt[S, W, N], P]
-      )(using DFCG): DFValTP[DFXInt[S, W, N], P] = ???
-      extension [P, S <: Boolean, W <: IntP, N <: NativeType](lhs: DFValTP[DFXInt[S, W, N], P])
-        protected[core] def toDFXIntOf[RS <: Boolean, RW <: IntP, RN <: NativeType](
-            dfType: DFXInt[RS, RW, RN]
-        )(using dfc: DFC): DFValTP[DFXInt[RS, RW, RN], P] = ???
-        def toScalaInt(using DFC, DFVal.ConstCheck[P]): Int = ???
-        def toScalaBigInt(using DFC, DFVal.ConstCheck[P]): BigInt = ???
-      end extension
-      extension [S <: Boolean, W <: IntP, N <: NativeType, P](lhs: DFValTP[DFXInt[S, W, N], P])
-        @targetName("resizeDFXIntAuto")
-        def resize(using DFCG): DFValTP[DFXInt[S, Int, N], P] = ???
-        @targetName("resizeDFXInt")
-        def resize[RW <: IntP](
-            updatedWidth: IntParam[RW]
-        )(using
-            dfc: DFCG,
-            check: Width.CheckNUB[S, RW]
-        ): DFValTP[DFXInt[S, RW, BitAccurate], P] = ???
-        end resize
-      end extension
-
-      private[core] val verilogSemanticsWarnMsg = ""
-      private[core] def hasImplicitlyFromIntTag(dfVal: ir.DFVal): Boolean = ???
-      private[core] def containsNarrowNonCarryArith(dfVal: ir.DFVal)(using ir.MemberGetSet): Boolean = ???
-      private[core] def containsNarrowNonCarryArithWithTaggedOperand(dfVal: ir.DFVal)(using ir.MemberGetSet): Boolean = ???
-
-      // Check that a wildcard `Int` value fits in the bit-accurate value's type.
-      // Produces an elaboration error if it doesn't.
-      private def checkWildcardFit(
-          wildcard: DFValOf[DFInt32],
-          bitAccurateType: DFTypeAny
-      )(using dfc: DFC): Unit = ???
-
-      private def arithOp[
-          OS <: Boolean,
-          OW <: IntP,
-          ON <: NativeType,
-          LS <: Boolean,
-          LW <: IntP,
-          LN <: NativeType,
-          LP,
-          RS <: Boolean,
-          RW <: IntP,
-          RN <: NativeType,
-          RP
-      ](
-          dfType: DFXInt[OS, OW, ON],
-          op: FuncOp,
-          lhs: DFValTP[DFXInt[LS, LW, LN], LP],
-          rhs: DFValTP[DFXInt[RS, RW, RN], RP]
-      )(using dfc: DFC): DFValTP[DFXInt[OS, OW, ON], LP | RP] = ???
-
       type CommutativeArithOp =
         FuncOp.+.type | FuncOp.*.type | FuncOp.max.type | FuncOp.min.type
       type NonCommutativeArithOp =
         FuncOp.-.type | FuncOp./.type | FuncOp.%.type
-      type ArithOp = CommutativeArithOp | NonCommutativeArithOp
-      given evOpArithIntDFInt32[
-          Op <: ArithOp,
-          L <: Int,
-          RP,
-          R <: DFValTP[DFInt32, RP]
-      ](using
-          op: ValueOf[Op]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFInt32, RP]] =
-        ???
-      end evOpArithIntDFInt32
       given evOpCommutativeArithDFXInt[
           Op <: CommutativeArithOp, L, LS <: Boolean, LW <: IntP, LN <: NativeType, LP,
           R, RS <: Boolean, RW <: IntP, RN <: NativeType, RP
