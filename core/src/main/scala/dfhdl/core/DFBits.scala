@@ -177,48 +177,6 @@ object DFBits:
     end TupleOps
 
     object Ops:
-      import IntP.{-, +}
-      given evOpApplyDFBits[
-          W <: IntP, A, C, I, P,
-          L <: DFVal[DFBits[W], Modifier[A, C, I, P]], R
-      ](using
-          ub: DFUInt.Val.UBArg[W, R]
-      ): ExactOp2Aux["apply", DFC, DFValAny, L, R, DFVal[DFBit, Modifier[A, Any, Any, P]]] = ???
-      given evOpApplyRangeDFBits[
-          W <: IntP, A, C, I, P,
-          L <: DFVal[DFBits[W], Modifier[A, C, I, P]],
-          HI <: IntP, LO <: IntP
-      ](using
-          checkHigh: BitIndex.CheckNUB[HI, W],
-          checkLow: BitIndex.CheckNUB[LO, W],
-          checkHiLo: BitsHiLo.CheckNUB[HI, LO]
-      ): ExactOp3Aux["apply", DFC, DFValAny, L, HI, LO, DFVal[DFBits[HI - LO + 1], Modifier[A, Any, Any, P]]] = ???
-      given evLogicOpDFBits[
-          Op <: FuncOp.|.type | FuncOp.&.type | FuncOp.^.type,
-          L, LW <: IntP, LP, R, RW <: IntP, RP
-      ](using
-          icL: Candidate.Aux[L, LW, LP],
-          icR: Candidate.Aux[R, RW, RP]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFBits[LW], LP | RP]] = ???
-      given evOpLogicReduceDFBits[
-          Op <: FuncOp.|.type | FuncOp.&.type | FuncOp.^.type,
-          LW <: IntP, LP,
-          L <: DFValTP[DFBits[LW], LP] | DFValTP[DFUInt[LW], LP]
-      ](using op: ValueOf[Op]): ExactOp1Aux[Op, DFC, DFValAny, L, DFValTP[DFBit, LP]] = ???
-      given evConcatOpDFBits[
-          Op <: FuncOp.++.type, L, LW <: IntP, LP, R, RW <: IntP, RP
-      ](using
-          icL: Candidate.Aux[L, LW, LP],
-          icR: Candidate.Aux[R, RW, RP]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFBits[IntP.+[LW, RW]], LP | RP]] = ???
-      given evOpShift[
-          Op <: FuncOp.>>.type | FuncOp.<<.type,
-          LW <: IntP, LP,
-          LT <: DFBits[LW] | DFSInt[LW] | DFUInt[LW] | DFInt32,
-          L <: DFValTP[LT, LP], R, RP
-      ](using
-          ub: DFUInt.Val.UBArg.Aux[LW, R, RP]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[LT, LP | RP]] = ???
 
       extension [W <: IntP, P](lhs: DFValTP[DFBits[W], P])
         private[DFBits] def resizeBits[RW <: IntP](updatedWidth: IntParam[RW])(using DFC): DFValTP[DFBits[RW], P] = ???
