@@ -214,34 +214,15 @@ object DFBits:
           C <: Boolean,
           T <: BitOrBool,
           V <: SameElementsVector[T]
-      ](using
-          ValueOf[Op],
-          ValueOf[C]
-      ): Compare[DFBits[LW], V, Op, C] with
+      ](using ValueOf[Op], ValueOf[C]): Compare[DFBits[LW], V, Op, C] with
         type OutP = CONST
-        def conv(dfType: DFBits[LW], arg: V)(using DFC): Out =
-          SameElementsVector.bitsValOf(dfType.widthIntParam, arg, named = true)
-            .asConstOf[DFBits[LW]]
-      end DFBitsCompareSEV
+        def conv(dfType: DFBits[LW], arg: V)(using DFC): Out = ???
     end Compare
 
-    // this was defined separately from `Ops` to avoid collision with `.bits` used in `Ops`
     object TupleOps:
-      // explicit conversion of a tuple to bits (concatenation)
       extension (inline tpl: NonEmptyTuple)
         transparent inline def toBits(using dfc: DFCG): Any = ${ bitsMacro('tpl)('dfc) }
-      private def bitsMacro(tpl: Expr[NonEmptyTuple])(dfc: Expr[DFCG])(using Quotes): Expr[Any] =
-        import quotes.reflect.*
-        val exactInfo = tpl.exactInfo
-        import Width.*
-        val rTpe = exactInfo.exactTpe
-        val pType = rTpe.isConstTpe.asTypeOf[Any]
-        val wType = rTpe.calcValWidth.asTypeOf[Int]
-        '{
-          Val.Candidate
-            .valueToBits($tpl)(using $dfc)
-            .asValTP[DFBits[wType.Underlying], pType.Underlying]
-        }
+      private def bitsMacro(tpl: Expr[NonEmptyTuple])(dfc: Expr[DFCG])(using Quotes): Expr[Any] = ???
     end TupleOps
 
     object Ops:
