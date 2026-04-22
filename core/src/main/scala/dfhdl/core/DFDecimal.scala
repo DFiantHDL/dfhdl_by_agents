@@ -411,12 +411,7 @@ object DFDecimal:
       def apply(
           dfType: DFDecimal[Boolean, Int, Int, NativeType],
           dfVal: DFValOf[DFDecimal[Boolean, Int, Int, NativeType]]
-      )(using DFC): DFValOf[DFDecimal[Boolean, Int, Int, NativeType]] =
-        (dfType.widthIntOpt, dfVal.widthIntOpt) match
-          case (Some(lw), Some(rw)) => `LW >= RW`(lw, rw)
-          case _                    =>
-        `LS >= RS`(dfType.signed, dfVal.dfType.signed)
-        dfVal
+      )(using DFC): DFValOf[DFDecimal[Boolean, Int, Int, NativeType]] = ???
     end TC
     object TCConv:
       export DFXInt.Val.TCConv.given
