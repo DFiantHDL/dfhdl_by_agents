@@ -1365,24 +1365,7 @@ object DFXInt:
         DFXInt[resultSign.Out, resultWidth.Out, resultNative.Out],
         LP | RP
       ]] =
-        new ExactOp2[Op, DFC, DFValAny, L, R]:
-          type Out = DFValTP[DFXInt[resultSign.Out, resultWidth.Out, resultNative.Out], LP | RP]
-          def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-            val dfcAnon = dfc.anonymize
-            val lhsVal = icL(lhs)(using dfcAnon)
-            val rhsVal = icR(rhs)(using dfcAnon)
-            val lhsIsWildcard = isWildcardL.value
-            val rhsIsWildcard = isWildcardR.value
-            if (lhsIsWildcard && !rhsIsWildcard)
-              // LHS is wildcard, RHS is concrete: adapt LHS to RHS type, keep operand order
-              checkWildcardFit(lhsVal.asValOf[DFInt32], rhsVal.dfType)
-              val lhsAdj = lhsVal.toDFXIntOf(rhsVal.dfType)(using dfcAnon)
-              DFVal.Func(rhsVal.dfType, op.value, List(lhsAdj, rhsVal)).asInstanceOf[Out]
-            else
-              // Both concrete, both wildcards, or only RHS is wildcard: LHS-dominant
-              check(lhsVal, rhsVal)
-              arithOp(lhsVal.dfType, op.value, lhsVal, rhsVal).asInstanceOf[Out]
-          }(using dfc, CTName(op.value.toString))
+        ???
       end evOpNonCommutativeArithDFXInt
 
       import DFVal.Ops.CarryOp
