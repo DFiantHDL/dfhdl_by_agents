@@ -93,9 +93,7 @@ lazy val core = project
     }.taskValue
   )
   .dependsOn(
-    plugin,
-    internals,
-    compiler_ir
+    plugin
   )
 
 lazy val compiler_stages = (project in file("compiler/stages"))
