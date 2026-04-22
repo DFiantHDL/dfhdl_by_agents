@@ -175,53 +175,19 @@ object DFBits:
 
     object TC:
       import DFVal.TC
-      def apply(
-          dfType: DFBits[Int],
-          dfVal: DFValOf[DFBits[Int]]
-      )(using DFC): DFValOf[DFBits[Int]] =
-        (dfType.widthIntOpt, dfVal.widthIntOpt) match
-          case (Some(lw), Some(rw)) => `LW == RW`(lw, rw)
-          case _                    =>
-        dfVal
+      def apply(dfType: DFBits[Int], dfVal: DFValOf[DFBits[Int]])(using DFC): DFValOf[DFBits[Int]] = ???
       protected object `LW == RW`
-          extends Check2[
-            Int,
-            Int,
-            [LW <: Int, RW <: Int] =>> LW == RW,
-            [LW <: Int, RW <: Int] =>> "The argument width (" + ToString[RW] +
-              ") is different than the receiver width (" + ToString[LW] +
-              ").\nConsider applying `.resize` to resolve this issue."
-          ]
+          extends Check2[Int, Int, [LW <: Int, RW <: Int] =>> LW == RW,
+            [LW <: Int, RW <: Int] =>> "width mismatch"]
       given DFBitsFromCandidate[LW <: IntP, V, RP, IC <: Candidate[V]](using
           ic: IC { type OutP = RP }
-      )(using
-          check: `LW == RW`.CheckNUB[LW, ic.OutW]
-      ): TC[DFBits[LW], V] with
+      )(using check: `LW == RW`.CheckNUB[LW, ic.OutW]): TC[DFBits[LW], V] with
         type OutP = RP
-        def conv(dfType: DFBits[LW], value: V)(using dfc: DFC): Out =
-          import Ops.resizeBits
-          val dfVal = ic(value)
-          if (dfVal.hasTag[ir.ResizeTag])
-            dfVal.resizeBits(dfType.widthIntParam).asValTP[DFBits[LW], RP]
-          else
-            (dfType.widthIntOpt, dfVal.widthIntOpt) match
-              case (Some(lw), Some(rw)) => check(lw, rw)
-              case _                    =>
-                if (dfType.compareWidths(dfVal.dfType)(_ != _).getOrElse(true))
-                  throw new IllegalArgumentException(
-                    s"""|The argument width (${dfVal.dfType.widthCodeString}) is different than the receiver width (${dfType.widthCodeString}).
-                        |Consider applying `.resize` to resolve this issue.""".stripMargin
-                  )
-            dfVal.nameInDFCPosition.asValTP[DFBits[LW], RP]
-          end if
-        end conv
-      end DFBitsFromCandidate
+        def conv(dfType: DFBits[LW], value: V)(using dfc: DFC): Out = ???
       given DFBitsFromSEV[LW <: IntP, T <: BitOrBool, V <: SameElementsVector[T]]: TC[DFBits[LW], V]
       with
         type OutP = CONST
-        def conv(dfType: DFBits[LW], value: V)(using DFC): Out =
-          SameElementsVector.bitsValOf(dfType.widthIntParam, value, named = true)
-            .asConstOf[DFBits[LW]]
+        def conv(dfType: DFBits[LW], value: V)(using DFC): Out = ???
     end TC
 
     object TCConv:
@@ -230,44 +196,18 @@ object DFBits:
           ic: IC { type OutP = RP }
       ): TCConv[DFBits[Int], V] with
         type OutP = RP
-        def apply(value: V)(using DFC): Out =
-          val dfVal = ic(value)
-          dfVal.nameInDFCPosition.asValTP[DFBits[Int], RP]
+        def apply(value: V)(using DFC): Out = ???
 
     object Compare:
       import DFVal.Compare
       given DFBitsCompareCandidate[
-          LW <: IntP,
-          R,
-          RP,
-          IC <: Candidate[R],
-          Op <: FuncOp.===.type | FuncOp.=!=.type,
-          C <: Boolean
-      ](
-          using ic: IC { type OutP = RP }
-      )(using
-          check: CompareCheck[LW, ic.OutW, C],
-          op: ValueOf[Op],
-          castling: ValueOf[C]
+          LW <: IntP, R, RP, IC <: Candidate[R],
+          Op <: FuncOp.===.type | FuncOp.=!=.type, C <: Boolean
+      ](using ic: IC { type OutP = RP })(using
+          check: CompareCheck[LW, ic.OutW, C]
       ): Compare[DFBits[LW], R, Op, C] with
         type OutP = RP
-        def conv(dfType: DFBits[LW], arg: R)(using DFC): Out =
-          val dfValArg = ic(arg)
-          (dfType.widthIntOpt, dfValArg.dfType.widthIntOpt) match
-            case (Some(lw), Some(rw)) => check(lw, rw)
-            case _                    =>
-              if (dfType.compareWidths(dfValArg.dfType)(_ != _).getOrElse(true))
-                val lhsStr =
-                  if (castling) dfValArg.dfType.widthCodeString else dfType.widthCodeString
-                val rhsStr =
-                  if (castling) dfType.widthCodeString else dfValArg.dfType.widthCodeString
-                throw new IllegalArgumentException(
-                  s"""|Cannot apply this operation between a value of $lhsStr bits width (LHS) and a value of $rhsStr bits width (RHS).
-                      |An explicit conversion must be applied.""".stripMargin
-                )
-          dfValArg.asValTP[DFBits[LW], RP]
-        end conv
-      end DFBitsCompareCandidate
+        def conv(dfType: DFBits[LW], arg: R)(using DFC): Out = ???
       given DFBitsCompareSEV[
           LW <: IntP,
           Op <: FuncOp.===.type | FuncOp.=!=.type,
