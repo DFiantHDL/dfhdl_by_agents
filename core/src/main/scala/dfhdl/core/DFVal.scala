@@ -53,4 +53,3 @@ object DFVal:
 end DFVal
 
 
-final class REG_DIN[T <: DFTypeAny](val irValue: DFError.REG_DIN[T]) extends AnyVal
