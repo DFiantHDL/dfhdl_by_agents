@@ -1,9 +1,7 @@
 package dfhdl.core
-import scala.annotation.Annotation
 import ir.DFVal.Func.Op as FuncOp
 import ir.DFDecimal.NativeType
 import NativeType.*
-import scala.quoted.*
 
 // stubs replacing dfhdl.compiler.ir and dfhdl.internals
 object ir:
@@ -13,7 +11,6 @@ object ir:
   object DFBool extends DFBool
   trait DFDecimal extends DFType
   trait DFVal
-  trait Meta
   val DFInt32: DFType = ???
   object DFVal:
     object Func:
@@ -27,7 +24,6 @@ object ir:
       sealed trait Int32 extends NativeType
 end ir
 
-trait Position
 trait MetaContext
 trait ExactOp2Aux[Op, C, B, L, R, O]
 
@@ -57,16 +53,6 @@ end DFType
 final case class DFC(
     mutableDB: MutableDB = new MutableDB()
 ) extends MetaContext
-object DFC:
-  def emptyNoEO: DFC = ???
-end DFC
-
-into opaque type DFCG <: DFC = DFC
-protected trait DFCGLP:
-  inline given DFCG = DFCG()
-object DFCG extends DFCGLP:
-  def apply(): DFCG = DFC.emptyNoEO
-  given DFCG(using dfc: DFC): DFCG = dfc
 
 type BitNum = 0 | 1
 type DFBoolOrBit = DFType[ir.DFBoolOrBit, NoArgs]
