@@ -23,7 +23,7 @@ object DFBoolOrBit:
       def conv(from: R)(using DFC): Out = apply(from)
       def apply(arg: R)(using DFC): Out
     object Candidate:
-      type Types = DFValOf[DFBoolOrBit] | Boolean | BitNum | IfWrapper[?, ?, ?]
+      type Types = DFValOf[DFBoolOrBit] | Boolean | BitNum
       type Aux[R, T <: DFBoolOrBit, P] = Candidate[R] { type OutT = T; type OutP = P }
     end Candidate
 
