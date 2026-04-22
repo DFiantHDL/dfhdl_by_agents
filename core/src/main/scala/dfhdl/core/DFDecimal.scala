@@ -192,12 +192,6 @@ object DFXInt:
           type OutN = N
           type OutP = P
         }
-      given fromDFXIntVal[S <: Boolean, W <: IntP, N <: NativeType, P, R <: DFValTP[DFXInt[S, W, N], P]]: Candidate[R] with
-        type OutS = S
-        type OutW = W
-        type OutN = N
-        type OutP = P
-        def apply(arg: R)(using DFC): Out = ???
     end Candidate
 
     extension [S <: Boolean, W <: IntP, N <: NativeType](dfVal: DFValOf[DFXInt[S, W, N]])
