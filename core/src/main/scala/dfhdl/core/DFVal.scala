@@ -127,46 +127,13 @@ object DFVal extends DFValLP:
   inline def apply[T <: DFTypeAny, M <: ModifierAny, IR <: ir.DFVal | DFError](
       irValue: IR
   ): DFVal[T, M] = new DFVal[T, M](irValue)
-  inline def unapply(arg: DFValAny): Option[ir.DFVal] = Some(arg.asIR)
-  object OrTupleOrStruct:
-    def unapply(arg: Any)(using DFC): Option[DFValAny] =
-      arg match
-        case dfVal: DFValAny     => Some(dfVal)
-        case DFTuple.Val(dfVal)  => Some(dfVal)
-        case DFStruct.Val(dfVal) => Some(dfVal)
-        case _                   => None
-
+  inline def unapply(arg: DFValAny): Option[ir.DFVal] = ???
 
   trait ConstCheck[P]
-  given [P](using
-      AssertGiven[
-        P =:= CONST,
-        "Only a DFHDL constant is convertible to a Scala value, but this DFHDL value is not a constant."
-      ]
-  ): ConstCheck[P] with {}
 
   extension [D, T <: ir.DFType, P](lhs: DFValTP[DFType[ir.DFType.Aux[T, Option[D]], ?], P])
     protected[core] def toScalaValue(using dfc: DFC, check: ConstCheck[P]): D = ???
   end extension
-
-  extension [LW <: IntP, LT <: DFTypeW[LW]](lhs: DFValOf[LT])
-    protected[core] def compareWidths[RW <: IntP, RT <: DFTypeW[RW]](
-        rhs: DFValOf[RT]
-    )(func: (Int, Int) => Boolean)(using dfc: DFC): Option[Boolean] = ???
-  end extension
-
-  trait InitCheck[I]
-  given [I](using
-      initializableOnly: AssertGiven[
-        I =:= Modifier.Initializable,
-        "Can only initialize a DFHDL port or variable that are not already initialized."
-      ]
-  ): InitCheck[I] with {}
-
-  given DFOpaqueValConversion[T <: DFOpaque.Abstract, R <: DFOpaque.Abstract](using
-      DFC,
-      R <:< T
-  ): Conversion[DFValOf[DFOpaque[R]], DFValOf[DFOpaque[T]]] = ???
 
   object Const:
     def apply[IRT <: ir.DFType, D, T <: DFType[ir.DFType.Aux[IRT, D], ?]](
