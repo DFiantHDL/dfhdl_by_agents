@@ -192,20 +192,6 @@ object DFXInt:
           type OutN = N
           type OutP = P
         }
-      given fromInt[R <: Int, OS <: Boolean, OW <: Int](using
-          info: IntInfo.Aux[R, OS, OW]
-      ): Candidate[R] with
-        type OutS = OS
-        type OutW = OW
-        type OutN = Int32
-        type OutP = CONST
-        def apply(arg: R)(using dfc: DFC): Out = ???
-      given fromDFConstInt32[P, R <: DFValTP[DFInt32, P]]: Candidate[R] with
-        type OutS = Boolean
-        type OutW = Int
-        type OutN = Int32
-        type OutP = P
-        def apply(arg: R)(using DFC): Out = ???
       given fromDFXIntVal[S <: Boolean, W <: IntP, N <: NativeType, P, R <: DFValTP[DFXInt[S, W, N], P]]: Candidate[R] with
         type OutS = S
         type OutW = W
