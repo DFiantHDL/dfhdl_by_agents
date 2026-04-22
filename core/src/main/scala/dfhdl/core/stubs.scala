@@ -3,8 +3,6 @@ import ir.DFVal.Func.Op as FuncOp
 
 // stubs replacing dfhdl.compiler.ir and dfhdl.internals
 object ir:
-  trait DFType
-  trait DFBoolOrBit
   object DFVal:
     object Func:
       sealed trait Op
@@ -25,7 +23,7 @@ type DFTypeAny = DFType[Any, Any]
 
 final case class DFC(mutableDB: MutableDB)
 
-type DFBoolOrBit = DFType[ir.DFBoolOrBit, Any]
+type DFBoolOrBit = DFType[Any, Any]
 object DFBoolOrBit:
   object Val:
     object Ops:
