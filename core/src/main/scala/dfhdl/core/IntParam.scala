@@ -1,5 +1,5 @@
 package dfhdl.core
-type IntP = Int | DFConstInt32
+type IntP = Any
 object IntP:
   type +[L <: IntP, R <: IntP] = Int
   type Max[L <: IntP, R <: IntP] = Int
