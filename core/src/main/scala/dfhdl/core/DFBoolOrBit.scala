@@ -56,11 +56,6 @@ object DFBoolOrBit:
           ic: ExactOp2Aux[Op, DFC, DFValAny, L, R, O]
       ): ExactOp2Aux[BoolOnlyOp[Op], DFC, DFValAny, L, R, O] = ???
 
-      extension [T <: DFBoolOrBit, P](lhs: DFValTP[T, P])
-        transparent inline def sel[OT, OF](inline onTrue: OT, inline onFalse: OF)(using
-            dfc: DFCG
-        ): Any = ???
-      end extension
     end Ops
   end Val
 end DFBoolOrBit
