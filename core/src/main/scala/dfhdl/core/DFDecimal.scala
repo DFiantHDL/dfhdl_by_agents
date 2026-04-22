@@ -826,14 +826,7 @@ object DFXInt:
       def apply(
           dfType: DFXInt[Boolean, Int, NativeType],
           dfVal: DFValOf[DFXInt[Boolean, Int, NativeType]]
-      )(using DFC): DFValOf[DFXInt[Boolean, Int, NativeType]] =
-        val check = summon[TCCheck[Boolean, Int, Boolean, Int]]
-        (dfType.widthIntOpt, dfVal.widthIntOpt) match
-          case (Some(dfTypeW), Some(dfValW)) =>
-            check(dfType.signed, dfTypeW, dfVal.dfType.signed, dfValW)
-          case _ =>
-        dfVal
-      end apply
+      )(using DFC): DFValOf[DFXInt[Boolean, Int, NativeType]] = ???
       import DFVal.TC
       given [LS <: Boolean, LW <: IntP, LN <: NativeType, R, RP, IC <: Candidate[R]](using
           ic: IC { type OutP = RP }
@@ -842,39 +835,7 @@ object DFXInt:
           nativeCheck: NativeCheck[LN, ic.OutN]
       ): DFVal.TC[DFXInt[LS, LW, LN], R] with
         type OutP = RP
-        def conv(dfType: DFXInt[LS, LW, LN], value: R)(using dfc: DFC): Out =
-          import DFUInt.Val.Ops.signed
-          val rhs = ic(value)
-          rhs.getActualSignedWidthOpt match
-            case Some(rhsSigned, rhsWidthOpt) =>
-              if (!rhs.hasTag[ir.ResizeTag] || dfType.signed != rhsSigned)
-                (dfType.widthIntOpt, rhsWidthOpt) match
-                  case (Some(dfTypeW), Some(rhsW)) => check(dfType.signed, dfTypeW, rhsSigned, rhsW)
-                  case _                           =>
-                    if (
-                      !dfType.asIR.isDFInt32 && !rhs.dfType.asIR.isDFInt32 &&
-                      !DFXInt.Val.Ops.hasImplicitlyFromIntTag(rhs.asIR)
-                    )
-                      import dfc.getSet
-                      val dfTypeWidthRef = dfType.asIR.widthParamRef
-                      val rhsWidthRef = rhs.dfType.asIR.widthParamRef
-                      def dfTypeWidthStr = dfTypeWidthRef.refCodeString
-                      def rhsWidthStr = rhsWidthRef.refCodeString
-                      dfTypeWidthRef.compare(rhsWidthRef)(_ >= _) match
-                        case Some(false) =>
-                          throw new IllegalArgumentException(
-                            s"""The applied RHS value width ($rhsWidthStr) is larger than the LHS variable width ($dfTypeWidthStr)."""
-                          )
-                        case None =>
-                          throw new IllegalArgumentException(
-                            s"""The applied RHS value width ($rhsWidthStr) is undefined compared to the LHS variable width ($dfTypeWidthStr)."""
-                          )
-                        case _ => // ok
-                    end if
-            case None =>
-          end match
-          DFXInt.Val.Ops.toDFXIntOf(rhs)(dfType).asValTP[DFXInt[LS, LW, LN], RP]
-        end conv
+        def conv(dfType: DFXInt[LS, LW, LN], value: R)(using dfc: DFC): Out = ???
       end given
     end TC
 
