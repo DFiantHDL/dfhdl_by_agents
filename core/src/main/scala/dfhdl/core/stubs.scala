@@ -4,7 +4,7 @@ import ir.DFVal.Func.Op as FuncOp
 // stubs replacing dfhdl.compiler.ir and dfhdl.internals
 object ir:
   trait DFType
-  trait DFBoolOrBit extends DFType
+  trait DFBoolOrBit
   trait DFVal
   object DFVal:
     object Func:
