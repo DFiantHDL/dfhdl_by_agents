@@ -178,16 +178,12 @@ object DFXInt:
       ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFTypeAny, LP | RP]] = ???
 
       import DFVal.Ops.CarryOp
-      given evOpCarryAddSubDFXInt[
-          Op <: FuncOp.+.type | FuncOp.-.type, L, LP, R, RP
-      ](using
+      given evOpCarryAddSubDFXInt[Op <: FuncOp, L, LP, R, RP](using
           icL: Candidate.Aux[L, LP],
           icR: Candidate.Aux[R, RP]
       ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[DFTypeAny, LP | RP]] = ???
 
-      given evOpCarryMulDFXInt[
-          Op <: FuncOp.`*`.type, L, LP, R, RP
-      ](using
+      given evOpCarryMulDFXInt[Op <: FuncOp, L, LP, R, RP](using
           icL: Candidate.Aux[L, LP],
           icR: Candidate.Aux[R, RP]
       ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[DFTypeAny, LP | RP]] = ???
