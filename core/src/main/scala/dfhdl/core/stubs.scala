@@ -7,8 +7,6 @@ import NativeType.*
 object ir:
   trait DFType
   trait DFBoolOrBit extends DFType
-  trait DFBool extends DFType
-  object DFBool extends DFBool
   trait DFDecimal extends DFType
   trait DFVal
   val DFInt32: DFType = ???
@@ -42,7 +40,6 @@ type DFTypeAny = DFType[ir.DFType, Args]
 
 object DFType:
   extension (dfType: ir.DFType) def asFE[T <: DFTypeAny]: T = ???
-  export DFBoolOrBit.given
   export DFDecimal.given
 end DFType
 
