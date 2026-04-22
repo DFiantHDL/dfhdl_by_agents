@@ -56,48 +56,9 @@ final case class DFC(
   def clearEvents(): Unit = ???
 end DFC
 object DFC:
-  import java.util.concurrent.atomic.AtomicInteger
-
-  /** Thread-safe cache for generating unique group IDs based on position hash codes.
-    *
-    * Thread Safety Guarantees:
-    *   - Uses `TrieMap` for thread-safe concurrent access to the cache
-    *   - Each hash code gets its own `AtomicInteger` counter for unique ID generation
-    *   - `getOrElseUpdate` atomically checks and creates new counters if needed
-    *   - `AtomicInteger.getAndIncrement()` provides atomic increment operations
-    *
-    * This design ensures that:
-    *   1. Multiple threads can safely access the cache concurrently
-    *   2. Each position hash code gets a unique incremental ID
-    *   3. No race conditions occur during counter creation or increment
-    *   4. Memory usage is bounded by the number of unique position hash codes
-    */
-  private val positionCache = collection.concurrent.TrieMap.empty[Int, AtomicInteger]
-
-  /** Generates a unique group ID tuple for a given position.
-    *
-    * The tuple consists of:
-    *   - First element: The position's hash code (for grouping similar positions)
-    *   - Second element: A unique incremental ID for positions with the same hash code
-    *
-    * Thread Safety:
-    *   - This method is thread-safe and can be called concurrently by multiple threads
-    *   - Uses atomic operations to ensure unique ID generation without race conditions
-    *   - Each position hash code gets its own counter, preventing ID conflicts
-    *
-    * @param position
-    *   The position to generate a group ID for
-    * @return
-    *   A tuple (hashCode, uniqueId) where uniqueId is guaranteed to be unique for this position
-    */
-  private def getGrpId(position: Position): (Int, Int) =
-    val hashCode = position.hashCode()
-    val counter = positionCache.getOrElseUpdate(hashCode, new AtomicInteger(0))
-    (hashCode, counter.getAndIncrement())
-
-  def empty(eo: ElaborationOptions): DFC =
-    DFC(None, Position.unknown, None, elaborationOptionsContr = () => eo)
-  def emptyNoEO: DFC = DFC(None, Position.unknown, None)
+  private def getGrpId(position: Position): (Int, Int) = ???
+  def empty(eo: ElaborationOptions): DFC = ???
+  def emptyNoEO: DFC = ???
   sealed trait Scope
   object Scope:
     sealed trait Global extends Scope
