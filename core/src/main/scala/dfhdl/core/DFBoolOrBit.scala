@@ -26,7 +26,6 @@ object DFBoolOrBit:
     object Compare
 
     object Ops:
-      import DFDecimal.Constraints
       import DFVal.Ops.BoolOnlyOp
       given evLogicOpDFBoolOrBit[
           Op <: FuncOp.|.type | FuncOp.&.type | FuncOp.^.type,
