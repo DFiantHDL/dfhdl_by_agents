@@ -1,5 +1,4 @@
 package dfhdl.core
-import ir.DFVal.Func.Op as FuncOp
 
 final class DFVal[+T <: DFType, +M]
 
