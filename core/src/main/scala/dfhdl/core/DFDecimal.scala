@@ -44,9 +44,6 @@ object DFDecimal:
   end StrInterpOps
 
   object Val:
-    object TC
-    object TCConv
-    object Compare
     object Ops:
       export DFXInt.Val.Ops.*
   end Val
