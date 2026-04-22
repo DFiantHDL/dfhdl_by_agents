@@ -640,138 +640,46 @@ object DFVal extends DFValLP:
 
   object Const:
     def apply[IRT <: ir.DFType, D, T <: DFType[ir.DFType.Aux[IRT, D], ?]](
-        dfType: T,
-        data: D,
-        named: Boolean = false
-    )(using
-        DFC
-    ): DFConstOf[T] = forced(dfType, data, named)
+        dfType: T, data: D, named: Boolean = false
+    )(using DFC): DFConstOf[T] = ???
     def forced[T <: DFTypeAny](
-        dfType: T,
-        data: Any,
-        named: Boolean = false
-    )(using DFC): DFConstOf[T] =
-      val meta = if (named) dfc.getMeta else dfc.getMeta.anonymize
-      assert(
-        dfType.asIR.getRefs.isEmpty,
-        "Constant DFType cannot be parametric."
-      )
-      ir.DFVal
-        .Const(dfType.asIR, data, dfc.ownerOrEmptyRef, meta, dfc.tags)
-        .addMember
-        .asConstOf[T]
+        dfType: T, data: Any, named: Boolean = false
+    )(using DFC): DFConstOf[T] = ???
   end Const
 
   object DesignParam:
-    // Note: in meta-programming, the user needs to manually set the Design's paramMap.
     def apply[T <: DFTypeAny](
-        appliedVal: DFValOf[T],
-        defaultVal: Option[DFValOf[T]] = None
-    )(using dfc: DFC): DFConstOf[T] =
-      import dfc.getSet
-      val defaultValIR: ir.DFVal | ir.DFMember.Empty = defaultVal match
-        case _ if dfc.owner.asIR.isTop => appliedVal.asIR
-        case Some(dv)                  => dv.asIR
-        case None                      => ir.DFMember.Empty
-      val alias: ir.DFVal.DesignParam =
-        ir.DFVal.DesignParam(
-          appliedVal.asIR.dfType.dropUnreachableRefs,
-          defaultValIR.refTW[ir.DFVal.DesignParam],
-          dfc.owner.ref,
-          dfc.getMeta,
-          dfc.tags
-        )
-      if (!dfc.inMetaProgramming) alias.setCachedAppliedVal(appliedVal.asIR)
-      alias.addMember.asConstOf[T]
-    end apply
+        appliedVal: DFValOf[T], defaultVal: Option[DFValOf[T]] = None
+    )(using dfc: DFC): DFConstOf[T] = ???
   end DesignParam
 
   type CLK_FREQ = DFValOf[DFFreq]
-  def CLK_FREQ(using DFC, RTDomainOnly): DFValOf[DFFreq] =
-    ir.DFVal.Special(
-      ir.DFFreq,
-      ir.DFVal.Special.CLK_FREQ,
-      dfc.owner.ref,
-      dfc.getMeta,
-      dfc.tags
-    ).addMember.asValOf[DFFreq]
+  def CLK_FREQ(using DFC, RTDomainOnly): DFValOf[DFFreq] = ???
 
   type OPEN = OPEN.type
   object OPEN:
-    protected[dfhdl] def apply[T <: DFTypeAny](dfType: T)(using DFC): DFValOf[T] =
-      ir.DFVal.Special(
-        dfType.asIR.dropUnreachableRefs,
-        ir.DFVal.Special.OPEN,
-        dfc.owner.ref,
-        dfc.getMeta,
-        dfc.tags
-      ).addMember.asValOf[T]
+    protected[dfhdl] def apply[T <: DFTypeAny](dfType: T)(using DFC): DFValOf[T] = ???
 
   type NOTHING = NOTHING.type
   object NOTHING:
-    protected[dfhdl] def apply[T <: DFTypeAny](dfType: T)(using DFC): DFValOf[T] =
-      ir.DFVal.Special(
-        dfType.asIR.dropUnreachableRefs,
-        ir.DFVal.Special.NOTHING,
-        dfc.owner.ref,
-        dfc.getMeta,
-        dfc.tags
-      ).addMember.asValOf[T]
+    protected[dfhdl] def apply[T <: DFTypeAny](dfType: T)(using DFC): DFValOf[T] = ???
 
   object Dcl:
     def apply[T <: DFTypeAny, M <: ModifierAny](
-        dfType: T,
-        modifier: M,
-        initValues: List[DFConstOf[T]] = Nil
-    )(using
-        DFC
-    ): DFVal[T, M] =
-      val modifierIR = modifier.asIR
-      val dfTypeIR = dfType.asIR.dropUnreachableRefs
-      val dcl: ir.DFVal.Dcl = ir.DFVal.Dcl(
-        dfTypeIR,
-        modifierIR,
-        initValues.map(_.asIR.refTW[ir.DFVal.Dcl]),
-        dfc.owner.ref,
-        dfc.getMeta,
-        dfc.tags
-      )
-      dcl.addMember.asVal[T, M]
-    end apply
-    def iterator(using DFC): DFValOf[DFInt32] =
-      apply(DFInt32, Modifier.VAR, Nil)(using dfc.tag(ir.IteratorTag))
+        dfType: T, modifier: M, initValues: List[DFConstOf[T]] = Nil
+    )(using DFC): DFVal[T, M] = ???
+    def iterator(using DFC): DFValOf[DFInt32] = ???
   end Dcl
 
   object Func:
     export ir.DFVal.Func.Op
     def apply[T <: DFTypeAny, P](
-        dfType: T,
-        op: FuncOp,
-        args: List[DFValTP[?, P]]
-    )(using DFC): DFValTP[T, P] =
-      args.foreach(_.anonymizeInDFCPosition)
-      apply(dfType, op, args.map(_.asIR))
-    @targetName("applyFromIR")
+        dfType: T, op: FuncOp, args: List[DFValTP[?, P]]
+    )(using DFC): DFValTP[T, P] = ???
+    @scala.annotation.targetName("applyFromIR")
     def apply[T <: DFTypeAny, P](
-        dfType: T,
-        op: FuncOp,
-        args: List[ir.DFVal]
-    )(using dfc: DFC): DFValTP[T, P] =
-      (dfType.asIR.dropUnreachableRefs, op, args.map(_.getReachableMember)) match
-        case SimplifyFunc(func) => func.asValTP[T, P]
-        case (dfType, op, args) =>
-          import dfc.getSet
-          val func: ir.DFVal = ir.DFVal.Func(
-            dfType,
-            op,
-            args.map(_.refTW[ir.DFVal](knownReachable = true)),
-            dfc.ownerOrEmptyRef,
-            dfc.getMeta,
-            dfc.tags
-          )
-          func.addMember.asValTP[T, P]
-      end match
-    end apply
+        dfType: T, op: FuncOp, args: List[ir.DFVal]
+    )(using dfc: DFC): DFValTP[T, P] = ???
   end Func
 
   object Alias:
