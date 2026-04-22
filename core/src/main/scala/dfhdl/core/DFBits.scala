@@ -6,7 +6,6 @@ import dfhdl.internals.*
 import scala.annotation.{implicitNotFound, targetName, nowarn}
 import scala.quoted.*
 import scala.util.boundary, boundary.break
-import DFDecimal.Constraints.`LW == RW`
 
 type DFBits[W <: IntP] = DFType[ir.DFBits, Args1[W]]
 object DFBits:
