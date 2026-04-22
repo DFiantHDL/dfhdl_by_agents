@@ -92,9 +92,6 @@ lazy val core = project
       Seq(file)
     }.taskValue
   )
-  .dependsOn(
-    plugin
-  )
 
 lazy val compiler_stages = (project in file("compiler/stages"))
   .settings(
