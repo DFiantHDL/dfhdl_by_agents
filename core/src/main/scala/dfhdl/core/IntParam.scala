@@ -96,15 +96,5 @@ object IntParam extends IntParamLP:
 end IntParam
 
 extension (intParamRef: ir.IntParamRef)
-  def get(using dfc: DFC): IntParam[Int] =
-    intParamRef match
-      case int: Int              => IntParam.forced[Int](int)
-      case ref: ir.DFRef.TypeRef =>
-        import dfc.getSet
-        IntParam.forced[Int](ref.get.asConstOf[DFInt32])
-  protected[core] def refCodeString(using dfc: DFC): String =
-    import dfc.getSet
-    import dfhdl.compiler.printing.{Printer, DefaultPrinter}
-    import dfhdl.compiler.printing.refCodeString as refCodeStringIR
-    given printer: Printer = DefaultPrinter
-    intParamRef.refCodeStringIR
+  def get(using dfc: DFC): IntParam[Int] = ???
+  protected[core] def refCodeString(using dfc: DFC): String = ???
