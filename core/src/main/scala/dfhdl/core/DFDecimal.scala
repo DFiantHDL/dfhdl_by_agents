@@ -625,18 +625,10 @@ object DFXInt:
       export dfhdl.internals.clog2
       def clog2[P, S <: Boolean, W <: IntP, N <: NativeType](
           dfVal: DFValTP[DFXInt[S, W, N], P]
-      )(using
-          DFCG,
-          DFVal.ConstCheck[P]
-      ): DFValTP[DFXInt[S, W, N], P] =
-        DFVal.Func(dfVal.dfType, FuncOp.clog2, List(dfVal))
-      // TODO: generate error for unsigned values
+      )(using DFCG, DFVal.ConstCheck[P]): DFValTP[DFXInt[S, W, N], P] = ???
       def abs[P, S <: Boolean, W <: IntP, N <: NativeType](
           dfVal: DFValTP[DFXInt[S, W, N], P]
-      )(using
-          DFCG
-      ): DFValTP[DFXInt[S, W, N], P] =
-        DFVal.Func(dfVal.dfType, FuncOp.abs, List(dfVal))
+      )(using DFCG): DFValTP[DFXInt[S, W, N], P] = ???
       extension [P, S <: Boolean, W <: IntP, N <: NativeType](lhs: DFValTP[DFXInt[S, W, N], P])
         protected[core] def toDFXIntOf[RS <: Boolean, RW <: IntP, RN <: NativeType](
             dfType: DFXInt[RS, RW, RN]
@@ -646,22 +638,14 @@ object DFXInt:
       end extension
       extension [S <: Boolean, W <: IntP, N <: NativeType, P](lhs: DFValTP[DFXInt[S, W, N], P])
         @targetName("resizeDFXIntAuto")
-        def resize(using DFCG): DFValTP[DFXInt[S, Int, N], P] =
-          lhs.tag(ir.ResizeTag).asValTP[DFXInt[S, Int, N], P]
+        def resize(using DFCG): DFValTP[DFXInt[S, Int, N], P] = ???
         @targetName("resizeDFXInt")
         def resize[RW <: IntP](
             updatedWidth: IntParam[RW]
         )(using
             dfc: DFCG,
             check: Width.CheckNUB[S, RW]
-        ): DFValTP[DFXInt[S, RW, BitAccurate], P] = trydf {
-          val signed = lhs.dfType.signed
-          updatedWidth.toScalaIntOpt.foreach(check(signed, _))
-          // TODO: why this causes anonymous references?
-//          if (lhs.width == updatedWidth) lhs.asValOf[DFXInt[S, RW, BitAccurate]]
-//          else
-          DFVal.Alias.AsIs(DFXInt(signed, updatedWidth, BitAccurate), lhs)
-        }
+        ): DFValTP[DFXInt[S, RW, BitAccurate], P] = ???
         end resize
       end extension
 
