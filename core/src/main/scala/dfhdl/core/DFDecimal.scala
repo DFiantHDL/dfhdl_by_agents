@@ -20,10 +20,6 @@ object DFDecimal:
         transparent inline def apply(inline args: Any*)(using dfc: DFCG): Any =
           ${ applyMacro('sc, 'args)('dfc) }
 
-    extension (sc: StringContext)
-      def d: DecStrCtx = sc
-    end extension
-
     private def applyMacro(
         sc: Expr[DecStrCtx],
         args: Expr[Seq[Any]]
