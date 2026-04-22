@@ -204,10 +204,7 @@ object DFXInt:
       ](using
           icL: Candidate.Aux[L, LS, LW, LN, LP],
           icR: Candidate.Aux[R, RS, RW, RN, RP]
-      ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[
-        DFXInt[LS || RS, IntP.+[IntP.Max[LW, RW], 1], BitAccurate],
-        LP | RP
-      ]] = ???
+      ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[DFXInt[Boolean, Int, NativeType], LP | RP]] = ???
 
       given evOpCarryMulDFXInt[
           Op <: FuncOp.`*`.type,
@@ -216,10 +213,7 @@ object DFXInt:
       ](using
           icL: Candidate.Aux[L, LS, LW, LN, LP],
           icR: Candidate.Aux[R, RS, RW, RN, RP]
-      ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[
-        DFXInt[LS || RS, IntP.+[LW, RW], BitAccurate],
-        LP | RP
-      ]] = ???
+      ): ExactOp2Aux[CarryOp[Op], DFC, DFValAny, L, R, DFValTP[DFXInt[Boolean, Int, NativeType], LP | RP]] = ???
     end Ops
   end Val
 end DFXInt
