@@ -7,23 +7,13 @@ import NativeType.*
 
 import scala.quoted.*
 import scala.annotation.targetName
-import DFDecimal.Constraints.*
 
 type DFDecimal[S <: Boolean, W <: IntP, F <: Int, N <: NativeType] =
   DFType[ir.DFDecimal, Args4[S, W, F, N]]
 object DFDecimal:
   given DFInt32 = DFInt32
-  object Extensions
 
-  protected[core] object Constraints:
-    object Width extends Check2[Boolean, Int, [s <: Boolean, w <: Int] =>> true, [s <: Boolean, w <: Int] =>> ""]
-  end Constraints
-
-  object StrInterp
-
-  // Unclear why, but the compiler crashes if we do not separate these definitions from StrInterp
   object StrInterpOps:
-    import StrInterp.*
     opaque type DecStrCtx <: StringContext = StringContext
     object DecStrCtx:
       extension (inline sc: DecStrCtx)
