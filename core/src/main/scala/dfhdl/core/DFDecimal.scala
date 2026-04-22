@@ -11,8 +11,6 @@ import scala.annotation.targetName
 type DFDecimal[S <: Boolean, W <: IntP, F <: Int, N <: NativeType] =
   DFType[ir.DFDecimal, Args4[S, W, F, N]]
 object DFDecimal:
-  given DFInt32 = DFInt32
-
   object StrInterpOps:
     extension (inline sc: StringContext)
       transparent inline def apply(inline args: Any*)(using dfc: DFCG): Any =
