@@ -45,14 +45,6 @@ object Modifier:
   type CONST = Modifier[Any, Any, Any, dfhdl.core.CONST]
   extension (modifier: ModifierAny) def asIR: IRModifier = modifier.value
 
-  given evPortVarConstructor[
-      T <: DFType.Supported, OT <: DFTypeAny, A, C, I, P,
-      SC <: DFC.Scope, DT <: DomainType, M <: Modifier[A, C, I, P]
-  ](using
-      tc: DFType.TC.Aux[T, OT],
-      checkLocal: AssertGiven[DFC.Scope.Local, "Port/Variable declarations cannot be global"],
-      ck: SC, dt: DT
-  ): ExactOp2Aux["<>", DFC, Any, T, M, DFVal[OT, Modifier[A & SC & DT, C, I, P]]] = ???
 end Modifier
 
 sealed trait VAL

@@ -24,26 +24,6 @@ final class DFType[+T <: ir.DFType, +A <: Args](val value: T | DFError) extends 
 type DFTypeAny = DFType[ir.DFType, Args]
 
 object DFType:
-  type Of[T <: Supported] <: DFTypeAny = T match
-    case DFTypeAny => T & DFTypeAny
-    case Int       => DFInt32
-    case Long      => DFSInt[64]
-    case Byte      => DFBits[8]
-    case Boolean   => DFBool
-    case Double    => DFDouble
-    case DFOpaqueA => DFOpaque[T]
-    case String    => DFString
-    case Product   => FromProduct[T]
-    case Unit      => DFUnit
-
-  type FromProduct[T <: Product] <: DFTypeAny = T match
-    case DFEncoding      => DFEnum[T]
-    case NonEmptyTuple   => DFTuple[Tuple.Map[T, JUSTVAL]]
-    case DFStruct.Fields => DFStruct[T]
-
-  type FromDFVal[T] <: DFTypeAny = T match
-    case DFVal[t, ?] => t
-
   extension [T <: ir.DFType, A <: Args](dfType: DFType[T, A])
     def asIR: T = ???
   extension (dfType: ir.DFType) def asFE[T <: DFTypeAny]: T = ???
@@ -51,53 +31,15 @@ object DFType:
   export DFBoolOrBit.given
   export DFBits.given
   export DFDecimal.given
-  export DFEnum.given
 
-  type Supported = DFTypeAny | FieldsOrTuple | DFEncoding | DFOpaqueA | Byte | Int | Long |
-    Boolean | Double | String | Object | Unit
+  type Supported = Any
+  type Of[T <: Supported] = DFTypeAny
 
   trait TC[T]:
     type Type <: DFTypeAny
-    def apply(t: T)(using DFC): Type
-  trait TCLP:
-    transparent inline given errorDMZ[T](using t: ShowType[T]): TC[T] =
-      Error.call[
-        (
-            "Dataflow type cannot be constructed from the type `",
-            t.Out,
-            "`."
-        )
-      ]
-  object TC extends TCLP:
-    type Aux[T, OT <: DFTypeAny] = TC[T] { type Type = OT }
-    given ofDFType[T <: DFTypeAny]: TC[T] with
-      type Type = T
-      def apply(t: T)(using DFC): Type = ???
-  end TC
-
-  extension [LW <: IntP](lhs: DFTypeW[LW])
-    protected[core] def compareWidths[RW <: IntP](rhs: DFTypeW[RW])(
-        func: (Int, Int) => Boolean
-    )(using dfc: DFC): Option[Boolean] = ???
-    protected[core] def widthCodeString(using dfc: DFC): String = ???
-
+  object TC
 end DFType
-
-type DFTypeW[W <: IntP] = DFBits[W] | DFUInt[W] | DFSInt[W]
-
-extension [T](t: T)(using tc: DFType.TC[T])
-  @targetName("tcDFType")
-  def dfType(using DFC): tc.Type = tc(t)
 
 extension [T <: DFTypeAny, M <: ModifierAny](dfVal: DFVal[T, M])
   @targetName("dfValDFType")
-  def dfType: T = dfVal.asIR.dfType.asFE[T]
-
-extension (intParamRef: ir.IntParamRef)
-  def dropUnreachableRef(allowDesignParamRefs: Boolean)(using dfc: DFC): ir.IntParamRef = ???
-end extension
-
-extension (dfType: ir.DFType)
-  def dropUnreachableRefs(allowDesignParamRefs: Boolean)(using dfc: DFC): ir.DFType = ???
-  def dropUnreachableRefs(using DFC): ir.DFType = ???
-end extension
+  def dfType: T = ???
