@@ -128,14 +128,8 @@ object DFDecimal:
           rightSigned: Boolean,
           rightWidth: Int
       ): Unit
-    given [LS <: Boolean, LW <: IntP, LWI <: Int, RS <: Boolean, RW <: IntP, RWI <: Int](using
-        ubLW: UBound.Aux[Int, LW, LWI],
-        ubRW: UBound.Aux[Int, RW, RWI],
-        checkS: `LS >= RS`.Check[LS, RS],
-        checkW: `LW >= RW`.Check[LWI, ITE[LS != RS, RWI + 1, RWI]]
-    ): TCCheck[LS, LW, RS, RW] with
+    given [LS <: Boolean, LW <: IntP, RS <: Boolean, RW <: IntP]: TCCheck[LS, LW, RS, RW] with
       def apply(leftSigned: Boolean, leftWidth: Int, rightSigned: Boolean, rightWidth: Int): Unit = ???
-    end given
     trait CompareCheck[
         ValS <: Boolean,
         ValW <: IntP,
@@ -151,34 +145,9 @@ object DFDecimal:
           argWidth: Int
       ): Unit
     end CompareCheck
-    given [
-        ValS <: Boolean,
-        ValW <: IntP,
-        ValWI <: Int,
-        ArgS <: Boolean,
-        ArgW <: IntP,
-        ArgWI <: Int,
-        ArgIsInt <: Boolean,
-        Castle <: Boolean
-    ](using
-        ubv: UBound.Aux[Int, ValW, ValWI],
-        uba: UBound.Aux[Int, ArgW, ArgWI],
-        argWFix: Id[ITE[ArgIsInt && ValS && ![ArgS], ArgWI + 1, ArgWI]],
-        skipChecks: Id[ArgIsInt && (ValS || ![ArgS])]
-    )(using
-        ls: Id[ITE[Castle, ArgS, ValS]],
-        rs: Id[ITE[Castle ^ skipChecks.Out, ValS, ArgS]],
-        lw: Id[ITE[Castle, argWFix.Out, ValWI]],
-        rw: Id[ITE[Castle ^ skipChecks.Out, ValWI, argWFix.Out]]
-    )(using
-        checkS: `LS == RS`.Check[ls.Out, rs.Out],
-        checkW: `LW == RW`.Check[lw.Out, rw.Out],
-        checkVAW: `BaW >= WcW`.Check[ValWI, ITE[ArgIsInt, argWFix.Out, 0]],
-        argIsInt: ValueOf[ArgIsInt],
-        castle: ValueOf[Castle]
-    ): CompareCheck[ValS, ValW, ArgS, ArgW, ArgIsInt, Castle] with
+    given [ValS <: Boolean, ValW <: IntP, ArgS <: Boolean, ArgW <: IntP, ArgIsInt <: Boolean, Castle <: Boolean]
+        : CompareCheck[ValS, ValW, ArgS, ArgW, ArgIsInt, Castle] with
       def apply(dfValSigned: Boolean, dfValWidth: Int, argSigned: Boolean, argWidth: Int): Unit = ???
-    end given
 
     trait ArithCheck[
         LS <: Boolean,
@@ -193,32 +162,9 @@ object DFDecimal:
           rhs: DFValOf[DFXInt[RS, RW, RN]]
       )(using DFC): Unit
     end ArithCheck
-    given [
-        LS <: Boolean,
-        LW <: IntP,
-        LN <: NativeType,
-        LWI <: Int,
-        RS <: Boolean,
-        RW <: IntP,
-        RN <: NativeType,
-        RWI <: Int
-    ](using
-        // forcing Int upper-bound
-        ubL: UBound.Aux[Int, LW, LWI],
-        // forcing Int upper-bound
-        ubR: UBound.Aux[Int, RW, RWI],
-        // the RHS width is increased by 1 if the LHS is signed and the RHS is unsigned,
-        // because the RHS will be converted to signed for the arithmetic operation
-        signedRW: Id[ITE[LS && ![RS], RWI + 1, RWI]]
-    )(using
-        // When LHS is a wildcard (LN=Int32), bypass sign/width checks by comparing
-        // the value against itself (always passes). Wildcards adapt at runtime.
-        checkS: `LS >= RS`.Check[ITE[LN, LS, LS], ITE[LN, LS, RS]],
-        checkW: `LW >= RW`.Check[ITE[LN, LWI, LWI], ITE[LN, LWI, signedRW.Out]],
-        isWildcardL: ValueOf[LN]
-    ): ArithCheck[LS, LW, LN, RS, RW, RN] with
+    given [LS <: Boolean, LW <: IntP, LN <: NativeType, RS <: Boolean, RW <: IntP, RN <: NativeType]
+        : ArithCheck[LS, LW, LN, RS, RW, RN] with
       def apply(lhs: DFValOf[DFXInt[LS, LW, LN]], rhs: DFValOf[DFXInt[RS, RW, RN]])(using dfc: DFC): Unit = ???
-    end given
 
     trait SignCheck[
         ValS <: Boolean,
@@ -230,23 +176,9 @@ object DFDecimal:
           dfValSigned: Boolean,
           argSigned: Boolean
       ): Unit
-    given [
-        ValS <: Boolean,
-        ArgS <: Boolean,
-        ArgIsInt <: Boolean,
-        Castle <: Boolean
-    ](using
-        skipSignChecks: Id[ArgIsInt && ![Castle] && (ValS || ![ArgS])]
-    )(using
-        ls: Id[ITE[Castle, ArgS, ValS]],
-        rs: Id[ITE[Castle ^ skipSignChecks.Out, ValS, ArgS]]
-    )(using
-        checkS: `LS == RS`.Check[ls.Out, rs.Out],
-        argIsInt: ValueOf[ArgIsInt],
-        castle: ValueOf[Castle]
-    ): SignCheck[ValS, ArgS, ArgIsInt, Castle] with
+    given [ValS <: Boolean, ArgS <: Boolean, ArgIsInt <: Boolean, Castle <: Boolean]
+        : SignCheck[ValS, ArgS, ArgIsInt, Castle] with
       def apply(dfValSigned: Boolean, argSigned: Boolean): Unit = ???
-    end given
 
     type NativeCheck[LN <: NativeType, RN <: NativeType] =
       AssertGiven[
