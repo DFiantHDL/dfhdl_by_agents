@@ -109,25 +109,11 @@ sealed protected trait DFValLP:
   type CommonR = DFValAny | Bubble | DFVal.NOTHING | BoolSelWrapper[?, ?, ?]
 end DFValLP
 object DFVal extends DFValLP:
-  protected type FieldWithModifier[V, M <: ModifierAny] = V match
-    case DFVal[t, _] =>
-      M match
-        case Modifier[a, Any, i, p] => DFVal[t, Modifier[a, Any, i, p]]
-  protected type FieldsWithModifier[V <: NamedTuple.AnyNamedTuple, M <: ModifierAny] =
-    NamedTuple.Map[V, [t] =>> FieldWithModifier[t, M]]
-  protected[core] type Fields[T <: DFTypeAny, M <: ModifierAny] = T match
-    case DFType[t, Args1[a]] =>
-      t match
-        case ir.DFStruct => FieldsWithModifier[NamedTuple.From[a], M]
-        case _           => Any
-    case _ => Any
+  protected[core] type Fields[T <: DFTypeAny, M <: ModifierAny] = Any
 
-  // constructing a front-end DFVal value class object. if it's a global value, then
-  // we need to save the DFC, instead of the actual member IR object
   inline def apply[T <: DFTypeAny, M <: ModifierAny, IR <: ir.DFVal | DFError](
       irValue: IR
   ): DFVal[T, M] = new DFVal[T, M](irValue)
-  inline def unapply(arg: DFValAny): Option[ir.DFVal] = ???
 
   trait ConstCheck[P]
 
