@@ -222,21 +222,6 @@ object DFXInt:
         type OutN = N
         type OutP = P
         def apply(arg: R)(using DFC): Out = ???
-      inline given errDFEncoding[E <: DFEncoding]: Candidate[E] =
-        compiletime.error("")
-      given fromIf[
-          C <: DFValOf[DFBoolOrBit], T, F,
-          TS <: Boolean, TW <: IntP, TN <: NativeType,
-          TP, FP, R <: IfWrapper[C, T, F]
-      ](using
-          tTC: Candidate[T] { type OutS = TS; type OutW = TW; type OutN = TN; type OutP = TP },
-          fTC: DFVal.TC[DFXInt[TS, TW, TN], F] { type OutP = FP }
-      ): Candidate[R] with
-        type OutS = TS
-        type OutW = TW
-        type OutN = TN
-        type OutP = TP | FP
-        def apply(value: R)(using DFC): Out = ???
     end Candidate
 
     extension [S <: Boolean, W <: IntP, N <: NativeType](dfVal: DFValOf[DFXInt[S, W, N]])
