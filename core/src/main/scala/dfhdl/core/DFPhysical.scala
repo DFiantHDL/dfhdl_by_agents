@@ -54,136 +54,40 @@ object DFPhysical:
     object Ops:
       trait OpTC[Op <: FuncOp, LU <: ir.PhysicalNumber, RU <: ir.PhysicalNumber]:
         type OutU <: ir.PhysicalNumber
-        def apply(
-            lhsDFType: DFPhysical[LU],
-            rhsDFType: DFPhysical[RU]
-        ): DFPhysical[OutU]
-      end OpTC
-      trait OpTCLP:
-        given divSameUnit[U <: ir.PhysicalNumber]: OpTC[FuncOp./.type, U, U] with
-          type OutU = ir.LiteralNumber
-          def apply(
-              lhsDFType: DFPhysical[U],
-              rhsDFType: DFPhysical[U]
-          ): DFPhysical[ir.LiteralNumber] = DFNumber
-      object OpTC extends OpTCLP:
-        type Aux[
-            Op <: FuncOp,
-            LU <: ir.PhysicalNumber,
-            RU <: ir.PhysicalNumber,
-            OU <: ir.PhysicalNumber
-        ] =
+        def apply(lhsDFType: DFPhysical[LU], rhsDFType: DFPhysical[RU]): DFPhysical[OutU]
+      object OpTC:
+        type Aux[Op <: FuncOp, LU <: ir.PhysicalNumber, RU <: ir.PhysicalNumber, OU <: ir.PhysicalNumber] =
           OpTC[Op, LU, RU] { type OutU = OU }
-        given add[U <: ir.PhysicalNumber]: OpTC[FuncOp.+.type, U, U] with
-          type OutU = U
-          def apply(
-              lhsDFType: DFPhysical[U],
-              rhsDFType: DFPhysical[U]
-          ): DFPhysical[U] = lhsDFType
-        given sub[U <: ir.PhysicalNumber]: OpTC[FuncOp.-.type, U, U] with
-          type OutU = U
-          def apply(
-              lhsDFType: DFPhysical[U],
-              rhsDFType: DFPhysical[U]
-          ): DFPhysical[U] = lhsDFType
-        given divNumbers[U <: ir.PhysicalNumber]: OpTC[FuncOp./.type, U, ir.LiteralNumber] with
-          type OutU = U
-          def apply(
-              lhsDFType: DFPhysical[U],
-              rhsDFType: DFNumber
-          ): DFPhysical[U] = lhsDFType
-        given mulNumbers[U <: ir.PhysicalNumber]: OpTC[FuncOp.`*`.type, U, ir.LiteralNumber] with
-          type OutU = U
-          def apply(
-              lhsDFType: DFPhysical[U],
-              rhsDFType: DFNumber
-          ): DFPhysical[U] = lhsDFType
-        given mulFreqTime: OpTC[FuncOp.`*`.type, ir.FreqNumber, ir.TimeNumber] with
-          type OutU = ir.LiteralNumber
-          def apply(
-              lhsDFType: DFPhysical[ir.FreqNumber],
-              rhsDFType: DFPhysical[ir.TimeNumber]
-          ): DFPhysical[ir.LiteralNumber] = DFNumber
-        given mulTimeFreq: OpTC[FuncOp.`*`.type, ir.TimeNumber, ir.FreqNumber] with
-          type OutU = ir.LiteralNumber
-          def apply(
-              lhsDFType: DFPhysical[ir.TimeNumber],
-              rhsDFType: DFPhysical[ir.FreqNumber]
-          ): DFPhysical[ir.LiteralNumber] = DFNumber
-        given divNumberTime: OpTC[FuncOp./.type, ir.LiteralNumber, ir.TimeNumber] with
-          type OutU = ir.FreqNumber
-          def apply(
-              lhsDFType: DFPhysical[ir.LiteralNumber],
-              rhsDFType: DFPhysical[ir.TimeNumber]
-          ): DFPhysical[ir.FreqNumber] = DFFreq
-        given divNumberFreq: OpTC[FuncOp./.type, ir.LiteralNumber, ir.FreqNumber] with
-          type OutU = ir.TimeNumber
-          def apply(
-              lhsDFType: DFPhysical[ir.LiteralNumber],
-              rhsDFType: DFPhysical[ir.FreqNumber]
-          ): DFPhysical[ir.TimeNumber] = DFTime
-      end OpTC
       extension (lhs: Int | Long | Double)
-        def fs(using DFCG): DFConstOf[DFTime] =
-          DFVal.Const(DFTime, ir.TimeNumber(BigDecimal(lhs), ir.TimeNumber.Unit.fs), named = true)
-        def ps(using DFCG): DFConstOf[DFTime] =
-          DFVal.Const(DFTime, ir.TimeNumber(BigDecimal(lhs), ir.TimeNumber.Unit.ps), named = true)
-        def ns(using DFCG): DFConstOf[DFTime] =
-          DFVal.Const(DFTime, ir.TimeNumber(BigDecimal(lhs), ir.TimeNumber.Unit.ns), named = true)
-        def us(using DFCG): DFConstOf[DFTime] =
-          DFVal.Const(DFTime, ir.TimeNumber(BigDecimal(lhs), ir.TimeNumber.Unit.us), named = true)
-        def ms(using DFCG): DFConstOf[DFTime] =
-          DFVal.Const(DFTime, ir.TimeNumber(BigDecimal(lhs), ir.TimeNumber.Unit.ms), named = true)
-        def sec(using DFCG): DFConstOf[DFTime] =
-          DFVal.Const(DFTime, ir.TimeNumber(BigDecimal(lhs), ir.TimeNumber.Unit.sec), named = true)
-        def mn(using DFCG): DFConstOf[DFTime] =
-          DFVal.Const(DFTime, ir.TimeNumber(BigDecimal(lhs), ir.TimeNumber.Unit.mn), named = true)
-        def hr(using DFCG): DFConstOf[DFTime] =
-          DFVal.Const(DFTime, ir.TimeNumber(BigDecimal(lhs), ir.TimeNumber.Unit.hr), named = true)
-        def Hz(using DFCG): DFConstOf[DFFreq] =
-          DFVal.Const(DFFreq, ir.FreqNumber(BigDecimal(lhs), ir.FreqNumber.Unit.Hz), named = true)
-        def KHz(using DFCG): DFConstOf[DFFreq] =
-          DFVal.Const(DFFreq, ir.FreqNumber(BigDecimal(lhs), ir.FreqNumber.Unit.KHz), named = true)
-        def MHz(using DFCG): DFConstOf[DFFreq] =
-          DFVal.Const(DFFreq, ir.FreqNumber(BigDecimal(lhs), ir.FreqNumber.Unit.MHz), named = true)
-        def GHz(using DFCG): DFConstOf[DFFreq] =
-          DFVal.Const(DFFreq, ir.FreqNumber(BigDecimal(lhs), ir.FreqNumber.Unit.GHz), named = true)
+        def fs(using DFCG): DFConstOf[DFTime] = ???
+        def ps(using DFCG): DFConstOf[DFTime] = ???
+        def ns(using DFCG): DFConstOf[DFTime] = ???
+        def us(using DFCG): DFConstOf[DFTime] = ???
+        def ms(using DFCG): DFConstOf[DFTime] = ???
+        def sec(using DFCG): DFConstOf[DFTime] = ???
+        def mn(using DFCG): DFConstOf[DFTime] = ???
+        def hr(using DFCG): DFConstOf[DFTime] = ???
+        def Hz(using DFCG): DFConstOf[DFFreq] = ???
+        def KHz(using DFCG): DFConstOf[DFFreq] = ???
+        def MHz(using DFCG): DFConstOf[DFFreq] = ???
+        def GHz(using DFCG): DFConstOf[DFFreq] = ???
       end extension
 
       given evOpArithDFPhysical[
           Op <: FuncOp.+.type | FuncOp.-.type | FuncOp.*.type | FuncOp./.type,
-          U <: ir.PhysicalNumber,
-          LP,
-          L <: DFValTP[DFPhysical[U], LP],
-          R,
-          RU <: ir.PhysicalNumber,
-          RP,
-          OU <: ir.PhysicalNumber
+          U <: ir.PhysicalNumber, LP, L <: DFValTP[DFPhysical[U], LP],
+          R, RU <: ir.PhysicalNumber, RP, OU <: ir.PhysicalNumber
       ](using
           tcR: TC.Aux[R, RU, RP],
-          tcOp: OpTC.Aux[Op, U, RU, OU],
-          op: ValueOf[Op]
-      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFPhysical[OU], LP | RP]] =
-        new ExactOp2[Op, DFC, DFValAny, L, R]:
-          type Out = DFValTP[DFPhysical[OU], LP | RP]
-          def apply(lhs: L, rhs: R)(using DFC): Out = trydf {
-            val rhsVal = tcR(rhs)
-            DFVal.Func(tcOp(lhs.dfType, rhsVal.dfType), op, List(lhs, rhsVal))
-          }(using dfc, CTName(op.value.toString))
-      end evOpArithDFPhysical
+          tcOp: OpTC.Aux[Op, U, RU, OU]
+      ): ExactOp2Aux[Op, DFC, DFValAny, L, R, DFValTP[DFPhysical[OU], LP | RP]] = ???
 
       extension [LP](lhs: DFValTP[DFInt32 | DFDouble, LP])
-        def toNumber(using DFC): DFValTP[DFNumber, LP] = trydf {
-          DFVal.Alias.AsIs(DFNumber, lhs, forceNewAlias = true)
-        }
+        def toNumber(using DFC): DFValTP[DFNumber, LP] = ???
       extension [LP](lhs: DFValTP[DFNumber, LP])
         @targetName("fromNumberToInt")
-        def toInt(using DFC): DFValTP[DFInt32, LP] = trydf {
-          DFVal.Alias.AsIs(DFInt32, lhs, forceNewAlias = true)
-        }
-        def toDouble(using DFC): DFValTP[DFDouble, LP] = trydf {
-          DFVal.Alias.AsIs(DFDouble, lhs, forceNewAlias = true)
-        }
+        def toInt(using DFC): DFValTP[DFInt32, LP] = ???
+        def toDouble(using DFC): DFValTP[DFDouble, LP] = ???
     end Ops
   end Val
 end DFPhysical
