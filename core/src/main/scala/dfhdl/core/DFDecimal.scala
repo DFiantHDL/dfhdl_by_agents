@@ -746,27 +746,15 @@ end DFXInt
 
 type DFUInt[W <: IntP] = DFXInt[false, W, BitAccurate]
 object DFUInt:
-  def apply[W <: IntP](width: IntParam[W])(using DFCG, Width.CheckNUB[false, W]): DFUInt[W] =
-    trydf {
-      DFXInt(false, width, BitAccurate)
-    }
-  def forced[W <: IntP](width: IntP)(using DFC): DFUInt[W] =
-    DFUInt(IntParam[W](width.asInstanceOf[W]))
-  def apply[W <: IntP](using dfc: DFCG, dfType: => DFUInt[W]): DFUInt[W] = trydf { dfType }
+  def apply[W <: IntP](width: IntParam[W])(using DFCG, Width.CheckNUB[false, W]): DFUInt[W] = ???
+  def forced[W <: IntP](width: IntP)(using DFC): DFUInt[W] = ???
+  def apply[W <: IntP](using dfc: DFCG, dfType: => DFUInt[W]): DFUInt[W] = ???
   def until[V <: IntP](sup: IntParam[V])(using
-      dfc: DFCG,
-      check: Arg.LargerThan1.CheckNUB[V]
-  ): DFUInt[IntP.CLog2[V]] = trydf {
-    sup.toScalaIntOpt.foreach(check(_))
-    DFXInt(false, sup.clog2, BitAccurate)
-  }
+      dfc: DFCG, check: Arg.LargerThan1.CheckNUB[V]
+  ): DFUInt[IntP.CLog2[V]] = ???
   def to[V <: IntP](max: IntParam[V])(using
-      dfc: DFCG,
-      check: Arg.Positive.CheckNUB[V]
-  ): DFUInt[IntP.CLog2[IntP.+[V, 1]]] = trydf {
-    max.toScalaIntOpt.foreach(check(_))
-    DFXInt(false, (max + 1).clog2, BitAccurate)
-  }
+      dfc: DFCG, check: Arg.Positive.CheckNUB[V]
+  ): DFUInt[IntP.CLog2[IntP.+[V, 1]]] = ???
 
   protected object Unsigned
       extends Check1[
@@ -880,25 +868,15 @@ end DFUInt
 
 type DFSInt[W <: IntP] = DFXInt[true, W, BitAccurate]
 object DFSInt:
-  def apply[W <: IntP](width: IntParam[W])(using DFCG, Width.CheckNUB[true, W]): DFSInt[W] =
-    DFXInt(true, width, BitAccurate)
-  def forced[W <: IntP](width: IntP)(using DFC): DFSInt[W] =
-    DFSInt(IntParam[W](width.asInstanceOf[W]))
-  def apply[W <: IntP](using dfc: DFCG, dfType: => DFSInt[W]): DFSInt[W] = trydf { dfType }
+  def apply[W <: IntP](width: IntParam[W])(using DFCG, Width.CheckNUB[true, W]): DFSInt[W] = ???
+  def forced[W <: IntP](width: IntP)(using DFC): DFSInt[W] = ???
+  def apply[W <: IntP](using dfc: DFCG, dfType: => DFSInt[W]): DFSInt[W] = ???
   def untilAbs[V <: IntP](sup: IntParam[V])(using
-      dfc: DFCG,
-      check: Arg.LargerThan1.CheckNUB[V]
-  ): DFSInt[IntP.+[IntP.CLog2[V], 1]] = trydf {
-    sup.toScalaIntOpt.foreach(check(_))
-    DFXInt(true, sup.clog2 + 1, BitAccurate)
-  }
+      dfc: DFCG, check: Arg.LargerThan1.CheckNUB[V]
+  ): DFSInt[IntP.+[IntP.CLog2[V], 1]] = ???
   def toAbs[V <: IntP](max: IntParam[V])(using
-      dfc: DFCG,
-      check: Arg.Positive.CheckNUB[V]
-  ): DFSInt[IntP.+[IntP.CLog2[IntP.+[V, 1]], 1]] = trydf {
-    max.toScalaIntOpt.foreach(check(_))
-    DFXInt(true, (max + 1).clog2 + 1, BitAccurate)
-  }
+      dfc: DFCG, check: Arg.Positive.CheckNUB[V]
+  ): DFSInt[IntP.+[IntP.CLog2[IntP.+[V, 1]], 1]] = ???
 
   object Val:
     object Ops:
