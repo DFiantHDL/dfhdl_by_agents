@@ -1156,29 +1156,7 @@ object DFXInt:
       private def checkWildcardFit(
           wildcard: DFValOf[DFInt32],
           bitAccurateType: DFTypeAny
-      )(using dfc: DFC): Unit =
-        val baType = bitAccurateType.asIR.asInstanceOf[ir.DFDecimal]
-        import dfc.getSet
-        import DFXInt.Val.getActualSignedWidthOpt
-        wildcard.getActualSignedWidthOpt match
-          case Some(wcSigned, wcWidthIntOpt) =>
-            if (!baType.signed && wcSigned)
-              throw new IllegalArgumentException(
-                s"Wildcard `Int` value is negative and cannot adapt to an unsigned bit-accurate value."
-              )
-            (baType.widthIntOpt, wcWidthIntOpt) match
-              case (Some(baWidth), Some(wcWidth)) =>
-                // Unsigned wildcard adapting to signed bit-accurate value needs an extra bit
-                val effectiveWidth =
-                  if (baType.signed && !wcSigned) wcWidth + 1 else wcWidth
-                if (effectiveWidth > baWidth)
-                  throw new IllegalArgumentException(
-                    s"Wildcard `Int` value width ($effectiveWidth) is larger than the bit-accurate value width ($baWidth)."
-                  )
-              case _ =>
-          case _ =>
-        end match
-      end checkWildcardFit
+      )(using dfc: DFC): Unit = ???
 
       private def arithOp[
           OS <: Boolean,
