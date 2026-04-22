@@ -25,8 +25,6 @@ import dfhdl.compiler.ir.{
   DFInterfaceOwner,
   Meta
 }
-import dfhdl.compiler.analysis.filterPublicMembers
-
 import scala.reflect.{ClassTag, classTag}
 import collection.mutable
 import collection.immutable.ListMap
