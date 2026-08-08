@@ -69,16 +69,21 @@ if [ -f ~/.local/lib/coursier.jar ]; then
   fi
 fi
 
-# Export the sandbox trust bundle to a stable path. Container builds run behind
-# a TLS intercepting egress gateway whose CA the base images do not trust, so a
-# Dockerfile can COPY these in and run update-ca-certificates. Public
-# certificates only, no secrets. Nothing is written when the environment has no
-# custom bundle, which is the normal case outside the sandbox.
+# Export the interception CAs to a stable path, so a Dockerfile can COPY them
+# in and run update-ca-certificates. Container builds reach the network through
+# a TLS intercepting egress gateway that the stock base images do not trust,
+# which otherwise fails every HTTPS fetch in the build with a PKIX error.
+#
+# Source these from /usr/local/share/ca-certificates rather than from
+# $SSL_CERT_FILE. That directory is part of the base image and is therefore
+# always populated, including while this script runs. $SSL_CERT_FILE belongs to
+# the per-session proxy layer, which is provisioned at the end of container
+# bring-up and so may not exist yet at setup time.
+#
+# Public certificates only, no secrets. The loop writes nothing on a machine
+# with no interception, which is the normal case outside the sandbox.
 mkdir -p ~/.local/share/extra-ca
-for bundle in "${SSL_CERT_FILE:-}" "${CURL_CA_BUNDLE:-}"; do
-  if [ -n "$bundle" ] && [ -f "$bundle" ] && [ "$bundle" != "/etc/ssl/certs/ca-certificates.crt" ]; then
-    awk -v d="$HOME/.local/share/extra-ca" \
-      '/BEGIN CERTIFICATE/{n++} {print > (d "/host-ca-" n ".crt")}' "$bundle"
-    break
-  fi
+rm -f ~/.local/share/extra-ca/*.crt
+for cert in /usr/local/share/ca-certificates/*.crt; do
+  [ -f "$cert" ] && cp "$cert" ~/.local/share/extra-ca/
 done
