@@ -16,7 +16,7 @@ Outputs: Verilog, SystemVerilog, VHDL.
 
 ## Build System
 
-**Tool**: SBT 1.12.12 — **Scala**: 3.8.4 (nightly resolver enabled)
+**Tool**: SBT 1.12.14 — **Scala**: 3.8.4 (nightly resolver enabled)
 
 ```bash
 sbtn compile          # compile all subprojects
@@ -113,7 +113,7 @@ Generated HDL reference files live in `lib/src/test/resources/ref/`. Update them
 
 ## Code Conventions
 
-- **Formatting**: scalafmt 3.10.6, max 100 columns, Scala 3 dialect
+- **Formatting**: scalafmt 3.11.4, max 100 columns, Scala 3 dialect
   - Optional braces removed (`removeOptionalBraces = oldSyntaxToo`)
   - End markers inserted for blocks ≥ 15 lines
   - Run `scalafmt` before committing
